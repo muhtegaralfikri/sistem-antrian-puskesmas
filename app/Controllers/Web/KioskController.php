@@ -96,7 +96,7 @@ class KioskController extends BaseController
      */
     public function tiket($id)
     {
-        $antrian = $this->antrianModel->getWithPoli($id);
+        $antrian = $this->antrianModel->getWithPoli((int) $id);
 
         if (!$antrian) {
             return redirect()->to('/kiosk')->with('error', 'Antrian tidak ditemukan');
