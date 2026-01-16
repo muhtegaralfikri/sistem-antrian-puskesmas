@@ -1,68 +1,148 @@
-# CodeIgniter 4 Application Starter
+# Sistem Antrian Puskesmas
 
-## What is CodeIgniter?
+Sistem antrian digital untuk puskesmas/klinik dengan fitur real-time updates menggunakan WebSocket.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Fitur
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- 🎫 **Kiosk Mandiri** - Pengambilan tiket antrian tanpa perlu antri di loket
+- 📺 **Display Monitor** - Tampilan antrian real-time untuk ruang tunggu
+- 👨‍⚕️ **Dashboard Petugas** - Panggil dan kelola antrian dengan mudah
+- ⚙️ **Panel Admin** - Kelola poli, pengguna, dan pengaturan sistem
+- 🔊 **Panggilan Suara** - Notifikasi suara untuk nomor antrian yang dipanggil
+- 📊 **Laporan** - Laporan harian dan bulanan untuk monitoring
+- 🔄 **Real-time Updates** - WebSocket untuk update langsung tanpa refresh
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Teknologi
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+- **Backend:** CodeIgniter 4.6.3
+- **Database:** SQLite3
+- **WebSocket:** Ratchet WebSocket
+- **Frontend:** Alpine.js + Tailwind CSS
 
-## Installation & updates
+## Persyaratan Server
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+- PHP 8.1 atau higher
+- Ekstensi PHP: `intl`, `mbstring`, `sqlite3`, `json`
+- Composer (untuk install dependencies)
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## Instalasi
 
-## Setup
+### 1. Clone Repository
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+```bash
+git clone https://github.com/muhtegaralfikri/sistem-antrian-puskesmas.git
+cd sistem-antrian-puskesmas
+```
 
-## Important Change with index.php
+### 2. Install Dependencies
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+```bash
+composer install
+```
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+### 3. Setup Database
 
-**Please** read the user guide for a better explanation of how CI4 works!
+```bash
+php setup_db.php
+```
 
-## Repository Management
+Script ini akan membuat database SQLite dan menambahkan data awal:
+- 3 Poli (Umum, Gigi, Anak)
+- 1 User Admin
+- Pengaturan default
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+### 4. Konfigurasi
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+Copy `env` ke `.env` dan sesuaikan:
 
-## Server Requirements
+```bash
+cp env .env
+```
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+Edit `.env` untuk mengatur baseURL:
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+```ini
+app.baseURL = 'http://localhost:8000'
+```
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+### 5. Jalankan Server
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+**Windows:**
+```bash
+start.bat
+```
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+**Linux/Mac:**
+```bash
+php spark serve
+```
+
+Server akan berjalan di `http://localhost:8000`
+
+## Penggunaan
+
+### URL yang Tersedia
+
+| Halaman | URL | Deskripsi |
+|---------|-----|-----------|
+| Kiosk | `/kiosk` | Ambil tiket antrian |
+| Display | `/display` | Monitor antrian |
+| Dashboard | `/dashboard` | Panel petugas |
+| Admin | `/admin` | Panel admin |
+| Login | `/auth/login` | Halaman login |
+
+### Login Default
+
+```
+Username: admin
+Password: admin123
+```
+
+### Jalankan WebSocket Server
+
+Untuk real-time updates, jalankan WebSocket server di terminal terpisah:
+
+```bash
+php spark websocket:start
+```
+
+WebSocket akan berjalan di port `8080`
+
+## Struktur Database
+
+```
+┌─────────────────┐
+│     poli        │  ◄── Data poli/layanan
+├─────────────────┤
+│     users       │  ◄── Data petugas & admin
+├─────────────────┤
+│   user_poli     │  ◄── Relasi user & poli
+├─────────────────┤
+│    antrian      │  ◄── Data antrian
+├─────────────────┤
+│   settings      │  ◄── Pengaturan sistem
+├─────────────────┤
+│  antrian_log    │  ◄── Log aktivitas antrian
+└─────────────────┘
+```
+
+## Pengaturan Sistem
+
+Berikut pengaturan yang dapat diubah melalui panel admin:
+
+| Pengaturan | Default | Deskripsi |
+|-----------|---------|-----------|
+| voice_enabled | 1 | Aktifkan suara panggilan |
+| voice_volume | 1.0 | Volume suara (0-1) |
+| recall_max | 3 | Maksimal panggilan ulang |
+| display_count | 5 | Jumlah antrian ditampilkan |
+| auto_refresh_interval | 5 | Interval auto-refresh (detik) |
+| kiosk_show_name | 0 | Tampilkan input nama di kiosk |
+
+## License
+
+MIT License
+
+## Credits
+
+Dibuat dengan ❤️ menggunakan CodeIgniter 4
