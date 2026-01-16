@@ -1,0 +1,31 @@
+# CodeIgniter 4
+/vendor/
+/env
+.writable/cache/
+/writable/logs/
+/writable/session/
+/writable/uploads/
+/public/null/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+writable/data/
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+debugbar/
+
+# Session & Temp
+cookies.txt
+*.tmp
