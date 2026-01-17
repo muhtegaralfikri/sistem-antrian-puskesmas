@@ -67,6 +67,9 @@ class DashboardController extends BaseController
             ]);
         }
 
+        // Auto-reset old queues (skip waiting from previous days, complete old serving)
+        $this->antrianModel->autoResetOldQueues();
+
         // Get user info
         $user = $this->userModel->find($userId);
         $userWithPoli = $this->userModel->getUserWithPoli($userId);
@@ -91,6 +94,9 @@ class DashboardController extends BaseController
             $waitingCount = count($waiting);
             $servingCount = $this->antrianModel->getServingCount($poli['id']);
             $completedCount = $this->antrianModel->getCompletedCount($poli['id']);
+
+            // DEBUG: Log poli data
+            log_message('debug', "Poli: {$poli['nama']}, waiting_count: {$waitingCount}, serving: {$servingCount}, completed: {$completedCount}");
 
             $poliData[] = [
                 'poli' => $poli,

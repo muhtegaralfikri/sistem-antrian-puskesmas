@@ -226,6 +226,12 @@ function dashboardApp() {
                     this.user = result.data.user;
                     this.polis = result.data.polis;
                     this.stats = result.data.stats;
+
+                    // DEBUG: Log poli data
+                    console.log('=== DASHBOARD DATA DEBUG ===');
+                    result.data.polis.forEach(p => {
+                        console.log(`Poli: ${p.poli.nama}, waiting_count: ${p.waiting_count}, waiting:`, p.waiting);
+                    });
                 }
                 this.loading = false;
             } catch (e) {

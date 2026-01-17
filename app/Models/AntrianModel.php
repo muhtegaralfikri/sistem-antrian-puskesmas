@@ -280,6 +280,44 @@ class AntrianModel extends Model
     }
 
     /**
+     * Auto-reset old queues (called automatically)
+     * - Skip waiting queues from previous days
+     * - Complete serving queues from previous days
+     */
+    public function autoResetOldQueues(): bool
+    {
+        $today = date('Y-m-d');
+        $affected = 0;
+
+        // Skip all waiting queues from previous days
+        $oldWaiting = $this->where('status', self::STATUS_WAITING)
+            ->where('DATE(created_at) <', $today)
+            ->findAll();
+
+        foreach ($oldWaiting as $antrian) {
+            $this->update($antrian['id'], ['status' => self::STATUS_SKIPPED]);
+            $this->logAntrian($antrian);
+            $affected++;
+        }
+
+        // Complete all serving/called queues from previous days
+        $oldServing = $this->whereIn('status', [self::STATUS_CALLED, self::STATUS_SERVING])
+            ->where('DATE(created_at) <', $today)
+            ->findAll();
+
+        foreach ($oldServing as $antrian) {
+            $this->update($antrian['id'], [
+                'status' => self::STATUS_COMPLETED,
+                'waktu_selesai' => $antrian['created_at'],
+            ]);
+            $this->logAntrian($antrian);
+            $affected++;
+        }
+
+        return $affected > 0;
+    }
+
+    /**
      * Reset antrian for a poli
      */
     public function resetPoli(int $poliId): bool

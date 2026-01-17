@@ -25,6 +25,9 @@ class KioskController extends BaseController
      */
     public function index()
     {
+        // Auto-reset old queues
+        $this->antrianModel->autoResetOldQueues();
+
         $polis = $this->poliModel->getActivePoli();
 
         $data = [
@@ -39,6 +42,9 @@ class KioskController extends BaseController
      */
     public function ambil()
     {
+        // Auto-reset old queues
+        $this->antrianModel->autoResetOldQueues();
+
         $rules = [
             'poli_id' => 'required|integer',
         ];

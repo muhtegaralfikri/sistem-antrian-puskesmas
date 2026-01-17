@@ -52,6 +52,9 @@ class DisplayController extends BaseController
      */
     public function data()
     {
+        // Auto-reset old queues (skip waiting from previous days, complete old serving)
+        $this->antrianModel->autoResetOldQueues();
+
         // Get all active poli with their antrian data
         $displayData = $this->antrianModel->getAllActiveForDisplay();
 
