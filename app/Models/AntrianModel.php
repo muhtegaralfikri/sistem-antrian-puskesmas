@@ -239,8 +239,12 @@ class AntrianModel extends Model
     /**
      * Complete current antrian
      */
-    public function complete(int $antrianId, int $userId): bool
+    public function complete($antrianId, $userId): bool
     {
+        // Convert to int if needed
+        $antrianId = (int) $antrianId;
+        $userId = (int) $userId;
+
         return $this->update($antrianId, [
             'status' => self::STATUS_COMPLETED,
             'waktu_selesai' => date('Y-m-d H:i:s'),
@@ -251,7 +255,7 @@ class AntrianModel extends Model
     /**
      * Skip antrian
      */
-    public function skip(int $antrianId): bool
+    public function skip($antrianId): bool
     {
         return $this->update($antrianId, [
             'status' => self::STATUS_SKIPPED,

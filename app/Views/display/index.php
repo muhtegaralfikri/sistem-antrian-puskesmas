@@ -8,55 +8,38 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-
-        * {
-            font-family: 'Inter', system-ui, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            min-height: 100vh;
-        }
-
-        .poli-card {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-        }
-
-        .current-number {
-            font-size: 80px;
-            font-weight: 900;
-            line-height: 1;
-            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .recent-item {
-            background: #f1f5f9;
-            border-radius: 12px;
-            padding: 12px 16px;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            background: #fef3c7;
-            color: #92400e;
-        }
+        * { font-family: 'Inter', system-ui, sans-serif; }
+        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
+        .poli-card { background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; }
+        .current-number { font-size: 80px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .recent-item { background: #f1f5f9; border-radius: 12px; padding: 12px 16px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; background: #fef3c7; color: #92400e; }
     </style>
 </head>
 <body x-data="displayData()">
-    <div class="min-h-screen p-6">
-        <!-- Header -->
+    <!-- Audio Permission Overlay -->
+    <div x-show="!audioEnabled" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div class="text-center bg-white p-8 rounded-2xl shadow-2xl max-w-md mx-4">
+            <div class="mb-6 bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+                <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Mulai Display Antrian</h2>
+            <p class="text-gray-600 mb-4">Klik tombol untuk mengaktifkan suara</p>
+            <div class="text-sm text-gray-500 mb-6">
+                <p>Sistem menggunakan audio file pre-recorded</p>
+                <p class="text-xs mt-2">Pastikan folder /voice sudah berisi file audio</p>
+            </div>
+            <button @click="enableAudio()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold text-lg transition-all transform hover:scale-105">
+                Mulai Aplikasi
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div x-show="audioEnabled" class="min-h-screen p-6" style="display: none;">
         <header class="mb-8">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
@@ -77,16 +60,9 @@
             </div>
         </header>
 
-        <!-- Loading -->
-        <div x-show="loading" class="text-center py-12">
-            <p class="text-white text-xl">Memuat data...</p>
-        </div>
-
-        <!-- Poli Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" x-show="!loading">
+        <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <template x-for="item in polis" :key="item.poli.id">
                 <div class="poli-card">
-                    <!-- Poli Header -->
                     <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
                         <div class="flex items-center justify-between">
                             <div>
@@ -99,14 +75,10 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Current Number -->
                     <div class="p-6 text-center">
                         <p class="text-gray-500 text-sm mb-2">Nomor Sedang Dilayani</p>
                         <div class="current-number" x-text="item.current ? item.current.nomor : '--'"></div>
                     </div>
-
-                    <!-- Recent Numbers -->
                     <div class="px-6 pb-6">
                         <p class="text-gray-500 text-sm mb-3">Antrian Sebelumnya</p>
                         <div class="space-y-2">
@@ -121,8 +93,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Waiting Count -->
                     <div class="px-6 pb-6">
                         <div class="bg-blue-50 rounded-xl p-4 flex items-center justify-between">
                             <span class="text-blue-700">Menunggu</span>
@@ -133,175 +103,299 @@
             </template>
         </div>
 
-        <!-- Footer -->
         <footer class="mt-8 text-center text-blue-200 text-sm">
             <p>&copy; <?= date('Y') ?> Puskesmas | Sistem Antrian</p>
         </footer>
     </div>
 
     <script>
-        function displayData() {
-            return {
-                polis: [],
-                loading: true,
-                currentTime: '',
-                currentDate: '',
-                lastCalled: {},
-                lastCallTime: {},
+    function displayData() {
+        return {
+            polis: [],
+            loading: true,
+            currentTime: '',
+            currentDate: '',
+            lastCalled: {},
+            lastCallTime: {},
+            audioEnabled: false,
+            audioBaseUrl: '/voice/',
+            isPlaying: false,
+            audioQueue: [],
+            currentAudio: null,
+            indonesianVoice: null,
+            globalAnnouncementQueue: [],
+            isProcessingAnnouncement: false,
 
-                init() {
-                    // Update time
-                    this.updateTime();
-                    setInterval(() => this.updateTime(), 1000);
+            init() {
+                this.updateTime();
+                setInterval(() => this.updateTime(), 1000);
+                this.loadData();
+                setInterval(() => this.loadData(), 3000);
+            },
 
-                    // Load data
-                    this.loadData();
-
-                    // Auto refresh
-                    setInterval(() => this.loadData(), 5000);
-                },
-
-                async loadData() {
-                    try {
-                        const res = await fetch('/display/data');
-                        const result = await res.json();
-
-                        if (result.success && result.data.polis) {
-                            this.polis = result.data.polis;
-                            this.checkVoice(result.data.polis);
-                        }
-                        this.loading = false;
-                    } catch (e) {
-                        console.error('Error:', e);
-                        this.loading = false;
-                    }
-                },
-
-                checkVoice(newPolis) {
-                    newPolis.forEach(item => {
-                        if (item.current) {
-                            const lastCallTime = this.lastCallTime[item.poli.id] || 0;
-                            const currentCallTime = new Date(item.current.waktu_panggil).getTime();
-
-                            if (item.current.nomor !== this.lastCalled[item.poli.id] || currentCallTime > lastCallTime) {
-                                if (item.current.nomor === this.lastCalled[item.poli.id] && currentCallTime > lastCallTime) {
-                                    console.log('Recall detected for:', item.current.nomor);
-                                }
-
-                                this.lastCalled[item.poli.id] = item.current.nomor;
-                                this.lastCallTime[item.poli.id] = currentCallTime;
-
-                                setTimeout(() => {
-                                    this.speak(item.current.nomor, item.poli.nama);
-                                }, 500);
-                            }
-                        }
-                    });
-                },
-
-                speak(nomor, poliNama) {
-                    // Format nomor: C-001 menjadi "C Satu"
-                    const nomorSuara = nomor.replace(/^([A-Z])-(\d+)$/, (match, prefix, num) => {
-                        const numInt = parseInt(num, 10);
-                        return `${prefix} ${this.terbilang(numInt)}`;
-                    });
-
-                    const text = `Nomor antrian ${nomorSuara}, poli ${poliNama}, silakan masuk`;
-                    console.log('Speaking:', text);
-
-                    // Coba gunakan API offline (Windows SAPI) dulu
-                    this.speakOffline(text);
-                },
-
-                speakOffline(text) {
-                    fetch('/api/v1/voice/speak', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: 'text=' + encodeURIComponent(text)
-                    })
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.success) {
-                            console.log('Voice sent to offline API');
-                        } else {
-                            console.log('Offline voice failed, using browser TTS:', result.message);
-                            this.speakBrowser(text);
-                        }
-                    })
-                    .catch(e => {
-                        console.log('Offline voice error, using browser TTS:', e);
-                        this.speakBrowser(text);
-                    });
-                },
-
-                speakBrowser(text) {
-                    if (!('speechSynthesis' in window)) {
-                        console.log('Speech synthesis not supported');
-                        return;
-                    }
-
-                    let voices = window.speechSynthesis.getVoices();
-                    if (voices.length === 0) {
-                        window.speechSynthesis.onvoiceschanged = () => {
-                            voices = window.speechSynthesis.getVoices();
-                            this.doSpeakBrowser(text, voices);
-                        };
-                    } else {
-                        this.doSpeakBrowser(text, voices);
-                    }
-                },
-
-                doSpeakBrowser(text, voices) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-
-                    const indoVoice = voices.find(v => v.lang.startsWith('id')) ||
-                                     voices.find(v => v.lang.startsWith('ms'));
-
-                    if (indoVoice) {
-                        utterance.voice = indoVoice;
-                        console.log('Using voice:', indoVoice.name, indoVoice.lang);
-                    } else {
-                        console.log('Indonesian voice not found, available voices:', voices.map(v => v.lang + ' - ' + v.name));
-                        utterance.lang = 'id-ID';
-                    }
-
-                    utterance.rate = 0.85;
-                    utterance.volume = 1;
-                    utterance.pitch = 1;
-
-                    window.speechSynthesis.cancel();
-                    window.speechSynthesis.speak(utterance);
-                },
-
-                // Konversi angka ke terbilang (1 -> Satu, 2 -> Dua, dll)
-                terbilang(n) {
-                    const satuan = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan'];
-                    if (n < 10) return satuan[n];
-                    if (n < 20) return satuan[n - 10] + ' Belas';
-                    if (n < 100) return satuan[Math.floor(n / 10)] + ' Puluh ' + satuan[n % 10];
-                    return n.toString(); // Fallback untuk angka besar
-                },
-
-                // Play audio sebagai fallback (opsional - perlu file audio)
-                playAudio(nomor, poliNama) {
-                    // Audio file bisa ditambahkan nanti
-                    // Untuk sekarang hanya log
-                    console.log('Would play audio for:', nomor, poliNama);
-                },
-
-                updateTime() {
-                    const now = new Date();
-                    this.currentTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    this.currentDate = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                },
-
-                formatTime(time) {
-                    if (!time) return '--';
-                    const date = new Date(time);
-                    return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            enableAudio() {
+                this.audioEnabled = true;
+                // Load voices untuk fallback TTS dan cari suara Indonesia
+                this.loadIndonesianVoice();
+                // Load voices saat tersedia
+                if (speechSynthesis.onvoiceschanged !== undefined) {
+                    speechSynthesis.onvoiceschanged = () => this.loadIndonesianVoice();
                 }
-            };
-        }
+                this.loadData();
+            },
+
+            loadIndonesianVoice() {
+                const voices = window.speechSynthesis.getVoices();
+                // Cari suara Bahasa Indonesia (prioritaskan 'id-ID')
+                this.indonesianVoice = voices.find(voice => voice.lang === 'id-ID') ||
+                                       voices.find(voice => voice.lang.startsWith('id')) ||
+                                       null;
+                if (this.indonesianVoice) {
+                    console.log('✓ Indonesian voice found:', this.indonesianVoice.name);
+                } else {
+                    console.warn('⚠ No Indonesian voice found, using default');
+                }
+            },
+
+            async loadData() {
+                try {
+                    const res = await fetch('/display/data');
+                    const result = await res.json();
+                    if (result.success && result.data.polis) {
+                        this.polis = result.data.polis;
+                        this.checkForNewCalls(result.data.polis);
+                    }
+                    this.loading = false;
+                } catch (e) {
+                    console.error('Error:', e);
+                    this.loading = false;
+                }
+            },
+
+            checkForNewCalls(newPolis) {
+                if (!this.audioEnabled) return;
+
+                newPolis.forEach(item => {
+                    if (item.current) {
+                        const poliId = item.poli.id;
+                        const nomorBaru = item.current.nomor;
+                        const waktuPanggilBaru = new Date(item.current.waktu_panggil).getTime();
+                        const waktuPanggilLama = this.lastCallTime[poliId] || 0;
+
+                        if (nomorBaru !== this.lastCalled[poliId] || waktuPanggilBaru > waktuPanggilLama) {
+                            this.lastCalled[poliId] = nomorBaru;
+                            this.lastCallTime[poliId] = waktuPanggilBaru;
+                            // Tambah ke global queue, bukan langsung play
+                            this.globalAnnouncementQueue.push({
+                                nomor: nomorBaru,
+                                poli: item.poli
+                            });
+                            console.log('Added to queue:', nomorBaru, item.poli.nama, '(Queue size:', this.globalAnnouncementQueue.length + ')');
+                        }
+                    }
+                });
+
+                // Proses queue jika tidak sedang memproses
+                this.processGlobalQueue();
+            },
+
+            async processGlobalQueue() {
+                // Jangan proses jika sedang memproses atau queue kosong
+                if (this.isProcessingAnnouncement || this.globalAnnouncementQueue.length === 0) {
+                    return;
+                }
+
+                this.isProcessingAnnouncement = true;
+
+                // Ambil dan hapus dari queue (FIFO)
+                const announcement = this.globalAnnouncementQueue.shift();
+                console.log('Now playing:', announcement.nomor, announcement.poli.nama, '(Remaining:', this.globalAnnouncementQueue.length + ')');
+
+                // Play announcement
+                await this.playAnnouncement(announcement.nomor, announcement.poli);
+
+                // Tunggu selesai, lanjut ke berikutnya
+                this.isProcessingAnnouncement = false;
+
+                // Proses berikutnya jika ada
+                if (this.globalAnnouncementQueue.length > 0) {
+                    setTimeout(() => this.processGlobalQueue(), 500);
+                }
+            },
+
+            async playAnnouncement(nomor, poli) {
+                const parts = nomor.match(/([a-zA-Z]+)-(\d+)/);
+                if (!parts) return;
+
+                const huruf = parts[1].toUpperCase();
+                const angkaStr = parts[2].padStart(3, '0'); // 001, 015, dll
+                const poliSlug = this.getPoliSlug(poli.nama);
+
+                // DEBUG: Log poli details
+                console.log('=== AUDIO DEBUG ===');
+                console.log('Poli nama (raw):', poli.nama);
+                console.log('Poli slug:', poliSlug);
+                console.log('Audio path:', `/voice/poli/${poliSlug}.mp3`);
+
+                // Build audio queue: "Nomor antrian" + huruf + digit-per-digit + "silakan ke" + "poli" + nama polis
+                this.audioQueue = [
+                    { type: 'word', name: 'nomor-antrian' },
+                    { type: 'letter', name: huruf },
+                    { type: 'number-digits', value: angkaStr },  // Special: play digit by digit
+                    { type: 'word', name: 'silakan' },
+                    { type: 'word', name: 'ke' },
+                    { type: 'word', name: 'poli' },
+                    { type: 'poli', name: poliSlug }
+                ];
+
+                console.log('Playing announcement:', nomor, poli.nama);
+                await this.playNextAudio();
+            },
+
+            async playNextAudio() {
+                if (this.audioQueue.length === 0) {
+                    this.isPlaying = false;
+                    return;
+                }
+
+                this.isPlaying = true;
+                const item = this.audioQueue.shift();
+
+                try {
+                    // Special handling for number-digits (play 0-0-1 for 001)
+                    if (item.type === 'number-digits') {
+                        for (const digit of item.value) {
+                            await this.playAudioFile(`${this.audioBaseUrl}numbers/${digit}.mp3`);
+                            await this.delay(150); // Jeda antar digit
+                        }
+                    } else {
+                        const audioPath = this.getAudioPath(item);
+                        await this.playAudioFile(audioPath);
+                    }
+                } catch (e) {
+                    console.log('Audio not found:', item, '- using fallback');
+                    // Fallback to TTS for missing audio
+                    await this.fallbackSpeak(item);
+                }
+
+                // Jeda sebelum next item
+                await this.delay(200);
+
+                // Lanjut ke next item
+                await this.playNextAudio();
+            },
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            },
+
+            getPoliSlug(poliNama) {
+                // Bersihkan nama poli untuk dapat nama file audio
+                let slug = poliNama.toLowerCase();
+
+                // Hapus prefix "poli " jika ada
+                if (slug.startsWith('poli ')) {
+                    slug = slug.replace('poli ', '');
+                }
+                // Hapus prefix "poli" tanpa spasi
+                else if (slug.startsWith('poli')) {
+                    slug = slug.replace('poli', '');
+                }
+
+                // Hapus karakter non-alphanumeric
+                slug = slug.replace(/[^a-z0-9]/g, '_');
+
+                return slug;
+            },
+
+            getAudioPath(item) {
+                switch (item.type) {
+                    case 'letter':
+                        return `${this.audioBaseUrl}letters/${item.name}.mp3`;
+                    case 'word':
+                        return `${this.audioBaseUrl}words/${item.name}.mp3`;
+                    case 'poli':
+                        return `${this.audioBaseUrl}poli/${item.name}.mp3`;
+                    default:
+                        return '';
+                }
+            },
+
+            playAudioFile(path) {
+                return new Promise((resolve, reject) => {
+                    const audio = new Audio(path);
+
+                    audio.onended = () => {
+                        this.currentAudio = null;
+                        resolve();
+                    };
+
+                    audio.onerror = () => {
+                        this.currentAudio = null;
+                        reject(new Error('Audio load failed'));
+                    };
+
+                    this.currentAudio = audio;
+                    audio.play().catch(reject);
+                });
+            },
+
+            async fallbackSpeak(item) {
+                // Fallback ke browser TTS untuk audio yang tidak ada
+                let text = '';
+
+                if (item.type === 'number-digits') {
+                    // Baca digit per digit: "Nol Nol Satu"
+                    const digitWords = ['Nol', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan'];
+                    text = item.value.split('').map(d => digitWords[parseInt(d)] || d).join(' ');
+                } else if (item.type === 'poli') {
+                    // Poli nama
+                    const poliMap = { 'umum': 'Umum', 'gigi': 'Gigi', 'anak': 'Anak' };
+                    text = poliMap[item.name] || item.name.replace(/_/g, ' ');
+                } else {
+                    text = this.getItemText(item);
+                }
+
+                if (!text) return;
+
+                return new Promise((resolve) => {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'id-ID';
+                    utterance.rate = 0.9;
+
+                    // Gunakan suara Indonesia jika tersedia
+                    if (this.indonesianVoice) {
+                        utterance.voice = this.indonesianVoice;
+                    }
+
+                    utterance.onend = () => resolve();
+                    window.speechSynthesis.speak(utterance);
+                });
+            },
+
+            getItemText(item) {
+                switch (item.type) {
+                    case 'letter': return item.name;
+                    case 'word':
+                        const wordMap = { 'nomor-antrian': 'Nomor antrian', 'silakan': 'Silakan', 'ke': 'Ke', 'poli': 'Poli' };
+                        return wordMap[item.name] || '';
+                    default: return '';
+                }
+            },
+
+            updateTime() {
+                const now = new Date();
+                this.currentTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                this.currentDate = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            },
+
+            formatTime(time) {
+                if (!time) return '--';
+                const date = new Date(time);
+                return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            }
+        };
+    }
     </script>
 </body>
 </html>

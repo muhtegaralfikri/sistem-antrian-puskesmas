@@ -2,15 +2,18 @@
 
 Sistem antrian digital untuk puskesmas/klinik dengan fitur real-time updates menggunakan WebSocket.
 
+> **💰 Ready untuk dijual!** Sistem ini cross-platform (Windows, Linux, Mac) dan siap pakai audio file pre-recorded.
+
 ## Fitur
 
 - 🎫 **Kiosk Mandiri** - Pengambilan tiket antrian tanpa perlu antri di loket
 - 📺 **Display Monitor** - Tampilan antrian real-time untuk ruang tunggu
 - 👨‍⚕️ **Dashboard Petugas** - Panggil dan kelola antrian dengan mudah
-- ⚙️ **Panel Admin** - Kelola poli, pengguna, dan pengaturan sistem
-- 🔊 **Panggilan Suara** - Notifikasi suara untuk nomor antrian yang dipanggil
+- ⚙️ **Panel Admin** - Kelola poli, pengguna, pengaturan, dan kelola nomor antrian
+- 🔊 **Panggilan Suara** - Menggunakan audio file pre-recorded (cross-platform)
 - 📊 **Laporan** - Laporan harian dan bulanan untuk monitoring
 - 🔄 **Real-time Updates** - WebSocket untuk update langsung tanpa refresh
+- 🌍 **Cross-Platform** - Jalan di Windows, Linux, Mac
 
 ## Teknologi
 
@@ -18,6 +21,7 @@ Sistem antrian digital untuk puskesmas/klinik dengan fitur real-time updates men
 - **Database:** SQLite3
 - **WebSocket:** Ratchet WebSocket
 - **Frontend:** Alpine.js + Tailwind CSS
+- **Audio:** MP3 files (pre-recorded) + Fallback TTS browser
 
 ## Persyaratan Server
 
@@ -78,6 +82,27 @@ php spark serve
 ```
 
 Server akan berjalan di `http://localhost:8000`
+
+## 🔊 Setup Audio File
+
+Sistem menggunakan **audio file pre-recorded** untuk pengumuman suara. Lihat panduan lengkap di [AUDIO_SETUP.md](AUDIO_SETUP.md).
+
+### Quick Setup Audio
+
+Buat folder `public/voice/` dengan struktur:
+```
+voice/
+├── numbers/    # 0.mp3, 1.mp3, ..., 100.mp3
+├── letters/     # A.mp3, B.mp3, ..., Z.mp3
+├── words/       # nomor-antrian.mp3, silakan.mp3, ke.mp3, poli.mp3
+└── poli/        # umum.mp3, gigi.mp3, anak.mp3
+```
+
+**Tips:** Gunakan layanan TTS online gratis untuk generate audio:
+- https://www.soundoftext.com/ (pilih bahasa Indonesia)
+- Download hasil dan rename sesuai naming convention
+
+**Fallback:** Jika audio file tidak ada, sistem otomatis menggunakan browser TTS.
 
 ## Penggunaan
 
