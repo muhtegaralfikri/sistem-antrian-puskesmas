@@ -9,11 +9,46 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; }
-        .poli-card { background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%); border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; }
-        .current-number { font-size: 80px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .recent-item { background: #f1f5f9; border-radius: 12px; padding: 12px 16px; }
-        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; background: #fef3c7; color: #92400e; }
+        body { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); /* Deep Blue Dark Theme */
+            min-height: 100vh; 
+        }
+        .poli-card { 
+            background: #ffffff; 
+            border-radius: 24px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+            overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .current-number { 
+            font-size: 96px; 
+            font-weight: 900; 
+            line-height: 1; 
+            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+            letter-spacing: -2px;
+        }
+        .recent-item { 
+            background: #f8fafc; 
+            border-radius: 12px; 
+            padding: 14px 20px; 
+            border: 1px solid #e2e8f0;
+        }
+        .status-badge { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            padding: 6px 14px; 
+            border-radius: 99px; 
+            font-size: 14px; 
+            font-weight: 700; 
+            background: #fef3c7; 
+            color: #b45309; 
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 <body x-data="displayData()">

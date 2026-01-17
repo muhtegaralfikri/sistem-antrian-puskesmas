@@ -9,6 +9,7 @@
 
         * {
             font-family: 'Inter', system-ui, sans-serif;
+            box-sizing: border-box;
         }
 
         body {
@@ -77,16 +78,18 @@
         }
 
         .btn {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             width: 100%;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 12px;
+            padding: 16px;
+            border: 2px solid transparent; /* Ensure consistent size with secondary */
+            border-radius: 16px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            text-align: center;
             text-decoration: none;
         }
 
@@ -101,8 +104,9 @@
         }
 
         .btn-secondary {
-            background: #f1f5f9;
-            color: #475569;
+            background: white;
+            border-color: #e2e8f0;
+            color: #64748b;
             margin-top: 12px;
         }
 
@@ -112,19 +116,39 @@
 
         /* Print styles */
         @media print {
-            body {
-                background: white;
-                padding: 0;
+            @page {
+                margin: 0;
+                size: auto;
             }
-
-            .ticket {
-                box-shadow: none;
-                max-width: 100%;
+            body { 
+                background: white; 
+                padding: 10px; 
+                min-height: auto; 
+                display: block; 
             }
-
-            .no-print {
-                display: none !important;
+            .ticket { 
+                box-shadow: none; 
+                border: none; 
+                max-width: 100%; 
+                width: 100%;
+                border-radius: 0; 
+                margin: 0 auto;
             }
+            .ticket-header { 
+                color: black !important; 
+                background: none !important; 
+                border-bottom: 1px solid #000; 
+                padding: 10px; 
+            }
+            .ticket-divider {
+                border-top: 1px dashed #000;
+            }
+            .ticket-divider::before, .ticket-divider::after { display: none; }
+            .no-print { display: none !important; }
+            .btn { display: none; }
+            
+            /* Hide URL printing in some browsers */
+            a[href]:after { content: none !important; }
         }
     </style>
 </head>
@@ -185,7 +209,12 @@
             <button onclick="window.print()" class="btn btn-primary">
                 🖨️ Cetak Tiket
             </button>
-            <a href="/kiosk" class="btn btn-secondary">Kembali ke Kiosk</a>
+            <a href="/kiosk" class="btn btn-secondary">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                </svg>
+                Kembali ke Kiosk
+            </a>
         </div>
     </div>
 

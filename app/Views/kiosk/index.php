@@ -5,14 +5,25 @@
 <?= $this->section('styles') ?>
 <style>
     .poli-card {
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #e2e8f0;
     }
     .poli-card:active {
         transform: scale(0.98);
     }
     .poli-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px -12px rgba(37, 99, 235, 0.15); /* Primary-600 shadow */
+        border-color: #2563eb;
+    }
+    /* Animasi background bergerak halus */
+    @keyframes gradient-xy {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+    }
+    .animate-gradient {
+        background-size: 200% 200%;
+        animation: gradient-xy 15s ease infinite;
     }
 </style>
 <?= $this->endSection() ?>
@@ -67,84 +78,113 @@
 }" class="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm">
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold text-gray-800">Sistem Antrian</h1>
-                    <p class="text-sm text-gray-500">Puskesmas</p>
+                    <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Sistem Antrian</h1>
+                    <p class="text-sm font-medium text-primary-600">Puskesmas Digital</p>
                 </div>
             </div>
-            <div class="text-right">
-                <p class="text-sm text-gray-500" x-text="currentTime"></p>
-                <p class="text-xs text-gray-400" x-text="currentDate"></p>
+            <div class="text-right hidden md:block">
+                <p class="text-xl font-bold text-gray-800 tabular-nums" x-text="currentTime"></p>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wider" x-text="currentDate"></p>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-8">
+    <main class="max-w-7xl mx-auto px-4 py-12">
         <!-- Welcome -->
-        <div class="text-center mb-10">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">Selamat Datang</h2>
-            <p class="text-gray-600">Silakan pilih poliklinik untuk mengambil nomor antrian</p>
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Selamat Datang</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Silakan pilih poliklinik tujuan Anda untuk mengambil nomor antrian baru.</p>
         </div>
 
         <!-- Poli Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <?php foreach($polis as $poli): ?>
             <button @click="ambilNomor(<?= $poli['id'] ?>)"
-                    class="poli-card bg-white rounded-2xl shadow-lg p-8 text-left border-2 border-transparent hover:border-primary-500 cursor-pointer group">
-                <!-- Icon -->
-                <div class="w-16 h-16 bg-<?= match($poli['prefix']) {
-                    'A' => 'blue',
-                    'B' => 'green',
+                    class="poli-card bg-white rounded-3xl p-8 text-left relative overflow-hidden group">
+                
+                <!-- Decorative Background Blob -->
+                <div class="absolute -right-6 -top-6 w-32 h-32 bg-<?= match($poli['prefix']) {
+                    'A' => 'primary',
+                    'B' => 'secondary',
                     'C' => 'purple',
                     default => 'gray'
-                } ?>-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                    <svg class="w-8 h-8 text-<?= match($poli['prefix']) {
-                        'A' => 'blue',
-                        'B' => 'green',
+                } ?>-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-in-out z-0"></div>
+
+                <!-- Content -->
+                <div class="relative z-10">
+                    <!-- Icon -->
+                    <div class="w-16 h-16 bg-<?= match($poli['prefix']) {
+                        'A' => 'primary',
+                        'B' => 'secondary',
                         'C' => 'purple',
                         default => 'gray'
-                    } ?>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                    </svg>
-                </div>
+                    } ?>-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition duration-300 shadow-sm">
+                        <svg class="w-8 h-8 text-<?= match($poli['prefix']) {
+                            'A' => 'primary',
+                            'B' => 'secondary',
+                            'C' => 'purple',
+                            default => 'gray'
+                        } ?>-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
 
-                <!-- Poli Info -->
-                <h3 class="text-2xl font-bold text-gray-800 mb-1"><?= esc($poli['nama']) ?></h3>
-                <p class="text-gray-500 mb-4">Kode: <?= esc($poli['kode']) ?></p>
+                    <!-- Poli Info -->
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-primary-700 transition-colors"><?= esc($poli['nama']) ?></h3>
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold font-mono">CODE: <?= esc($poli['kode']) ?></span>
+                    </div>
 
-                <!-- Status -->
-                <div class="flex items-center gap-2 text-sm">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    <span class="text-gray-600">Tersedia</span>
+                    <!-- Status -->
+                    <div class="flex items-center gap-2 text-sm bg-green-50 w-fit px-3 py-1.5 rounded-full border border-green-100">
+                        <span class="relative flex h-2.5 w-2.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                        </span>
+                        <span class="text-green-700 font-semibold">Layanan Tersedia</span>
+                    </div>
                 </div>
             </button>
             <?php endforeach; ?>
         </div>
 
         <!-- Info -->
-        <div class="mt-10 bg-blue-50 border border-blue-200 rounded-xl p-6">
-            <div class="flex items-start gap-4">
-                <svg class="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        <div class="mt-16 bg-white border border-blue-100 rounded-3xl p-8 shadow-sm flex flex-col md:flex-row items-center gap-6">
+            <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                <div>
-                    <h4 class="font-semibold text-blue-900 mb-1">Informasi Antrian</h4>
-                    <ul class="text-sm text-blue-700 space-y-1">
-                        <li>• Tekan tombol poliklinik untuk mengambil nomor antrian</li>
-                        <li>• Simpan/tunjukkan tiket yang diberikan</li>
-                        <li>• Perhatikan panggilan nomor antrian di display</li>
-                        <li>• Pastikan datang ketika nomor Anda dipanggil</li>
-                    </ul>
-                </div>
+            </div>
+            <div>
+                <h4 class="text-lg font-bold text-blue-900 mb-2">Panduan Pengambilan Antrian</h4>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-blue-800/80 text-sm font-medium">
+                    <li class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
+                        Pilih poliklinik sesuai tujuan berobat
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
+                        Ambil struk antrian yang keluar
+                    </li>
+                    <li class="flex items-center gap-2">
+                         <span class="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
+                         Tunggu nomor Anda dipanggil di layar
+                    </li>
+                     <li class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
+                        Silakan menuju loket saat dipanggil
+                    </li>
+                </ul>
             </div>
         </div>
     </main>
@@ -164,27 +204,41 @@
     </div>
 
     <!-- Success Modal -->
-    <div x-show="showModal" x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" style="display: none;">
-        <div @click.outside="showModal = false" class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-90"
-             x-transition:enter-end="opacity-100 scale-100">
-            <!-- Success Header -->
-            <div class="bg-green-500 px-6 py-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </div>
-                    <div class="text-white">
-                        <p class="font-semibold">Nomor Antrian Berhasil Diambil!</p>
-                    </div>
+    <div x-show="showModal" style="display: none;"
+          class="fixed inset-0 z-[60] flex items-center justify-center px-4">
+        
+        <!-- Backdrop -->
+        <div x-show="showModal" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" 
+             @click="showModal = false"></div>
+
+        <!-- Modal Panel -->
+        <div x-show="showModal"
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+             class="bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all sm:max-w-sm w-full relative z-10">
+            
+            <!-- Success Header with Confetti vibes -->
+            <div class="bg-gradient-to-br from-secondary-400 to-secondary-600 px-6 py-6 text-center relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+                
+                <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
                 </div>
+                <h3 class="text-xl font-bold text-white">Berhasil Diambil!</h3>
+                <p class="text-secondary-50 text-sm">Nomor antrian Anda telah diterbitkan</p>
             </div>
 
             <!-- Ticket Info -->
