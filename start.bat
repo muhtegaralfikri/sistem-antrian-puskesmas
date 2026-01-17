@@ -22,16 +22,16 @@ start /B "" "%PHP_PATH%" "%PROJECT_DIR%\spark" websocket:start
 timeout /t 2 /nobreak >nul
 
 REM Start PHP Built-in Server
-echo [2/2] Starting Web Server on http://localhost:8080
+echo [2/2] Starting Web Server on http://localhost:8000
 echo.
 echo ========================================
 echo  SERVER READY!
 echo ========================================
-echo  Kiosk:    http://localhost:8080/kiosk
-echo  Display:  http://localhost:8080/display
-echo  Dashboard: http://localhost:8080/dashboard
-echo  Admin:    http://localhost:8080/admin
-echo  Login:    http://localhost:8080/auth/login
+echo  Kiosk:    http://localhost:8000/kiosk
+echo  Display:  http://localhost:8000/display
+echo  Dashboard: http://localhost:8000/dashboard
+echo  Admin:    http://localhost:8000/admin
+echo  Login:    http://localhost:8000/auth/login
 echo.
 echo  Username: admin
 echo  Password: admin123
@@ -40,4 +40,4 @@ echo.
 echo Press Ctrl+C to stop all servers
 echo.
 
-"%PHP_PATH%" -S localhost:8080 -t "%PROJECT_DIR%\public"
+"%PHP_PATH%" -S localhost:8000 -t "%PROJECT_DIR%\public"
