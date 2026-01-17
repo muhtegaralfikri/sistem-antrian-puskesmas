@@ -147,6 +147,7 @@
                 currentTime: '',
                 currentDate: '',
                 lastCalled: {},
+                lastCallTime: {},
 
                 init() {
                     // Update time
@@ -178,22 +179,114 @@
 
                 checkVoice(newPolis) {
                     newPolis.forEach(item => {
-                        if (item.current && item.current.nomor !== this.lastCalled[item.poli.id]) {
-                            this.lastCalled[item.poli.id] = item.current.nomor;
-                            this.speak(item.current.nomor, item.poli.nama);
+                        if (item.current) {
+                            const lastCallTime = this.lastCallTime[item.poli.id] || 0;
+                            const currentCallTime = new Date(item.current.waktu_panggil).getTime();
+
+                            if (item.current.nomor !== this.lastCalled[item.poli.id] || currentCallTime > lastCallTime) {
+                                if (item.current.nomor === this.lastCalled[item.poli.id] && currentCallTime > lastCallTime) {
+                                    console.log('Recall detected for:', item.current.nomor);
+                                }
+
+                                this.lastCalled[item.poli.id] = item.current.nomor;
+                                this.lastCallTime[item.poli.id] = currentCallTime;
+
+                                setTimeout(() => {
+                                    this.speak(item.current.nomor, item.poli.nama);
+                                }, 500);
+                            }
                         }
                     });
                 },
 
                 speak(nomor, poliNama) {
-                    if (!('speechSynthesis' in window)) return;
+                    // Format nomor: C-001 menjadi "C Satu"
+                    const nomorSuara = nomor.replace(/^([A-Z])-(\d+)$/, (match, prefix, num) => {
+                        const numInt = parseInt(num, 10);
+                        return `${prefix} ${this.terbilang(numInt)}`;
+                    });
 
-                    const text = `Nomor antrian, ${nomor}, ${poliNama}, dimohon dipersilahkan masuk`;
+                    const text = `Nomor antrian ${nomorSuara}, poli ${poliNama}, silakan masuk`;
+                    console.log('Speaking:', text);
+
+                    // Coba gunakan API offline (Windows SAPI) dulu
+                    this.speakOffline(text);
+                },
+
+                speakOffline(text) {
+                    fetch('/api/v1/voice/speak', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'text=' + encodeURIComponent(text)
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            console.log('Voice sent to offline API');
+                        } else {
+                            console.log('Offline voice failed, using browser TTS:', result.message);
+                            this.speakBrowser(text);
+                        }
+                    })
+                    .catch(e => {
+                        console.log('Offline voice error, using browser TTS:', e);
+                        this.speakBrowser(text);
+                    });
+                },
+
+                speakBrowser(text) {
+                    if (!('speechSynthesis' in window)) {
+                        console.log('Speech synthesis not supported');
+                        return;
+                    }
+
+                    let voices = window.speechSynthesis.getVoices();
+                    if (voices.length === 0) {
+                        window.speechSynthesis.onvoiceschanged = () => {
+                            voices = window.speechSynthesis.getVoices();
+                            this.doSpeakBrowser(text, voices);
+                        };
+                    } else {
+                        this.doSpeakBrowser(text, voices);
+                    }
+                },
+
+                doSpeakBrowser(text, voices) {
                     const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = 'id-ID';
-                    utterance.rate = 0.9;
-                    utterance.volume = 0.8;
+
+                    const indoVoice = voices.find(v => v.lang.startsWith('id')) ||
+                                     voices.find(v => v.lang.startsWith('ms'));
+
+                    if (indoVoice) {
+                        utterance.voice = indoVoice;
+                        console.log('Using voice:', indoVoice.name, indoVoice.lang);
+                    } else {
+                        console.log('Indonesian voice not found, available voices:', voices.map(v => v.lang + ' - ' + v.name));
+                        utterance.lang = 'id-ID';
+                    }
+
+                    utterance.rate = 0.85;
+                    utterance.volume = 1;
+                    utterance.pitch = 1;
+
+                    window.speechSynthesis.cancel();
                     window.speechSynthesis.speak(utterance);
+                },
+
+                // Konversi angka ke terbilang (1 -> Satu, 2 -> Dua, dll)
+                terbilang(n) {
+                    const satuan = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan'];
+                    if (n < 10) return satuan[n];
+                    if (n < 20) return satuan[n - 10] + ' Belas';
+                    if (n < 100) return satuan[Math.floor(n / 10)] + ' Puluh ' + satuan[n % 10];
+                    return n.toString(); // Fallback untuk angka besar
+                },
+
+                // Play audio sebagai fallback (opsional - perlu file audio)
+                playAudio(nomor, poliNama) {
+                    // Audio file bisa ditambahkan nanti
+                    // Untuk sekarang hanya log
+                    console.log('Would play audio for:', nomor, poliNama);
                 },
 
                 updateTime() {

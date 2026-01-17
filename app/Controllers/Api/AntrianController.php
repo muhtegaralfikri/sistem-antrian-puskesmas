@@ -256,46 +256,56 @@ class AntrianController extends BaseController
      */
     public function selesai($id)
     {
-        $session = session();
-        $userId = $session->get('user_id');
+        try {
+            $session = session();
+            $userId = $session->get('user_id');
 
-        if (!$userId) {
-            return $this->response->setStatusCode(401)->setJSON([
+            if (!$userId) {
+                return $this->response->setStatusCode(401)->setJSON([
+                    'success' => false,
+                    'message' => 'Unauthorized',
+                ]);
+            }
+
+            $antrian = $this->antrianModel->find($id);
+            if (!$antrian) {
+                return $this->response->setStatusCode(404)->setJSON([
+                    'success' => false,
+                    'message' => 'Antrian not found',
+                ]);
+            }
+
+            // Check access (admin skip check)
+            if ($session->get('user_role') !== 'admin') {
+                if (!$this->userModel->hasPoliAccess($userId, $antrian['poli_id'])) {
+                    return $this->response->setStatusCode(403)->setJSON([
+                        'success' => false,
+                        'message' => 'Anda tidak memiliki akses ke poli ini',
+                    ]);
+                }
+            }
+
+            // Complete
+            $this->antrianModel->complete($id, $userId);
+
+            // Broadcast (suppress errors)
+            @WebSocketHelper::antrianSelesai(
+                $antrian['poli_id'],
+                $antrian['nomor'],
+                $antrian['id']
+            );
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Antrian berhasil diselesaikan',
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Error in selesai: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setJSON([
                 'success' => false,
-                'message' => 'Unauthorized',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ]);
         }
-
-        $antrian = $this->antrianModel->find($id);
-        if (!$antrian) {
-            return $this->response->setStatusCode(404)->setJSON([
-                'success' => false,
-                'message' => 'Antrian not found',
-            ]);
-        }
-
-        // Check access
-        if (!$this->userModel->hasPoliAccess($userId, $antrian['poli_id'])) {
-            return $this->response->setStatusCode(403)->setJSON([
-                'success' => false,
-                'message' => 'Anda tidak memiliki akses ke poli ini',
-            ]);
-        }
-
-        // Complete
-        $this->antrianModel->complete($id, $userId);
-
-        // Broadcast
-        WebSocketHelper::antrianSelesai(
-            $antrian['poli_id'],
-            $antrian['nomor'],
-            $antrian['id']
-        );
-
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Antrian berhasil diselesaikan',
-        ]);
     }
 
     /**

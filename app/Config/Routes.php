@@ -98,6 +98,11 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
 
         // Antrian queue list
         $routes->get('antrian/queue/(:num)', 'AntrianController::queue/$1');
+
+        // Voice (Windows SAPI - offline)
+        $routes->post('voice/speak', 'VoiceController::speak');
+        $routes->get('voice/test', 'VoiceController::test');
+        $routes->get('voice/available', 'VoiceController::available');
     });
 
     // Protected API (auth required)
