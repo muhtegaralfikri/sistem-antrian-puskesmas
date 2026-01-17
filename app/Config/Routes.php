@@ -40,6 +40,13 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Web', 'filter' => 'admi
     // Main admin page
     $routes->get('/', 'AdminController::index');
 
+    // Antrian management
+    $routes->group('antrian', static function ($routes) {
+        $routes->get('/', 'AdminAntrianController::index');
+        $routes->post('nomor/(:num)', 'AdminAntrianController::updateNomor/$1');
+        $routes->delete('(:num)', 'AdminAntrianController::delete/$1');
+    });
+
     // Poli management
     $routes->group('poli', static function ($routes) {
         $routes->get('/', 'AdminPoliController::index');
@@ -113,6 +120,11 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
 
     // Admin API (admin role required)
     $routes->group('v1/admin', ['filter' => 'admin'], static function ($routes) {
+        // Antrian management
+        $routes->get('antrian', 'AdminAntrianController::index');
+        $routes->post('antrian/nomor/(:num)', 'AdminAntrianController::updateNomor/$1');
+        $routes->delete('antrian/(:num)', 'AdminAntrianController::delete/$1');
+
         // Poli management
         $routes->get('poli', 'AdminPoliController::index');
         $routes->post('poli', 'AdminPoliController::create');

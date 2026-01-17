@@ -27,7 +27,8 @@ class DisplayController extends BaseController
      */
     public function index()
     {
-        $polis = $this->poliModel->getActivePoli();
+        // Get all active poli with their antrian data
+        $polis = $this->antrianModel->getAllActiveForDisplay();
 
         // Get display settings
         $displayCount = $this->settingsModel->getDisplayCount();
