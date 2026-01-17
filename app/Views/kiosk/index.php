@@ -142,7 +142,7 @@
                     <!-- Poli Info -->
                     <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-primary-700 transition-colors"><?= esc($poli['nama']) ?></h3>
                     <div class="flex items-center gap-3 mb-6">
-                        <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold font-mono">CODE: <?= esc($poli['kode']) ?></span>
+                        <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold font-mono">KODE: <?= esc($poli['kode']) ?></span>
                     </div>
 
                     <!-- Status -->

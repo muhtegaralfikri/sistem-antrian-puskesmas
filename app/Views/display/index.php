@@ -6,48 +6,72 @@
     <title>Display Antrian - Puskesmas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb', // Brand Blue
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        secondary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6', // Accent Teal
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { font-family: 'Inter', system-ui, sans-serif; }
         body { 
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); /* Deep Blue Dark Theme */
-            min-height: 100vh; 
+            background: #f8fafc; /* Slate 50 */
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(20, 184, 166, 0.05) 0%, transparent 20%);
         }
         .poli-card { 
             background: #ffffff; 
             border-radius: 24px; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             overflow: hidden; 
             border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         .current-number { 
-            font-size: 96px; 
+            font-size: 110px; 
             font-weight: 900; 
             line-height: 1; 
-            background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            background-clip: text; 
-            letter-spacing: -2px;
-        }
-        .recent-item { 
-            background: #f8fafc; 
-            border-radius: 12px; 
-            padding: 14px 20px; 
-            border: 1px solid #e2e8f0;
-        }
-        .status-badge { 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 6px; 
-            padding: 6px 14px; 
-            border-radius: 99px; 
-            font-size: 14px; 
-            font-weight: 700; 
-            background: #fef3c7; 
-            color: #b45309; 
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            color: #2563eb;
+            letter-spacing: -4px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
         }
     </style>
 </head>
@@ -77,68 +101,77 @@
     <div x-show="audioEnabled" class="min-h-screen p-6" style="display: none;">
         <header class="mb-8">
             <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+                <div class="flex items-center gap-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-600/20">
                         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold text-white">Sistem Antrian</h1>
-                        <p class="text-blue-200">Puskesmas</p>
+                        <h1 class="text-4xl font-black text-gray-800 tracking-tight">Sistem Antrian</h1>
+                        <p class="text-lg text-gray-500 font-medium tracking-wide">Puskesmas Digital</p>
                     </div>
                 </div>
                 <div class="text-right">
-                    <p class="text-4xl font-bold text-white" x-text="currentTime"></p>
-                    <p class="text-blue-200" x-text="currentDate"></p>
+                    <p class="text-4xl font-bold text-gray-800" x-text="currentTime"></p>
+                    <p class="text-gray-500" x-text="currentDate"></p>
                 </div>
             </div>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <template x-for="item in polis" :key="item.poli.id">
-                <div class="poli-card">
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-                        <div class="flex items-center justify-between">
+                <div class="poli-card relative group">
+                    <!-- Status Indicator Line -->
+                    <div class="h-2 w-full" :class="item.current ? 'bg-secondary-500' : 'bg-gray-200'"></div>
+                    
+                    <div class="p-6 flex-1 flex flex-col">
+                        <!-- Header -->
+                        <div class="flex items-start justify-between mb-6">
                             <div>
-                                <h3 class="text-xl font-bold text-white" x-text="item.poli.nama"></h3>
-                                <p class="text-blue-200 text-sm" x-text="'Kode: ' + item.poli.prefix"></p>
+                                <h3 class="text-2xl font-bold text-gray-900" x-text="item.poli.nama"></h3>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="px-2.5 py-0.5 rounded-lg bg-gray-100 text-gray-600 text-xs font-bold font-mono tracking-wide" x-text="'KODE: ' + item.poli.prefix"></span>
+                                </div>
                             </div>
-                            <div class="status-badge">
-                                <span class="w-2 h-2 rounded-full bg-yellow-600"></span>
+                            <div class="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-2"
+                                 :class="item.current ? 'bg-secondary-50 text-secondary-700 ring-1 ring-secondary-500/20' : 'bg-gray-50 text-gray-500 ring-1 ring-gray-200'">
+                                <span class="w-2 h-2 rounded-full" :class="item.current ? 'bg-secondary-500 animate-pulse' : 'bg-gray-400'"></span>
                                 <span x-text="item.current ? 'Sedang Melayani' : 'Menunggu'"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <p class="text-gray-500 text-sm mb-2">Nomor Sedang Dilayani</p>
-                        <div class="current-number" x-text="item.current ? item.current.nomor : '--'"></div>
-                    </div>
-                    <div class="px-6 pb-6">
-                        <p class="text-gray-500 text-sm mb-3">Antrian Sebelumnya</p>
-                        <div class="space-y-2">
-                            <template x-for="recent in (item.recent || []).slice(0, 3)" :key="recent.id">
-                                <div class="recent-item flex items-center justify-between">
-                                    <span class="font-bold text-gray-800" x-text="recent.nomor"></span>
-                                    <span class="text-sm text-gray-500" x-text="formatTime(recent.waktu_selesai || recent.waktu_panggil)"></span>
-                                </div>
-                            </template>
-                            <div x-show="!item.recent || item.recent.length === 0" class="text-center text-gray-400 text-sm py-4">
-                                Belum ada antrian
-                            </div>
+
+                        <!-- Main Number -->
+                        <div class="flex-1 flex flex-col items-center justify-center py-4 mb-6">
+                            <p class="text-gray-400 text-sm font-medium uppercase tracking-widest mb-2">Nomor Panggilan</p>
+                            <div class="current-number transition-all duration-300 transform group-hover:scale-105" 
+                                 x-text="item.current ? item.current.nomor : '--'"></div>
                         </div>
-                    </div>
-                    <div class="px-6 pb-6">
-                        <div class="bg-blue-50 rounded-xl p-4 flex items-center justify-between">
-                            <span class="text-blue-700">Menunggu</span>
-                            <span class="text-2xl font-bold text-blue-700" x-text="item.waiting_count || 0"></span>
+
+                        <!-- Footer / Recent -->
+                        <div class="bg-gray-50 -mx-6 -mb-6 p-6 border-t border-gray-100">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="text-sm font-semibold text-gray-500">Antrian Sebelumnya</span>
+                                <span class="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-1 rounded-md" x-text="(item.waiting_count || 0) + ' Menunggu'"></span>
+                            </div>
+                            
+                            <div class="grid grid-cols-3 gap-3">
+                                <template x-for="recent in (item.recent || []).slice(0, 3)" :key="recent.id">
+                                    <div class="bg-white rounded-xl p-2 text-center border border-gray-100 shadow-sm">
+                                        <div class="font-bold text-gray-700 text-lg" x-text="recent.nomor"></div>
+                                    </div>
+                                </template>
+                                <div x-show="!item.recent || item.recent.length === 0" class="col-span-3 text-center text-gray-400 text-sm italic py-2">
+                                    Belum ada riwayat
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </template>
         </div>
 
-        <footer class="mt-8 text-center text-blue-200 text-sm">
+        <footer class="mt-8 text-center text-gray-400 text-sm">
             <p>&copy; <?= date('Y') ?> Puskesmas | Sistem Antrian</p>
         </footer>
     </div>
@@ -197,7 +230,31 @@
                     const res = await fetch('/display/data');
                     const result = await res.json();
                     if (result.success && result.data.polis) {
-                        this.polis = result.data.polis;
+                        // Process polis to dedup recent history
+                        this.polis = result.data.polis.map(poli => {
+                            if (poli.recent && Array.isArray(poli.recent)) {
+                                // Filter unique numbers (keep latest)
+                                const uniqueRecent = [];
+                                const seenNumbers = new Set();
+                                
+                                // Sort by time pending/call desc just in case
+                                poli.recent.sort((a, b) => {
+                                    const tA = new Date(a.waktu_selesai || a.waktu_panggil).getTime();
+                                    const tB = new Date(b.waktu_selesai || b.waktu_panggil).getTime();
+                                    return tB - tA;
+                                });
+
+                                for (const item of poli.recent) {
+                                    if (!seenNumbers.has(item.nomor)) {
+                                        seenNumbers.add(item.nomor);
+                                        uniqueRecent.push(item);
+                                    }
+                                }
+                                poli.recent = uniqueRecent;
+                            }
+                            return poli;
+                        });
+                        
                         this.checkForNewCalls(result.data.polis);
                     }
                     this.loading = false;
