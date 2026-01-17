@@ -50,6 +50,14 @@ class PoliModel extends Model
     ];
 
     /**
+     * Get all poli (active and inactive)
+     */
+    public function getAllPoli(): array
+    {
+        return $this->orderBy('urutan', 'ASC')->findAll();
+    }
+
+    /**
      * Get all active poli ordered by urutan
      */
     public function getActivePoli(): array

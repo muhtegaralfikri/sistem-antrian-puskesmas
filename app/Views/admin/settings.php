@@ -92,7 +92,7 @@
                 <div class="flex flex-wrap gap-3">
                     <template x-for="poli in polis" :key="poli.id">
                         <button type="button" @click="resetPoli(poli.id)" class="bg-orange-50 hover:bg-orange-100 text-orange-700 px-4 py-2 rounded-lg text-sm font-medium">
-                            Reset <?= esc($poli['nama']) ?>
+                            Reset <span x-text="poli.nama"></span>
                         </button>
                     </template>
                     <button type="button" @click="resetAll()" class="bg-red-50 hover:bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm font-medium">
