@@ -6,18 +6,27 @@ This folder contains pre-recorded audio files for queue announcements.
 
 ```
 voice/
-├── numbers/    # Angka 0-100 (contoh: 0.mp3, 1.mp3, ..., 100.mp3)
+├── bel.mp3      # Suara bell "ting-tung-ting" sebelum pengumuman
+├── numbers/    # Angka 0-9 (digit-by-digit: 0.mp3, 1.mp3, ..., 9.mp3)
 ├── letters/     # Huruf A-Z (contoh: A.mp3, B.mp3, ..., Z.mp3)
 ├── words/       # Kata-kata umum
 │   ├── nomor-antrian.mp3    # "Nomor antrian"
 │   ├── silakan.mp3           # "Silakan"
 │   ├── ke.mp3                # "Ke"
 │   ├── poli.mp3              # "Poli"
-│   └── selesai.mp3           # "Selesai"
+│   └── selesai.mp3           # "Selesai" (opsional)
 └── poli/        # Nama poli
     ├── umum.mp3              # "Umum"
     ├── gigi.mp3              # "Gigi"
     └── anak.mp3              # "Anak"
+```
+
+## Announcement Flow
+
+```
+Bell (ting-tung-ting) → "Nomor antrian" → Huruf → Angka (digit) → "Silakan ke Poli" → Nama Poli
+
+Example: A-001 → bel → "Nomor antrian" → "A" → "Nol" → "Nol" → "Satu" → "Silakan" → "Ke" → "Poli" → "Umum"
 ```
 
 ## Recording Format

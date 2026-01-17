@@ -237,8 +237,9 @@
                 console.log('Poli slug:', poliSlug);
                 console.log('Audio path:', `/voice/poli/${poliSlug}.mp3`);
 
-                // Build audio queue: "Nomor antrian" + huruf + digit-per-digit + "silakan ke" + "poli" + nama polis
+                // Build audio queue: "Bel" + "Nomor antrian" + huruf + digit-per-digit + "silakan ke" + "poli" + nama polis
                 this.audioQueue = [
+                    { type: 'bell' },  // Suara bel terlebih dahulu
                     { type: 'word', name: 'nomor-antrian' },
                     { type: 'letter', name: huruf },
                     { type: 'number-digits', value: angkaStr },  // Special: play digit by digit
@@ -271,6 +272,11 @@
                     } else {
                         const audioPath = this.getAudioPath(item);
                         await this.playAudioFile(audioPath);
+
+                        // Extra delay after bell sebelum announcement
+                        if (item.type === 'bell') {
+                            await this.delay(500); // Jeda 500ms setelah bel
+                        }
                     }
                 } catch (e) {
                     console.log('Audio not found:', item, '- using fallback');
@@ -316,6 +322,8 @@
                         return `${this.audioBaseUrl}words/${item.name}.mp3`;
                     case 'poli':
                         return `${this.audioBaseUrl}poli/${item.name}.mp3`;
+                    case 'bell':
+                        return `${this.audioBaseUrl}bel.mp3`;
                     default:
                         return '';
                 }
