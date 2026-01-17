@@ -1,34 +1,11 @@
-<?= $this->extend('layouts/base') ?>
+<?= $this->extend('layouts/admin') ?>
 
-<?= $this->section('title') ?>Admin Panel - Sistem Antrian Puskesmas<?= $this->endSection() ?>
+<?= $this->section('title') ?>Dashboard - Sistem Antrian Puskesmas<?= $this->endSection() ?>
 
-<?= $this->section('content') ?>
-<div class="min-h-screen bg-gray-50">
-    <!-- Admin Navbar -->
-    <nav class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold text-gray-800">Admin Panel</h1>
-                    <p class="text-sm text-gray-500">Manajemen Sistem Antrian</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="/dashboard" class="text-sm text-gray-600 hover:text-primary-600">Dashboard</a>
-                <a href="/auth/logout" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg text-sm font-medium">
-                    Logout
-                </a>
-            </div>
-        </div>
-    </nav>
+<?= $this->section('page_title') ?>Dashboard<?= $this->endSection() ?>
+<?= $this->section('page_subtitle') ?>Ringkasan aktivitas antrian hari ini<?= $this->endSection() ?>
 
-    <!-- Admin Content -->
-    <div class="max-w-7xl mx-auto px-4 py-6">
+<?= $this->section('content_body') ?>
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition">
@@ -160,16 +137,16 @@
         </div>
 
         <!-- Recent Activity -->
-        <div class="mt-8 bg-white rounded-xl shadow-sm border p-6">
+        <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Link Cepat</h2>
             <div class="flex flex-wrap gap-3">
-                <a href="/kiosk" target="_blank" class="inline-flex items-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 px-4 py-2 rounded-lg text-sm font-medium">
+                <a href="/kiosk" target="_blank" class="inline-flex items-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 px-4 py-2 rounded-lg text-sm font-medium transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                     </svg>
                     Buka Kiosk
                 </a>
-                <a href="/display" target="_blank" class="inline-flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-medium">
+                <a href="/display" target="_blank" class="inline-flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 px-4 py-2 rounded-lg text-sm font-medium transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
@@ -177,6 +154,4 @@
                 </a>
             </div>
         </div>
-    </div>
-</div>
 <?= $this->endSection() ?>
