@@ -221,9 +221,16 @@
     <script>
         // Auto print when page loads
         window.onload = function() {
-            setTimeout(() => {
-                window.print();
-            }, 500);
+            // Set explicit title for PDF filename
+            document.title = "Tiket_Antrian_<?= $antrian['nomor'] ?>";
+            
+            // Check if triggered via iframe/direct param
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('print')) {
+                setTimeout(() => {
+                    window.print();
+                }, 500);
+            }
         };
     </script>
 </body>

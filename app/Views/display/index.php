@@ -98,76 +98,93 @@
                 <!-- Background Decoration -->
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-50 to-white"></div>
                 
-                <div class="relative z-10 text-center w-full px-4 md:px-12 flex flex-col items-center justify-center h-full">
+                <div class="relative z-10 text-center w-full px-4 md:px-12 flex flex-col items-center justify-center h-full py-6">
                     <template x-if="activeCall">
-                        <div class="animate-pulse-once flex flex-col items-center justify-center h-full py-4">
-                            <span class="inline-block px-4 py-1.5 rounded-full bg-primary-100 text-primary-700 font-bold text-sm md:text-lg uppercase tracking-widest mb-2 md:mb-6 shrink-0">
-                                Sedang Dipanggil
-                            </span>
+                        <div class="animate-pulse-once flex flex-col items-center justify-center h-full w-full">
+                            <!-- Badge -->
+                            <div class="mb-4 md:mb-8">
+                                <span class="inline-block px-6 py-2 rounded-full bg-primary-100 text-primary-700 font-bold text-lg md:text-xl uppercase tracking-widest shadow-sm border border-primary-200">
+                                    Sedang Dipanggil
+                                </span>
+                            </div>
                             
-                            <div class="leading-none font-black font-mono text-gray-900 tracking-tighter shrink-0"
-                                 style="font-size: clamp(80px, 20vh, 180px);"
+                            <!-- Number -->
+                            <div class="leading-none font-black font-mono text-gray-900 tracking-tighter shrink-0 mb-4"
+                                 style="font-size: clamp(80px, 18vw, 160px);"
                                  x-text="activeCall.nomor">
                                 --
                             </div>
                             
-                            <div class="text-2xl md:text-4xl font-bold text-gray-600 mt-2 md:mt-6 mb-2 shrink-0">Silakan Menuju</div>
-                            <div class="text-3xl md:text-5xl font-black text-primary-600 bg-white/50 backdrop-blur-sm px-6 py-2 md:p-4 rounded-xl border border-primary-100 inline-block shadow-sm shrink-0 max-w-full truncate"
-                                 x-text="activeCall.poli">
-                                --
+                            <!-- Label -->
+                            <div class="text-2xl md:text-3xl font-bold text-gray-500 mb-2">Silakan Menuju</div>
+                            
+                            <!-- Poli Name -->
+                            <div class="w-full max-w-4xl mx-auto">
+                                <div class="text-3xl md:text-5xl font-black text-primary-700 bg-white/60 backdrop-blur-sm px-8 py-4 rounded-2xl border border-primary-100 shadow-sm break-words leading-tight"
+                                     x-text="activeCall.poli">
+                                    --
+                                </div>
                             </div>
                         </div>
                     </template>
                     
                     <template x-if="!activeCall">
                         <div class="flex flex-col items-center opacity-50">
-                            <svg class="w-20 h-20 md:w-32 md:h-32 text-gray-300 mb-4 md:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-400">Menunggu Panggilan...</h2>
+                            <svg class="w-24 h-24 md:w-40 md:h-40 text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <h2 class="text-2xl md:text-4xl font-bold text-gray-400">Menunggu Panggilan...</h2>
                         </div>
                     </template>
                 </div>
             </div>
 
             <!-- Info / Video Placeholder (Bottom Left) -->
-            <div class="h-auto min-h-[140px] md:h-48 bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl shadow-lg border border-gray-700 flex items-center justify-center relative overflow-hidden text-white p-6 md:p-8 shrink-0">
-                <!-- Simple animation or placeholder for video -->
+            <div class="h-28 md:h-32 bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl shadow-lg border border-gray-700 flex items-center justify-center relative overflow-hidden text-white px-6 md:px-8 shrink-0">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                <div class="flex items-center gap-4 md:gap-6 z-10">
-                    <div class="w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur shrink-0">
+                <div class="flex items-center gap-4 md:gap-6 z-10 w-full">
+                    <div class="w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur shrink-0 animate-pulse">
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-xl md:text-2xl font-bold mb-1">Budayakan Antre</h3>
-                        <p class="text-gray-300 text-sm md:text-lg text-pretty">Mohon menunggu nomor antrian Anda dipanggil.</p>
+                        <h3 class="text-lg md:text-xl font-bold mb-1">Budayakan Antre</h3>
+                        <p class="text-gray-300 text-sm md:text-base leading-snug">Mohon menunggu nomor antrian Anda dipanggil.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Right: List of Polis -->
-        <div class="w-full md:w-5/12 flex flex-col gap-4 overflow-hidden h-full">
-            <template x-for="(poli, index) in polis" :key="poli.poli.id">
-                <div class="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6 flex items-center justify-between transition-all duration-500"
-                     :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-4 ring-primary-400 scale-[1.02] shadow-xl z-10' : 'opacity-90'">
+        <div class="w-full md:w-5/12 grid grid-rows-4 gap-4 h-full">
+            <template x-for="(poli, index) in pagedPolis" :key="poli.poli.id">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-all duration-500 h-full"
+                     :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-4 ring-primary-400 scale-[1.02] shadow-xl z-10 bg-blue-50' : 'opacity-95'">
                     
-                    <div class="flex flex-col justify-center overflow-hidden mr-2">
-                        <h3 class="text-lg md:text-2xl font-bold text-gray-700 mb-1 md:mb-2 truncate" x-text="poli.poli.nama"></h3>
+                    <div class="flex flex-col justify-center overflow-hidden mr-3 flex-1">
+                        <h3 class="text-lg md:text-2xl font-bold text-gray-800 mb-1 truncate leading-tight" x-text="poli.poli.nama"></h3>
                         <div class="flex items-center gap-2">
-                             <div :class="poli.current ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'" class="px-3 py-1 rounded-lg text-sm font-bold flex items-center gap-2">
+                             <div :class="poli.current ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-500 border-gray-200'" class="px-2.5 py-1 rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 border">
                                 <span class="w-2 h-2 rounded-full" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-400'"></span>
                                 <span x-text="poli.current ? 'Melayani' : 'Menunggu'"></span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex flex-col items-end">
-                        <div class="text-6xl font-black font-mono tracking-tighter" 
+                    <div class="flex flex-col items-end shrink-0">
+                        <div class="font-black font-mono tracking-tighter leading-none text-4xl md:text-5xl lg:text-6xl" 
                              :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
                              x-text="poli.current ? poli.current.nomor : '--'">
                         </div>
                     </div>
                 </div>
             </template>
+            
+            <!-- Fill empty slots to maintain grid if needed, or let grid handle it -->
+            <!-- Page Indicator Overlay (Absolute at bottom of this col) -->
+            <div class="absolute bottom-6 right-8 flex justify-center gap-2 h-2 z-20" x-show="totalPages > 1">
+                <template x-for="i in totalPages">
+                    <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300 shadow-sm" 
+                         :class="currentPage === i ? 'bg-primary-600 scale-150' : 'bg-gray-300'"></div>
+                </template>
+            </div>
         </div>
     </div>
 
@@ -187,6 +204,12 @@
     function displayData() {
         return {
             polis: [],
+            pagedPolis: [], // For sidebar pagination
+            currentPage: 1,
+            itemsPerPage: 4,
+            totalPages: 1,
+            pageInterval: null,
+            
             loading: true,
             currentTime: '',
             currentDate: '',
@@ -208,6 +231,7 @@
             init() {
                 this.updateTime();
                 setInterval(() => this.updateTime(), 1000);
+                this.startPagination();
             },
 
             enableAudio() {
@@ -222,6 +246,34 @@
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) elem.requestFullscreen().catch(err => console.log(err));
             },
+            
+            startPagination() {
+                if(this.pageInterval) clearInterval(this.pageInterval);
+                this.pageInterval = setInterval(() => {
+                    this.nextPage();
+                }, 8000); // Rotate every 8 seconds
+            },
+            
+            nextPage() {
+                if (this.totalPages <= 1) return;
+                this.currentPage++;
+                if (this.currentPage > this.totalPages) this.currentPage = 1;
+                this.updatePagedPolis();
+            },
+
+            updatePagedPolis() {
+                if (!this.polis || this.polis.length === 0) {
+                    this.pagedPolis = [];
+                    return;
+                }
+                this.totalPages = Math.ceil(this.polis.length / this.itemsPerPage) || 1;
+                // Ensure page is valid
+                if (this.currentPage > this.totalPages) this.currentPage = 1;
+
+                const start = (this.currentPage - 1) * this.itemsPerPage;
+                const end = start + this.itemsPerPage;
+                this.pagedPolis = this.polis.slice(start, end);
+            },
 
             async loadData() {
                 if(!this.audioEnabled) return;
@@ -231,6 +283,7 @@
                     const result = await res.json();
                     if (result.success && result.data.polis) {
                          this.polis = result.data.polis; // Direct assign, list is minimal
+                         this.updatePagedPolis(); // Update side view immediately
                          this.checkForNewCalls(result.data.polis);
                     }
                 } catch (e) {
@@ -280,9 +333,6 @@
                     nomor: announcement.nomor,
                     poli: announcement.poli.nama
                 };
-
-                // Remove active call display after 10 seconds automatically if needed
-                // setTimeout(() => { if(this.activeCall?.nomor === announcement.nomor) this.activeCall = null }, 15000);
 
                 await this.playAnnouncement(announcement.nomor, announcement.poli);
                 this.isProcessingAnnouncement = false;
