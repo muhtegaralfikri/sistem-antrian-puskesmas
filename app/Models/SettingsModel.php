@@ -21,7 +21,7 @@ class SettingsModel extends Model
     ];
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
     protected $dateFormat = 'datetime';
     protected $updatedField = 'updated_at';
 

@@ -3,7 +3,13 @@
 <?= $this->section('title') ?>Pengaturan - Admin<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div x-data="settingsManager(<?= json_encode($settings) ?>, <?= json_encode($polis) ?>)" class="min-h-screen bg-gray-50">
+<script>
+    // Global data to avoid HTML attribute syntax errors
+    window.settingsData = <?= json_encode($settings) ?>;
+    window.polisData = <?= json_encode($polis) ?>;
+</script>
+
+<div x-data="settingsManager()" class="min-h-screen bg-gray-50">
     <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -34,13 +40,13 @@
                             <p class="text-sm text-gray-500">Panggilan antrian dengan suara</p>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" x-model="settings.voice_enabled" class="sr-only peer">
+                            <input type="checkbox" name="voice_enabled" x-model="settings.voice_enabled" class="sr-only peer">
                             <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                         </label>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Volume Suara</label>
-                        <input type="range" x-model="settings.voice_volume" min="0" max="1" step="0.1" class="w-full">
+                        <input type="range" name="voice_volume" x-model="settings.voice_volume" min="0" max="1" step="0.1" class="w-full">
                         <div class="flex justify-between text-xs text-gray-500 mt-1">
                             <span>0%</span>
                             <span x-text="Math.round(settings.voice_volume * 100) + '%'"></span>
@@ -49,7 +55,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Maksimal Panggilan Ulang</label>
-                        <input type="number" x-model="settings.recall_max" min="1" max="10" class="w-full px-4 py-2 border rounded-lg">
+                        <input type="number" name="recall_max" x-model="settings.recall_max" min="1" max="10" class="w-full px-4 py-2 border rounded-lg">
                     </div>
                 </div>
             </div>
@@ -60,11 +66,11 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Jumlah Antrian Ditampilkan</label>
-                        <input type="number" x-model="settings.display_count" min="1" max="10" class="w-full px-4 py-2 border rounded-lg">
+                        <input type="number" name="display_count" x-model="settings.display_count" min="1" max="10" class="w-full px-4 py-2 border rounded-lg">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Interval Auto-Refresh (detik)</label>
-                        <input type="number" x-model="settings.auto_refresh_interval" min="1" max="60" class="w-full px-4 py-2 border rounded-lg">
+                        <input type="number" name="auto_refresh_interval" x-model="settings.auto_refresh_interval" min="1" max="60" class="w-full px-4 py-2 border rounded-lg">
                         <p class="text-xs text-gray-500 mt-1">Fallback jika WebSocket tidak terhubung</p>
                     </div>
                 </div>
@@ -79,7 +85,7 @@
                         <p class="text-sm text-gray-500">Pasien dapat mengisi nama saat ambil tiket</p>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" x-model="settings.kiosk_show_name" class="sr-only peer">
+                        <input type="checkbox" name="kiosk_show_name" x-model="settings.kiosk_show_name" class="sr-only peer">
                         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-600"></div>
                     </label>
                 </div>
@@ -88,7 +94,15 @@
             <!-- Reset Settings -->
             <div class="bg-white rounded-xl shadow-sm border p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Reset Antrian</h3>
-                <p class="text-sm text-gray-500 mb-4">Reset nomor antrian akan memulai dari 001 lagi.</p>
+                <div class="mb-4">
+                     <label class="block text-sm font-medium text-gray-700 mb-2">Waktu Reset Otomatis</label>
+                     <input type="time" name="reset_time" x-model="settings.reset_time" class="w-full px-4 py-2 border rounded-lg max-w-xs">
+                     <p class="text-xs text-gray-500 mt-1">Waktu untuk mereset nomor antrian setiap hari (Format 24 jam)</p>
+                </div>
+                
+                <hr class="my-4 border-gray-100">
+                
+                <p class="text-sm text-gray-500 mb-4">Reset manual:</p>
                 <div class="flex flex-wrap gap-3">
                     <template x-for="poli in polis" :key="poli.id">
                         <button type="button" @click="resetPoli(poli.id)" class="bg-orange-50 hover:bg-orange-100 text-orange-700 px-4 py-2 rounded-lg text-sm font-medium">
@@ -115,14 +129,28 @@
 </div>
 
 <script>
-function settingsManager(settings, polis) {
+function settingsManager() {
     return {
-        settings: settings,
-        polis: polis,
+        // Use global variables
+        settings: window.settingsData || {},
+        polis: window.polisData || [],
+
+        // Fix boolean initialization for checkboxes
+        init() {
+            // Ensure booleans are actually booleans
+            this.settings.voice_enabled = this.settings.voice_enabled == '1';
+            this.settings.kiosk_show_name = this.settings.kiosk_show_name == '1';
+        },
 
         async saveSettings() {
             const formData = new FormData();
-            for (const [key, value] of Object.entries(this.settings)) {
+            
+            // Convert booleans back to 1/0 for server
+            const dataToSend = { ...this.settings };
+            dataToSend.voice_enabled = this.settings.voice_enabled ? '1' : '0';
+            dataToSend.kiosk_show_name = this.settings.kiosk_show_name ? '1' : '0';
+
+            for (const [key, value] of Object.entries(dataToSend)) {
                 formData.append(key, value);
             }
 
@@ -131,14 +159,18 @@ function settingsManager(settings, polis) {
                     method: 'POST',
                     body: formData
                 });
+                
+                const result = await response.json();
 
-                if (response.ok) {
+                if (result.success) {
                     alert('Pengaturan berhasil disimpan');
+                    window.location.reload();
                 } else {
-                    alert('Gagal menyimpan pengaturan');
+                    alert('Gagal menyimpan pengaturan: ' + (result.message || 'Error'));
                 }
             } catch (e) {
-                alert('Terjadi kesalahan');
+                console.error(e);
+                alert('Terjadi kesalahan koneksi');
             }
         },
 
@@ -146,15 +178,23 @@ function settingsManager(settings, polis) {
             if (!confirm('Yakin ingin reset antrian untuk poli ini?')) return;
 
             const formData = new FormData();
-            const response = await fetch(`/admin/settings/reset-antrian/${poliId}`, {
-                method: 'POST',
-                body: formData
-            });
+            try {
+                const response = await fetch(`/admin/settings/reset-antrian/${poliId}`, {
+                    method: 'POST',
+                    body: formData
+                });
 
-            if (response.ok) {
-                alert('Antrian berhasil direset');
-            } else {
-                alert('Gagal reset antrian');
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Antrian berhasil direset');
+                    window.location.reload();
+                } else {
+                    alert('Gagal reset antrian: ' + (result.message || 'Error'));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Terjadi kesalahan koneksi');
             }
         },
 
@@ -162,15 +202,23 @@ function settingsManager(settings, polis) {
             if (!confirm('Yakin ingin reset SEMUA antrian?')) return;
 
             const formData = new FormData();
-            const response = await fetch('/admin/settings/reset-all', {
-                method: 'POST',
-                body: formData
-            });
+            try {
+                const response = await fetch('/admin/settings/reset-all', {
+                    method: 'POST',
+                    body: formData
+                });
 
-            if (response.ok) {
-                alert('Semua antrian berhasil direset');
-            } else {
-                alert('Gagal reset antrian');
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('Semua antrian berhasil direset');
+                    window.location.reload();
+                } else {
+                    alert('Gagal reset antrian: ' + (result.message || 'Error'));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Terjadi kesalahan koneksi');
             }
         }
     }
