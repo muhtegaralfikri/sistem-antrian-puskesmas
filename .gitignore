@@ -1,9 +1,11 @@
 # CodeIgniter 4
 /vendor/
 /env
-.writable/cache/
-/writable/logs/
-/writable/session/
+.env
+writable/cache/
+writable/websocket_queue/
+writable/logs/
+writable/session/
 /writable/uploads/
 /public/null/
 

@@ -282,17 +282,18 @@ function dashboardApp() {
             try {
                 const options = { method: 'POST' };
                 if (body) options.body = body;
-                
+
                 const response = await fetch(endpoint, options);
                 const result = await response.json();
-                
+
                 if (result.success) {
                     await this.loadData();
+                    Toast.success(result.message || 'Berhasil');
                 } else {
-                    alert(result.message || 'Gagal'); // Simple alert for now
+                    Toast.error(result.message || 'Gagal');
                 }
             } catch (e) {
-                alert('Connection Error');
+                Toast.error('Koneksi Error');
             } finally {
                 this.loading = false;
             }
@@ -309,11 +310,11 @@ function dashboardApp() {
         },
 
         selesai(poliId, antrianId) {
-            if(confirm('Selesai?')) this.apiCall(`/api/v1/antrian/selesai/${antrianId}`);
+            this.apiCall(`/api/v1/antrian/selesai/${antrianId}`);
         },
-        
+
         skip(poliId, antrianId) {
-            if(confirm('Lewati antrian ini?')) this.apiCall(`/api/v1/antrian/skip/${antrianId}`);
+            this.apiCall(`/api/v1/antrian/skip/${antrianId}`);
         }
     };
 }

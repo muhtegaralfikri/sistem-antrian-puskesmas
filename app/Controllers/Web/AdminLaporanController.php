@@ -29,28 +29,42 @@ class AdminLaporanController extends BaseController
         $tanggal = $this->request->getGet('tanggal') ?? date('Y-m-d');
         $poliId = $this->request->getGet('poli_id') ?? '';
 
-        $builder = $this->antrianModel->select('antrian.*, poli.nama as poli_nama, poli.prefix')
-            ->join('poli', 'poli.id = antrian.poli_id')
-            ->where('DATE(antrian.created_at)', $tanggal);
+        // Base query conditions
+        $configureQuery = function($model) use ($tanggal, $poliId) {
+            $model->select('antrian.*, poli.nama as poli_nama, poli.prefix')
+                  ->join('poli', 'poli.id = antrian.poli_id')
+                  ->where('DATE(antrian.created_at)', $tanggal);
+            
+            if ($poliId) {
+                $model->where('antrian.poli_id', $poliId);
+            }
+            return $model;
+        };
 
-        if ($poliId) {
-            $builder->where('antrian.poli_id', $poliId);
-        }
+        // Get all data for stats (using a fresh instance logic or reset)
+        $this->antrianModel->resetQuery(); 
+        $statsModel = $configureQuery($this->antrianModel);
+        $allAntrian = $statsModel->findAll();
 
-        $antrian = $builder->orderBy('antrian.id', 'ASC')->findAll();
-
-        // Get statistics
+        // Get statistics from all data
         $stats = [
-            'total' => count($antrian),
-            'waiting' => count(array_filter($antrian, fn($a) => $a['status'] === 'waiting')),
-            'serving' => count(array_filter($antrian, fn($a) => in_array($a['status'], ['called', 'serving']))),
-            'completed' => count(array_filter($antrian, fn($a) => $a['status'] === 'completed')),
-            'skipped' => count(array_filter($antrian, fn($a) => $a['status'] === 'skipped')),
+            'total' => count($allAntrian),
+            'waiting' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'waiting')),
+            'serving' => count(array_filter($allAntrian, fn($a) => in_array($a['status'], ['called', 'serving']))),
+            'completed' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'completed')),
+            'skipped' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'skipped')),
         ];
+
+        // Paginate results for table (Reset and re-apply)
+        // Note: findAll() resets the model, so we can just re-apply
+        $paginationModel = $configureQuery($this->antrianModel);
+        $antrian = $paginationModel->orderBy('antrian.id', 'ASC')->paginate(20);
+        $pager = $this->antrianModel->pager;
 
         $data = [
             'title' => 'Laporan Harian',
             'antrian' => $antrian,
+            'pager' => $pager,
             'stats' => $stats,
             'tanggal' => $tanggal,
             'poli_id' => $poliId,
@@ -67,30 +81,39 @@ class AdminLaporanController extends BaseController
 
         // Parse bulan
         [$tahun, $bulanNum] = explode('-', $bulan);
+        $startDate = "{$bulan}-01 00:00:00";
+        $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
 
-        $builder = $this->antrianModel->select('antrian.*, poli.nama as poli_nama, poli.prefix')
-            ->join('poli', 'poli.id = antrian.poli_id')
-            ->where('YEAR(antrian.created_at)', $tahun)
-            ->where('MONTH(antrian.created_at)', $bulanNum);
+        // Base query configuration
+        $configureQuery = function($model) use ($startDate, $endDate, $poliId) {
+            $model->select('antrian.*, poli.nama as poli_nama, poli.prefix')
+                ->join('poli', 'poli.id = antrian.poli_id')
+                ->where('antrian.created_at >=', $startDate)
+                ->where('antrian.created_at <=', $endDate);
 
-        if ($poliId) {
-            $builder->where('antrian.poli_id', $poliId);
-        }
+            if ($poliId) {
+                $model->where('antrian.poli_id', $poliId);
+            }
+            return $model;
+        };
 
-        $antrian = $builder->orderBy('antrian.id', 'ASC')->findAll();
+        // Get all data for stats
+        $this->antrianModel->resetQuery();
+        $statsModel = $configureQuery($this->antrianModel);
+        $allAntrian = $statsModel->findAll();
 
-        // Get statistics
+        // Get statistics from all data
         $stats = [
-            'total' => count($antrian),
-            'waiting' => count(array_filter($antrian, fn($a) => $a['status'] === 'waiting')),
-            'serving' => count(array_filter($antrian, fn($a) => in_array($a['status'], ['called', 'serving']))),
-            'completed' => count(array_filter($antrian, fn($a) => $a['status'] === 'completed')),
-            'skipped' => count(array_filter($antrian, fn($a) => $a['status'] === 'skipped')),
+            'total' => count($allAntrian),
+            'waiting' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'waiting')),
+            'serving' => count(array_filter($allAntrian, fn($a) => in_array($a['status'], ['called', 'serving']))),
+            'completed' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'completed')),
+            'skipped' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'skipped')),
         ];
 
         // Group by date for chart
         $dailyStats = [];
-        foreach ($antrian as $a) {
+        foreach ($allAntrian as $a) {
             $date = date('Y-m-d', strtotime($a['created_at']));
             if (!isset($dailyStats[$date])) {
                 $dailyStats[$date] = ['total' => 0, 'completed' => 0];
@@ -101,9 +124,15 @@ class AdminLaporanController extends BaseController
             }
         }
 
+        // Paginate results for table
+        $paginationModel = $configureQuery($this->antrianModel);
+        $antrian = $paginationModel->orderBy('antrian.id', 'ASC')->paginate(20);
+        $pager = $this->antrianModel->pager;
+
         $data = [
             'title' => 'Laporan Bulanan',
             'antrian' => $antrian,
+            'pager' => $pager,
             'stats' => $stats,
             'bulan' => $bulan,
             'poli_id' => $poliId,
@@ -219,11 +248,13 @@ class AdminLaporanController extends BaseController
         $poliId = $this->request->getGet('poli_id') ?? '';
 
         [$tahun, $bulanNum] = explode('-', $bulan);
+        $startDate = "{$bulan}-01 00:00:00";
+        $endDate = date('Y-m-t 23:59:59', strtotime($startDate));
 
         $builder = $this->antrianModel->select('antrian.*, poli.nama as poli_nama, poli.prefix')
             ->join('poli', 'poli.id = antrian.poli_id')
-            ->where('YEAR(antrian.created_at)', $tahun)
-            ->where('MONTH(antrian.created_at)', $bulanNum);
+            ->where('antrian.created_at >=', $startDate)
+            ->where('antrian.created_at <=', $endDate);
 
         if ($poliId) {
             $builder->where('antrian.poli_id', $poliId);

@@ -6,16 +6,28 @@
 <?= $this->section('page_subtitle') ?>Rekapitulasi data antrian per hari<?= $this->endSection() ?>
 
 <?= $this->section('content_body') ?>
+            <!-- Tab Navigation -->
+            <div class="mb-6 border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <a href="/admin/laporan/harian" class="border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                        Laporan Harian
+                    </a>
+                    <a href="/admin/laporan/bulanan" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                        Laporan Bulanan
+                    </a>
+                </nav>
+            </div>
+
             <!-- Filter Form -->
             <form method="get" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
                 <div class="flex flex-col md:flex-row gap-4 items-end">
                     <div class="w-full md:w-auto">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Tanggal</label>
-                        <input type="date" name="tanggal" value="<?= esc($tanggal) ?>" class="w-full border-gray-200 rounded-xl px-4 py-2.5 focus:ring-primary-500 focus:border-primary-500 bg-gray-50">
+                        <input type="date" name="tanggal" value="<?= esc($tanggal) ?>" class="w-full border-gray-200 rounded-xl px-4 py-2.5 focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
                     </div>
                     <div class="w-full md:w-auto">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Poli</label>
-                        <select name="poli_id" class="w-full border-gray-200 rounded-xl px-4 py-2.5 focus:ring-primary-500 focus:border-primary-500 bg-gray-50">
+                        <select name="poli_id" class="w-full border-gray-200 rounded-xl px-4 py-2.5 focus:ring-blue-500 focus:border-blue-500 bg-gray-50">
                             <option value="">Semua Poli</option>
                             <?php foreach ($polis as $poli): ?>
                                 <option value="<?= $poli['id'] ?>" <?= $poli_id == $poli['id'] ? 'selected' : '' ?>>
@@ -25,7 +37,7 @@
                         </select>
                     </div>
                     <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-                        <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-xl font-medium transition shadow-sm hover:shadow-md">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-medium transition shadow-sm hover:shadow-md">
                             Filter
                         </button>
                         <a href="/admin/laporan/harian" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2.5 rounded-xl font-medium transition">
@@ -48,7 +60,7 @@
                         <p class="text-sm font-medium text-gray-500">Total Antrian</p>
                         <p class="text-3xl font-bold text-gray-800"><?= $stats['total'] ?></p>
                     </div>
-                    <div class="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-primary-600">
+                    <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     </div>
                 </div>
@@ -137,5 +149,10 @@
                         <?php endif; ?>
                     </tbody>
                 </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="mt-4">
+                <?= $pager->links('default', 'tailwind_full') ?>
             </div>
 <?= $this->endSection() ?>

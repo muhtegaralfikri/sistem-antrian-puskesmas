@@ -30,6 +30,7 @@ class AdminAntrianController extends BaseController
         $antrians = [];
         $poli = null;
 
+        $pager = null;
         if ($selectedPoliId) {
             $poli = $this->poliModel->find($selectedPoliId);
             $antrians = $this->antrianModel
@@ -38,13 +39,21 @@ class AdminAntrianController extends BaseController
                 ->where('antrian.poli_id', $selectedPoliId)
                 // ->where('DATE(antrian.created_at)', date('Y-m-d')) -- Remove date filter filter for debugging
                 ->orderBy('antrian.id', 'ASC')
-                ->findAll();
+                ->paginate(10);
+            
+            $pager = $this->antrianModel->pager;
         }
 
         if ($this->request->isAJAX() || $this->request->getGet('json')) {
             return $this->response->setJSON([
                 'success' => true,
                 'data' => $antrians,
+                'pager' => $pager ? [
+                    'current_page' => $pager->getCurrentPage(),
+                    'total_pages' => $pager->getPageCount(),
+                    'total_items' => $pager->getTotal(),
+                    'per_page' => $pager->getPerPage(),
+                ] : null,
             ]);
         }
 
