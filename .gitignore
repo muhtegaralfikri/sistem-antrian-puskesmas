@@ -3,6 +3,7 @@
 /env
 .env
 .writable/cache/
+.writable/websocket_queue/
 /writable/logs/
 /writable/session/
 /writable/uploads/
