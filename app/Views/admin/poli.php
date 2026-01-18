@@ -23,7 +23,7 @@
                     <p class="text-sm text-gray-500">Tambah, edit, atau hapus poli</p>
                 </div>
             </div>
-            <button @click="showAddModal = true" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+            <button @click="openAddModal()" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                 </svg>
@@ -137,6 +137,10 @@
 </div>
 
 <script>
+    // Debugging data assignment
+    var polisData = <?= json_encode($polis) ?>;
+</script>
+<script>
 function poliManager(polis) {
     return {
         polis: polis,
@@ -144,10 +148,19 @@ function poliManager(polis) {
         showEditModal: false,
         form: { id: null, nama: '', kode: '', prefix: '', urutan: 0, aktif: true },
 
+        resetForm() {
+            this.form = { id: null, nama: '', kode: '', prefix: '', urutan: 0, aktif: true };
+        },
+
+        openAddModal() {
+            this.resetForm();
+            this.showAddModal = true;
+        },
+
         closeModal() {
             this.showAddModal = false;
             this.showEditModal = false;
-            this.form = { id: null, nama: '', kode: '', prefix: '', urutan: 0, aktif: true };
+            this.resetForm();
         },
 
         editPoli(poli) {
@@ -166,16 +179,27 @@ function poliManager(polis) {
             const url = this.form.id ? `/admin/poli/update/${this.form.id}` : '/admin/poli/create';
 
             try {
-                const response = await fetch(url, { method: 'POST', body: formData });
+                const response = await fetch(url, { 
+                    method: 'POST', 
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
                 const result = await response.json();
 
-                if (response.ok || result.success) {
+                if (result.success) {
                     window.location.reload();
                 } else {
-                    alert(result.message || 'Terjadi kesalahan');
+                    let msg = result.message || 'Terjadi kesalahan';
+                    if (result.errors) {
+                        msg += '\n' + Object.values(result.errors).join('\n');
+                    }
+                    alert(msg);
                 }
             } catch (e) {
-                alert('Terjadi kesalahan');
+                console.error(e);
+                alert('Terjadi kesalahan sistem');
             }
         },
 
@@ -186,16 +210,21 @@ function poliManager(polis) {
                 const formData = new FormData();
                 const response = await fetch(`/admin/poli/delete/${poli.id}`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
                 });
+                const result = await response.json();
 
-                if (response.ok) {
+                if (result.success) {
                     window.location.reload();
                 } else {
-                    alert('Gagal menghapus poli');
+                    alert(result.message || 'Gagal menghapus poli');
                 }
             } catch (e) {
-                alert('Terjadi kesalahan');
+                console.error(e);
+                alert('Terjadi kesalahan sistem');
             }
         }
     }

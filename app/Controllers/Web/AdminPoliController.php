@@ -38,58 +38,71 @@ class AdminPoliController extends BaseController
             ];
 
             if (!$this->validate($rules)) {
-                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $this->validator->getErrors()
+                ]);
             }
 
             $data = [
                 'nama' => $this->request->getPost('nama'),
                 'prefix' => strtoupper($this->request->getPost('prefix')),
-                'aktif' => 1,
+                'kode' => strtoupper($this->request->getPost('kode')),
+                'urutan' => $this->request->getPost('urutan'),
+                'aktif' => $this->request->getPost('aktif'),
             ];
 
             $this->poliModel->insert($data);
 
-            return redirect()->to('/admin/poli')->with('success', 'Poli berhasil ditambahkan');
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Poli berhasil ditambahkan'
+            ]);
         }
 
         return view('admin/poli_create');
     }
 
-    public function edit($id)
+    public function update($id)
     {
         $poli = $this->poliModel->find($id);
 
         if (!$poli) {
-            return redirect()->to('/admin/poli')->with('error', 'Poli tidak ditemukan');
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Poli tidak ditemukan'
+            ]);
         }
 
-        if ($this->request->getMethod() === 'POST') {
-            $rules = [
-                'nama' => 'required|min_length[2]|max_length[100]',
-                'prefix' => "required|min_length[1]|max_length[5]|is_unique[poli.prefix,id,{$id}]",
-            ];
+        $rules = [
+            'nama' => 'required|min_length[2]|max_length[100]',
+            'prefix' => "required|min_length[1]|max_length[5]|is_unique[poli.prefix,id,{$id}]",
+            'kode' => "required|min_length[2]|max_length[10]|is_unique[poli.kode,id,{$id}]",
+        ];
 
-            if (!$this->validate($rules)) {
-                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-            }
-
-            $data = [
-                'nama' => $this->request->getPost('nama'),
-                'prefix' => strtoupper($this->request->getPost('prefix')),
-                'aktif' => $this->request->getPost('aktif') ? 1 : 0,
-            ];
-
-            $this->poliModel->update($id, $data);
-
-            return redirect()->to('/admin/poli')->with('success', 'Poli berhasil diperbarui');
+        if (!$this->validate($rules)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $this->validator->getErrors()
+            ]);
         }
 
         $data = [
-            'title' => 'Edit Poli',
-            'poli' => $poli,
+            'nama' => $this->request->getPost('nama'),
+            'prefix' => strtoupper($this->request->getPost('prefix')),
+            'kode' => strtoupper($this->request->getPost('kode')),
+            'urutan' => $this->request->getPost('urutan'),
+            'aktif' => $this->request->getPost('aktif'),
         ];
 
-        return view('admin/poli_edit', $data);
+        $this->poliModel->update($id, $data);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Poli berhasil diperbarui'
+        ]);
     }
 
     public function delete($id)
@@ -97,7 +110,10 @@ class AdminPoliController extends BaseController
         $poli = $this->poliModel->find($id);
 
         if (!$poli) {
-            return redirect()->to('/admin/poli')->with('error', 'Poli tidak ditemukan');
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Poli tidak ditemukan'
+            ]);
         }
 
         // Hapus relasi user_poli
@@ -106,6 +122,9 @@ class AdminPoliController extends BaseController
         // Hapus poli
         $this->poliModel->delete($id);
 
-        return redirect()->to('/admin/poli')->with('success', 'Poli berhasil dihapus');
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Poli berhasil dihapus'
+        ]);
     }
 }
