@@ -58,8 +58,10 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Web', 'filter' => 'admi
     // User management
     $routes->group('users', static function ($routes) {
         $routes->get('/', 'AdminUsersController::index');
+        $routes->get('create', 'AdminUsersController::create');
         $routes->post('create', 'AdminUsersController::create');
-        $routes->post('update/(:num)', 'AdminUsersController::update/$1');
+        $routes->get('edit/(:num)', 'AdminUsersController::edit/$1');
+        $routes->post('edit/(:num)', 'AdminUsersController::edit/$1');
         $routes->post('delete/(:num)', 'AdminUsersController::delete/$1');
     });
 

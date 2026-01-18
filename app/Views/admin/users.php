@@ -56,7 +56,9 @@
                                         <div class="flex items-center gap-2">
                                             <a href="/admin/users/edit/<?= $user['id'] ?>" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">Edit</a>
                                             <span class="text-gray-300">|</span>
-                                            <a href="/admin/users/delete/<?= $user['id'] ?>" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors" onclick="return confirm('Hapus pengguna ini?')">Hapus</a>
+                                            <form action="/admin/users/delete/<?= $user['id'] ?>" method="post" class="inline" onsubmit="return confirm('Hapus pengguna ini?');">
+                                                <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-sm transition-colors bg-transparent border-none p-0 cursor-pointer">Hapus</button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
