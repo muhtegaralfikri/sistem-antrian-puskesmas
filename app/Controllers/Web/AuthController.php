@@ -23,7 +23,8 @@ class AuthController extends BaseController
     {
         // If already logged in, redirect to dashboard
         if (session()->get('user_id')) {
-            return redirect()->to('/monitor');
+            $redirectUrl = (session()->get('user_role') === 'admin') ? '/admin' : '/monitor';
+            return redirect()->to($redirectUrl);
         }
 
         return view('auth/login');
@@ -91,10 +92,12 @@ class AuthController extends BaseController
 
         if ($this->request->isAJAX()) {
             $userWithPoli = $this->userModel->getUserWithPoli($user['id']);
+            $redirectUrl = ($user['role'] === 'admin') ? '/admin' : '/monitor';
+            
             return $this->response->setJSON([
                 'success' => true,
                 'message' => 'Login berhasil',
-                'redirect' => '/monitor',
+                'redirect' => $redirectUrl,
                 'data' => [
                     'user' => [
                         'id' => $user['id'],
@@ -107,7 +110,8 @@ class AuthController extends BaseController
             ]);
         }
 
-        return redirect()->to('/monitor')->with('success', 'Login berhasil');
+        $redirectUrl = ($user['role'] === 'admin') ? '/admin' : '/monitor';
+        return redirect()->to($redirectUrl)->with('success', 'Login berhasil');
     }
 
     /**

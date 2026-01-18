@@ -98,21 +98,7 @@ class AdminAuditController extends BaseController
     /**
      * View log details
      */
-    public function view(int $id)
-    {
-        $log = $this->auditLogModel->find($id);
 
-        if (!$log) {
-            return redirect()->to('/admin/audit-log')->with('error', 'Log tidak ditemukan');
-        }
-
-        $data = [
-            'title' => 'Detail Log',
-            'log' => $log,
-        ];
-
-        return view('admin/audit_log_view', $data);
-    }
 
     /**
      * Export logs to CSV
@@ -124,43 +110,63 @@ class AdminAuditController extends BaseController
             'entity_type' => $this->request->getGet('entity_type'),
             'start_date' => $this->request->getGet('start_date'),
             'end_date' => $this->request->getGet('end_date'),
+            'user_id' => $this->request->getGet('user_id'),
         ];
 
         $logs = $this->getFilteredLogs($filters);
 
-        // Set headers for CSV download
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="audit-log-' . date('Y-m-d') . '.csv"');
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Audit Logs');
 
-        $output = fopen('php://output', 'w');
+        // Headers
+        $headers = ['ID', 'Waktu', 'User', 'Aksi', 'Entity', 'Entity ID', 'Deskripsi', 'IP Address'];
+        $sheet->fromArray($headers, NULL, 'A1');
 
-        // Write CSV headers
-        fputcsv($output, [
-            'ID',
-            'Waktu',
-            'User',
-            'Aksi',
-            'Entity',
-            'Entity ID',
-            'Deskripsi',
-            'IP Address',
-        ]);
+        // Header Style
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FFE0E0E0'],
+            ],
+            'borders' => [
+                'allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN],
+            ],
+        ];
+        $sheet->getStyle('A1:H1')->applyFromArray($headerStyle);
 
-        // Write data
+        // Data
+        $row = 2;
         foreach ($logs as $log) {
-            fputcsv($output, [
-                $log['id'],
-                $log['created_at'],
-                $log['username'] ?? 'System',
-                $log['action'],
-                $log['entity_type'] ?? '-',
-                $log['entity_id'] ?? '-',
-                $log['description'] ?? '-',
-                $log['ip_address'] ?? '-',
-            ]);
+            $sheet->setCellValue('A' . $row, $log['id']);
+            $sheet->setCellValue('B' . $row, $log['created_at']);
+            $sheet->setCellValue('C' . $row, $log['username'] ?? 'System');
+            $sheet->setCellValue('D' . $row, $log['action']);
+            $sheet->setCellValue('E' . $row, $log['entity_type'] ?? '-');
+            $sheet->setCellValue('F' . $row, $log['entity_id'] ?? '-');
+            $sheet->setCellValue('G' . $row, $log['description'] ?? '-');
+            $sheet->setCellValue('H' . $row, $log['ip_address'] ?? '-');
+            $row++;
         }
 
-        fclose($output);
+        // Auto size columns
+        foreach (range('A', 'H') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Borders for data
+        $lastRow = $row - 1;
+        $sheet->getStyle('A1:H' . $lastRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $filename = "audit-log-" . date('Y-m-d') . ".xlsx";
+        
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save('php://output');
         exit;
     }
 
