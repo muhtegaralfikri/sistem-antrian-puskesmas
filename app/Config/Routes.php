@@ -81,6 +81,24 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Web', 'filter' => 'admi
         $routes->post('reset-antrian/(:num)', 'AdminSettingsController::resetAntrian/$1');
         $routes->post('reset-all', 'AdminSettingsController::resetAllAntrian');
     });
+
+    // Audit Log
+    $routes->group('audit-log', static function ($routes) {
+        $routes->get('/', 'AdminAuditController::index');
+        $routes->get('view/(:num)', 'AdminAuditController::view/$1');
+        $routes->get('export', 'AdminAuditController::export');
+        $routes->post('clean', 'AdminAuditController::clean');
+    });
+
+    // Backup & Restore
+    $routes->group('backup', static function ($routes) {
+        $routes->get('/', 'AdminBackupController::index');
+        $routes->post('create', 'AdminBackupController::create');
+        $routes->post('restore', 'AdminBackupController::restore');
+        $routes->post('delete', 'AdminBackupController::delete');
+        $routes->get('download', 'AdminBackupController::download');
+        $routes->post('clean', 'AdminBackupController::clean');
+    });
 });
 
 // API Routes

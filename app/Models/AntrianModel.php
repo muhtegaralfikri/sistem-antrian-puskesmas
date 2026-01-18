@@ -64,9 +64,11 @@ class AntrianModel extends Model
      */
     public function getCompletedCount(int $poliId): int
     {
+        $today = date('Y-m-d');
         return $this->where('poli_id', $poliId)
             ->where('status', self::STATUS_COMPLETED)
-            ->where('DATE(waktu_selesai)', date('Y-m-d'))
+            ->where('waktu_selesai >=', $today . ' 00:00:00')
+            ->where('waktu_selesai <=', $today . ' 23:59:59')
             ->countAllResults();
     }
 
@@ -144,8 +146,10 @@ class AntrianModel extends Model
         }
 
         // Get last antrian for today
+        $today = date('Y-m-d');
         $lastAntrian = $this->where('poli_id', $poliId)
-            ->where('DATE(created_at)', date('Y-m-d'))
+            ->where('created_at >=', $today . ' 00:00:00')
+            ->where('created_at <=', $today . ' 23:59:59')
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -291,7 +295,7 @@ class AntrianModel extends Model
 
         // Skip all waiting queues from previous days
         $oldWaiting = $this->where('status', self::STATUS_WAITING)
-            ->where('DATE(created_at) <', $today)
+            ->where('created_at <', $today . ' 00:00:00')
             ->findAll();
 
         foreach ($oldWaiting as $antrian) {
@@ -302,7 +306,7 @@ class AntrianModel extends Model
 
         // Complete all serving/called queues from previous days
         $oldServing = $this->whereIn('status', [self::STATUS_CALLED, self::STATUS_SERVING])
-            ->where('DATE(created_at) <', $today)
+            ->where('created_at <', $today . ' 00:00:00')
             ->findAll();
 
         foreach ($oldServing as $antrian) {
@@ -351,8 +355,10 @@ class AntrianModel extends Model
      */
     public function getTodayStats(int $poliId = null): array
     {
+        $today = date('Y-m-d');
         $builder = $this->select('COUNT(*) as count, status')
-            ->where('DATE(created_at)', date('Y-m-d'))
+            ->where('created_at >=', $today . ' 00:00:00')
+            ->where('created_at <=', $today . ' 23:59:59')
             ->groupBy('status');
 
         if ($poliId) {

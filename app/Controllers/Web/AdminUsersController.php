@@ -43,7 +43,7 @@ class AdminUsersController extends BaseController
         if ($this->request->getMethod() === 'POST') {
             $rules = [
                 'username' => 'required|min_length[3]|max_length[50]|is_unique[users.username]',
-                'password' => 'required|min_length[6]',
+                'password' => 'required|check_password_strength|password_not_username[username]|not_common_password',
                 'nama_lengkap' => 'required|min_length[2]|max_length[100]',
                 'email' => 'permit_empty|valid_email',
                 'role' => 'required|in_list[admin,petugas]',
@@ -113,7 +113,7 @@ class AdminUsersController extends BaseController
             // Password validation only if provided
             $password = $this->request->getPost('password');
             if ($password) {
-                $rules['password'] = 'min_length[6]';
+                $rules['password'] = 'check_password_strength|password_not_username[username]|not_common_password';
             }
 
             if (!$this->validate($rules)) {
