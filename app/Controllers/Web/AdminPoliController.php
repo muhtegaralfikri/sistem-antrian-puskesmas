@@ -35,6 +35,7 @@ class AdminPoliController extends BaseController
             $rules = [
                 'nama' => 'required|min_length[2]|max_length[100]',
                 'prefix' => 'required|min_length[1]|max_length[5]|is_unique[poli.prefix]',
+                'kode' => 'required|min_length[2]|max_length[10]|is_unique[poli.kode]',
             ];
 
             if (!$this->validate($rules)) {
@@ -53,12 +54,17 @@ class AdminPoliController extends BaseController
                 'aktif' => $this->request->getPost('aktif'),
             ];
 
-            $this->poliModel->insert($data);
-
-            return $this->response->setJSON([
-                'success' => true,
-                'message' => 'Poli berhasil ditambahkan'
-            ]);
+            if ($this->poliModel->skipValidation(true)->insert($data)) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Poli berhasil ditambahkan'
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Gagal menyimpan data ke database'
+                ]);
+            }
         }
 
         return view('admin/poli_create');
@@ -97,12 +103,17 @@ class AdminPoliController extends BaseController
             'aktif' => $this->request->getPost('aktif'),
         ];
 
-        $this->poliModel->update($id, $data);
-
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Poli berhasil diperbarui'
-        ]);
+        if ($this->poliModel->skipValidation(true)->update($id, $data)) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Poli berhasil diperbarui'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal memperbarui data database'
+            ]);
+        }
     }
 
     public function delete($id)
