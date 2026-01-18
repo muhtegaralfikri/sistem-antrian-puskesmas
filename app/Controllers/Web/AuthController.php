@@ -23,7 +23,7 @@ class AuthController extends BaseController
     {
         // If already logged in, redirect to dashboard
         if (session()->get('user_id')) {
-            return redirect()->to('/dashboard');
+            return redirect()->to('/monitor');
         }
 
         return view('auth/login');
@@ -94,7 +94,7 @@ class AuthController extends BaseController
             return $this->response->setJSON([
                 'success' => true,
                 'message' => 'Login berhasil',
-                'redirect' => '/dashboard',
+                'redirect' => '/monitor',
                 'data' => [
                     'user' => [
                         'id' => $user['id'],
@@ -107,7 +107,7 @@ class AuthController extends BaseController
             ]);
         }
 
-        return redirect()->to('/dashboard')->with('success', 'Login berhasil');
+        return redirect()->to('/monitor')->with('success', 'Login berhasil');
     }
 
     /**

@@ -219,7 +219,7 @@ function dashboardApp() {
 
         async loadData() {
             try {
-                const response = await fetch('/dashboard/data');
+                const response = await fetch('/monitor/data');
                 const result = await response.json();
 
                 if (result.success) {

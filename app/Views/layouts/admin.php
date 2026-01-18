@@ -22,6 +22,7 @@
             <!-- Desktop Menu -->
             <div class="hidden md:flex items-center gap-6">
                 <a href="/admin" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= uri_string() == 'admin' ? 'text-primary-600' : '' ?>">Dashboard</a>
+                <a href="/monitor" target="_blank" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition">Monitor</a>
                 <a href="/admin/poli" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= strpos(uri_string(), 'poli') !== false ? 'text-primary-600' : '' ?>">Poli</a>
                 <a href="/admin/users" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= strpos(uri_string(), 'users') !== false ? 'text-primary-600' : '' ?>">Users</a>
                 <a href="/admin/antrian" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= strpos(uri_string(), 'antrian') !== false ? 'text-primary-600' : '' ?>">Antrian</a>

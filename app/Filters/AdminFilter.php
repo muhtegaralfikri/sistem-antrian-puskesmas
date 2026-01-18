@@ -46,7 +46,7 @@ class AdminFilter implements FilterInterface
                         'message' => 'Forbidden. Admin access required.',
                     ]);
             }
-            return redirect()->to('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
+            return redirect()->to('/monitor')->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
         }
     }
 

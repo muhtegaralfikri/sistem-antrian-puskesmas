@@ -30,10 +30,11 @@ $routes->group('auth', ['namespace' => 'App\Controllers\Web'], static function (
 });
 
 // Petugas Dashboard - Auth required
-$routes->group('dashboard', ['namespace' => 'App\Controllers\Web', 'filter' => 'auth'], static function ($routes) {
+$routes->group('monitor', ['namespace' => 'App\Controllers\Web', 'filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'DashboardController::index');
     $routes->get('data', 'DashboardController::data');
 });
+$routes->addRedirect('dashboard', 'monitor');
 
 // Admin routes - Admin role required
 $routes->group('admin', ['namespace' => 'App\Controllers\Web', 'filter' => 'admin'], static function ($routes) {
