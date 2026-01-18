@@ -28,6 +28,7 @@
                 <a href="/admin/antrian" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= strpos(uri_string(), 'antrian') !== false ? 'text-primary-600' : '' ?>">Antrian</a>
                 <a href="/admin/laporan/harian" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= strpos(uri_string(), 'laporan') !== false ? 'text-primary-600' : '' ?>">Laporan</a>
                 <a href="/admin/settings" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= strpos(uri_string(), 'settings') !== false ? 'text-primary-600' : '' ?>">Settings</a>
+                <a href="/admin/audit-log" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition <?= strpos(uri_string(), 'audit-log') !== false ? 'text-primary-600' : '' ?>">Log Aktivitas</a>
                 
                 <div class="h-6 w-px bg-gray-200"></div>
 

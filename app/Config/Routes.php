@@ -85,7 +85,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Web', 'filter' => 'admi
     // Audit Log
     $routes->group('audit-log', static function ($routes) {
         $routes->get('/', 'AdminAuditController::index');
-        $routes->get('view/(:num)', 'AdminAuditController::view/$1');
+
         $routes->get('export', 'AdminAuditController::export');
         $routes->post('clean', 'AdminAuditController::clean');
     });
