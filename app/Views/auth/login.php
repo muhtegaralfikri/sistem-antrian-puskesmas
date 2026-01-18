@@ -89,7 +89,7 @@
 
             <!-- Footer -->
             <div class="pt-4 text-center text-xs text-gray-400 border-t border-gray-100">
-                <p>Default Access: admin / admin123</p>
+                <p>&copy; <?= date('Y') ?> Puskesmas Digital</p>
             </div>
         </div>
     </div>
