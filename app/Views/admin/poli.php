@@ -1,40 +1,27 @@
-<?= $this->extend('layouts/base') ?>
+<?= $this->extend('layouts/admin') ?>
 
-<?= $this->section('title') ?>Manajemen Poli - Admin<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>Manajemen Poli<?= $this->endSection() ?>
+<?= $this->section('page_subtitle') ?>Tambah, edit, atau hapus poli<?= $this->endSection() ?>
 
-<?= $this->section('content') ?>
+<?= $this->section('content_body') ?>
 <script>
     // Debugging data assignment
     var polisData = <?= json_encode($polis) ?>;
     console.log('Polis Data:', polisData);
 </script>
-<div x-data="poliManager(polisData)" class="min-h-screen bg-gray-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="/admin" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                </a>
-                <div>
-                    <h1 class="text-lg font-bold text-gray-800">Manajemen Poli</h1>
-                    <p class="text-sm text-gray-500">Tambah, edit, atau hapus poli</p>
-                </div>
-            </div>
-            <button @click="openAddModal()" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Tambah Poli
-            </button>
-        </div>
-    </nav>
+<div x-data="poliManager(polisData)">
 
-    <!-- Content -->
-    <div class="max-w-7xl mx-auto px-4 py-6">
-        <!-- Poli List -->
+    <!-- Top Action -->
+    <div class="mb-4 flex justify-end">
+        <button @click="openAddModal()" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-all hover:shadow-md">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Tambah Poli
+        </button>
+    </div>
+    
+    <!-- Poli List -->
         <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
             <table class="w-full">
                 <thead class="bg-gray-50 border-b">
@@ -104,7 +91,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Poli</label>
                     <input type="text" x-model="form.nama" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                </div>
+            
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Kode</label>

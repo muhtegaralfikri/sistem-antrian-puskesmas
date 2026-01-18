@@ -1,32 +1,16 @@
-<?= $this->extend('layouts/base') ?>
+<?= $this->extend('layouts/admin') ?>
 
-<?= $this->section('title') ?>Pengaturan - Admin<?= $this->endSection() ?>
+<?= $this->section('page_title') ?>Pengaturan<?= $this->endSection() ?>
+<?= $this->section('page_subtitle') ?>Konfigurasi sistem<?= $this->endSection() ?>
 
-<?= $this->section('content') ?>
+<?= $this->section('content_body') ?>
 <script>
     // Global data to avoid HTML attribute syntax errors
     window.settingsData = <?= json_encode($settings) ?>;
     window.polisData = <?= json_encode($polis) ?>;
 </script>
 
-<div x-data="settingsManager()" class="min-h-screen bg-gray-50">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a href="/admin" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                </a>
-                <div>
-                    <h1 class="text-lg font-bold text-gray-800">Pengaturan</h1>
-                    <p class="text-sm text-gray-500">Konfigurasi sistem</p>
-                </div>
-            </div>
-        </div>
-    </nav>
-
+<div x-data="settingsManager()">
     <!-- Content -->
     <div class="max-w-4xl mx-auto px-4 py-6">
         <form @submit.prevent="saveSettings" class="space-y-6">
