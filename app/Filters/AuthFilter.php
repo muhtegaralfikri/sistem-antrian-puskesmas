@@ -46,7 +46,7 @@ class AuthFilter implements FilterInterface
             }
 
             // Redirect to login
-            return redirect()->to('/login');
+            return redirect()->to('/auth/login');
         }
     }
 

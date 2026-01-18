@@ -28,6 +28,7 @@ $routes->group('auth', ['namespace' => 'App\Controllers\Web'], static function (
     $routes->post('login', 'AuthController::login');
     $routes->get('logout', 'AuthController::logout');
 });
+$routes->get('login', 'AuthController::loginForm');
 
 // Petugas Dashboard - Auth required
 $routes->group('monitor', ['namespace' => 'App\Controllers\Web', 'filter' => 'auth'], static function ($routes) {

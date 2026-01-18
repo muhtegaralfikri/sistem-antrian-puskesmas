@@ -33,7 +33,7 @@ class AdminFilter implements FilterInterface
                         'message' => 'Unauthorized. Please login.',
                     ]);
             }
-            return redirect()->to('/login');
+            return redirect()->to('/auth/login');
         }
 
         // Then check if admin
