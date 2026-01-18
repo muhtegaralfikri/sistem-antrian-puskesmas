@@ -46,8 +46,10 @@ class AdminPoliController extends BaseController
                 ]);
             }
 
+            $namaPoli = $this->request->getPost('nama');
+            
             $data = [
-                'nama' => $this->request->getPost('nama'),
+                'nama' => $namaPoli,
                 'prefix' => strtoupper($this->request->getPost('prefix')),
                 'kode' => strtoupper($this->request->getPost('kode')),
                 'urutan' => $this->request->getPost('urutan'),
@@ -55,6 +57,17 @@ class AdminPoliController extends BaseController
             ];
 
             if ($this->poliModel->skipValidation(true)->insert($data)) {
+                // Generate Audio
+                $slug = \App\Helpers\VoiceHelper::getSlug($namaPoli);
+                $path = FCPATH . 'voice/poli/' . $slug . '.mp3';
+                
+                // Clean "Poli" prefix for natural sounding audio
+                // "Poli Jantung" -> "Jantung"
+                // The frontend says "Silakan ke... Poli... [Jantung]"
+                $textToSpeak = preg_replace('/^poli\s+/i', '', $namaPoli);
+                
+                \App\Helpers\VoiceHelper::generate($textToSpeak, $path);
+
                 return $this->response->setJSON([
                     'success' => true,
                     'message' => 'Poli berhasil ditambahkan'
@@ -95,8 +108,10 @@ class AdminPoliController extends BaseController
             ]);
         }
 
+        $namaPoli = $this->request->getPost('nama');
+
         $data = [
-            'nama' => $this->request->getPost('nama'),
+            'nama' => $namaPoli,
             'prefix' => strtoupper($this->request->getPost('prefix')),
             'kode' => strtoupper($this->request->getPost('kode')),
             'urutan' => $this->request->getPost('urutan'),
@@ -104,6 +119,15 @@ class AdminPoliController extends BaseController
         ];
 
         if ($this->poliModel->skipValidation(true)->update($id, $data)) {
+            // Generate Audio if name changed or just always to be safe
+            $slug = \App\Helpers\VoiceHelper::getSlug($namaPoli);
+            $path = FCPATH . 'voice/poli/' . $slug . '.mp3';
+            
+            // Clean "Poli" prefix for natural sounding audio
+            $textToSpeak = preg_replace('/^poli\s+/i', '', $namaPoli);
+            
+            \App\Helpers\VoiceHelper::generate($textToSpeak, $path);
+
             return $this->response->setJSON([
                 'success' => true,
                 'message' => 'Poli berhasil diperbarui'
