@@ -3,7 +3,12 @@
 <?= $this->section('title') ?>Manajemen Poli - Admin<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div x-data="poliManager(<?= json_encode($polis) ?>)" class="min-h-screen bg-gray-50">
+<script>
+    // Debugging data assignment
+    var polisData = <?= json_encode($polis) ?>;
+    console.log('Polis Data:', polisData);
+</script>
+<div x-data="poliManager(polisData)" class="min-h-screen bg-gray-50">
     <!-- Navbar -->
     <nav class="bg-white shadow-sm border-b">
         <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
