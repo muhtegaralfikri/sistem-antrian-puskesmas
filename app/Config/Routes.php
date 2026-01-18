@@ -43,7 +43,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Web', 'filter' => 'admi
     // Antrian management
     $routes->group('antrian', static function ($routes) {
         $routes->get('/', 'AdminAntrianController::index');
-        $routes->post('nomor/(:num)', 'AdminAntrianController::updateNomor/$1');
+
         $routes->delete('(:num)', 'AdminAntrianController::delete/$1');
     });
 

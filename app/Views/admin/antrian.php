@@ -97,9 +97,6 @@
                                 <td class="px-4 py-3 text-sm text-gray-600" x-text="formatDateTime(antrian.waktu_panggil)"></td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
-                                        <button @click="openEditModal(antrian)" class="text-blue-600 hover:text-blue-800 text-sm">
-                                            Ubah Nomor
-                                        </button>
                                         <button @click="deleteAntrian(antrian.id)" class="text-red-600 hover:text-red-800 text-sm">
                                             Hapus
                                         </button>
@@ -117,41 +114,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Edit Nomor Modal -->
-    <div x-data="{ show: false }" x-show="show" x-cloak
-         class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div @click.away="show = false" class="bg-white rounded-xl shadow-xl max-w-md w-full">
-            <div class="p-4 border-b">
-                <h3 class="font-semibold text-gray-800">Ubah Nomor Antrian</h3>
-            </div>
-            <div class="p-4">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Saat Ini</label>
-                    <input type="text" :value="editingAntrian?.nomor" disabled
-                           class="w-full border rounded-lg px-3 py-2 bg-gray-50 text-gray-500">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nomor Baru</label>
-                    <input type="text" x-model="newNomor" placeholder="Contoh: A-002"
-                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                           @keyup.enter="saveNomor()">
-                    <p class="text-xs text-gray-500 mt-1">Format: PREFIX-NOMOR (contoh: A-001)</p>
-                </div>
-                <div class="flex gap-2">
-                    <button @click="saveNomor()" :disabled="saving"
-                            class="flex-1 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-300 text-white px-4 py-2 rounded-lg font-medium">
-                        <span x-show="!saving">Simpan</span>
-                        <span x-show="saving">Menyimpan...</span>
-                    </button>
-                    <button @click="show = false; editingAntrian = null; newNomor = ''"
-                            class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium">
-                        Batal
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 <?= $this->endSection() ?>
 
@@ -161,20 +123,9 @@ function antrianData() {
     return {
         selectedPoliId: <?= $selected_poli_id ?? 'null' ?>,
         antrians: [],
-        editingAntrian: null,
-        newNomor: '',
-        saving: false,
-
+        
         init() {
             this.loadAntrian();
-
-            // Make edit modal accessible globally
-            this.$watch('editingAntrian', (val) => {
-                if (val) {
-                    document.querySelector('[x-data="{ show: false }"]').show = true;
-                    this.newNomor = val.nomor;
-                }
-            });
         },
 
         async loadAntrian() {
@@ -190,46 +141,6 @@ function antrianData() {
                 }
             } catch (error) {
                 console.error('Error loading antrian:', error);
-            }
-        },
-
-        openEditModal(antrian) {
-            this.editingAntrian = antrian;
-        },
-
-        async saveNomor() {
-            if (!this.editingAntrian || !this.newNomor) return;
-
-            this.saving = true;
-            try {
-                const formData = new FormData();
-                formData.append('nomor', this.newNomor);
-
-                const response = await fetch(`${this.apiUrl}/admin/antrian/${this.editingAntrian.id}/nomor`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-
-                if (result.success) {
-                    // Close modal
-                    document.querySelector('[x-data="{ show: false }"]').show = false;
-                    this.editingAntrian = null;
-                    this.newNomor = '';
-
-                    // Reload data
-                    await this.loadAntrian();
-
-                    // Show success message
-                    alert('Nomor antrian berhasil diubah');
-                } else {
-                    alert(result.message || 'Gagal mengubah nomor antrian');
-                }
-            } catch (error) {
-                console.error('Error updating nomor:', error);
-                alert('Terjadi kesalahan saat mengubah nomor');
-            } finally {
-                this.saving = false;
             }
         },
 
@@ -253,6 +164,7 @@ function antrianData() {
                 alert('Terjadi kesalahan saat menghapus antrian');
             }
         },
+
 
         getStatusText(status) {
             const statusMap = {
