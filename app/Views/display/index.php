@@ -342,24 +342,63 @@
                 }
             },
 
+            // Helper to break number into audio files
+            getNumberAudioParts(n) {
+                const parts = [];
+                n = parseInt(n);
+                
+                if (n < 10) {
+                    parts.push(n.toString());
+                } else if (n === 10) {
+                    parts.push('sepuluh');
+                } else if (n === 11) {
+                    parts.push('sebelas');
+                } else if (n < 20) {
+                    parts.push((n - 10).toString());
+                    parts.push('belas');
+                } else if (n < 100) {
+                    parts.push(Math.floor(n / 10).toString());
+                    parts.push('puluh');
+                    if (n % 10 > 0) parts.push((n % 10).toString());
+                } else if (n < 200) {
+                    parts.push('seratus');
+                    if (n % 100 > 0) parts.push(...this.getNumberAudioParts(n % 100)); // RECURSIVE SPREAD, FIXED
+                } else if (n < 1000) {
+                    parts.push(Math.floor(n / 100).toString());
+                    parts.push('ratus'); // Assuming user might add 'ratus' later for 200+, otherwise fallback
+                    if (n % 100 > 0) parts.push(...this.getNumberAudioParts(n % 100)); // RECURSIVE SPREAD
+                }
+                return parts;
+            },
+
             async playAnnouncement(nomor, poli) {
                 const parts = nomor.match(/([a-zA-Z]+)-(\d+)/);
                 if (!parts) return;
 
                 const huruf = parts[1].toUpperCase();
-                const angkaStr = parts[2].padStart(3, '0');
+                const angkaInt = parseInt(parts[2], 10);
                 const poliSlug = this.getPoliSlug(poli.nama);
 
+                // Build Base Queue
                 this.audioQueue = [
                    { type: 'bell' },
                    { type: 'word', name: 'nomor-antrian' },
-                   { type: 'letter', name: huruf },
-                   { type: 'number-digits', value: angkaStr },
+                   { type: 'letter', name: huruf }
+                ];
+
+                // Inject Number Audio Files
+                const numberParts = this.getNumberAudioParts(angkaInt);
+                numberParts.forEach(part => {
+                    this.audioQueue.push({ type: 'number_file', name: part });
+                });
+
+                // Continue Queue
+                this.audioQueue.push(
                    { type: 'word', name: 'silakan' },
                    { type: 'word', name: 'ke' },
                    { type: 'word', name: 'poli' },
                    { type: 'poli', name: poliSlug }
-                ];
+                );
                 
                 await this.playNextAudio();
             },
@@ -369,20 +408,26 @@
                 
                 const item = this.audioQueue.shift();
                 try {
-                    if (item.type === 'number-digits') {
-                        for (const digit of item.value) {
-                             await this.playAudioFile(`${this.audioBaseUrl}numbers/${digit}.mp3`);
-                             await this.delay(150);
-                        }
+                    let path = '';
+                    if (item.type === 'number_file') {
+                        // Numbers are in /voice/numbers/x.mp3
+                        path = `${this.audioBaseUrl}numbers/${item.name}.mp3`;
                     } else {
-                        const path = this.getAudioPath(item);
+                        path = this.getAudioPath(item);
+                    }
+                    
+                    if (path) {
                         await this.playAudioFile(path);
                         if (item.type === 'bell') await this.delay(500);
+                        // Small delay between number parts for natural flow
+                        if (item.type === 'number_file') await this.delay(50); 
                     }
                 } catch (e) {
-                    await this.fallbackSpeak(item);
+                    // console.log('Audio file missing: ' + item.name);
+                    // Fallback to TTS only if file fails? 
+                    // Or just skip. For now, let's skip/ignore missing files to avoid mixed TTS/MP3 weirdness unless critical.
                 }
-                await this.delay(100);
+                await this.delay(50); // General spacing
                 await this.playNextAudio();
             },
 
@@ -400,6 +445,9 @@
                  if (item.type === 'number-digits') {
                      const digitWords = ['Nol', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan'];
                      text = item.value.split('').map(d => digitWords[parseInt(d)]).join(' ');
+                 } else if (item.type === 'number-speech') {
+                     // Convert number to text manually to ensure "Sepuluh", "Sebelas" etc. are read correctly
+                     text = this.numberToText(item.value);
                  } else if (item.type === 'poli') {
                      text = item.name.replace(/_/g, ' ');
                  } else {
@@ -413,11 +461,23 @@
                      u.rate = 0.9;
                      if(this.indonesianVoice) u.voice = this.indonesianVoice;
                      u.onend = resolve;
+                     // Handle error/timeout
+                     u.onerror = resolve; 
                      window.speechSynthesis.speak(u);
                  });
             },
             
-            // ... (Helpers: getPoliSlug, getAudioPath, getItemText, delay - reused from prev code)
+            numberToText(n) {
+                const angka = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
+                n = parseInt(n);
+                if (n < 12) return angka[n];
+                if (n < 20) return this.numberToText(n - 10) + ' Belas';
+                if (n < 100) return this.numberToText(Math.floor(n / 10)) + ' Puluh ' + this.numberToText(n % 10);
+                if (n < 200) return 'Seratus ' + this.numberToText(n - 100);
+                if (n < 1000) return this.numberToText(Math.floor(n / 100)) + ' Ratus ' + this.numberToText(n % 100);
+                return n.toString(); // Fallback
+            },
+            
             getPoliSlug(n) { return n.toLowerCase().replace('poli ', '').replace(/[^a-z0-9]/g, '_'); },
             getAudioPath(i) {
                 switch(i.type) {

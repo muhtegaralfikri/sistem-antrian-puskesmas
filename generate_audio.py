@@ -23,10 +23,16 @@ def create_number_audio():
     """Create audio for numbers 0-9 (digit by digit)"""
     numbers_map = {
         0: 'Nol', 1: 'Satu', 2: 'Dua', 3: 'Tiga', 4: 'Empat',
-        5: 'Lima', 6: 'Enam', 7: 'Tujuh', 8: 'Delapan', 9: 'Sembilan'
+        5: 'Lima', 6: 'Enam', 7: 'Tujuh', 8: 'Delapan', 9: 'Sembilan',
+        'sepuluh': 'Sepuluh',
+        'sebelas': 'Sebelas',
+        'belas': 'Belas',
+        'puluh': 'Puluh',
+        'seratus': 'Seratus',
+        'ratus': 'Ratus'
     }
 
-    print("\n[*] Creating numbers 0-9...")
+    print("\n[*] Creating numbers 0-9 and helpers...")
     for num, text in numbers_map.items():
         tts = gTTS(text=text, lang='id')
         filename = f'voice/numbers/{num}.mp3'
