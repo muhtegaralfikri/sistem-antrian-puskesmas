@@ -89,6 +89,26 @@
             </table>
         </div>
     </div>
+
+    <!-- Pagination -->
+    <div class="mt-4 flex items-center justify-between" x-show="antrians.length > 0 && pagination.total_pages > 1">
+        <div class="text-sm text-gray-500">
+            Hal <span x-text="pagination.current_page"></span> dari <span x-text="pagination.total_pages"></span>
+            (<span x-text="pagination.total_items"></span> data)
+        </div>
+        <div class="flex gap-2">
+            <button @click="loadAntrian(pagination.current_page - 1)" 
+                    :disabled="pagination.current_page <= 1"
+                    class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Previous
+            </button>
+            <button @click="loadAntrian(pagination.current_page + 1)" 
+                    :disabled="pagination.current_page >= pagination.total_pages"
+                    class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Next
+            </button>
+        </div>
+    </div>
 </div>
 <?= $this->endSection() ?>
 
@@ -99,13 +119,20 @@ function antrianData() {
         selectedPoliId: <?= $selected_poli_id ?? 'null' ?>,
         antrians: [],
         
+        pagination: {
+            current_page: 1,
+            total_pages: 1,
+            total_items: 0,
+            per_page: 10
+        },
+        
         init() {
             this.loadAntrian();
         },
 
-        async loadAntrian() {
+        async loadAntrian(page = 1) {
             try {
-                const response = await fetch(`${this.apiUrl}/admin/antrian?poli_id=${this.selectedPoliId}`, {
+                const response = await fetch(`${this.apiUrl}/admin/antrian?poli_id=${this.selectedPoliId}&page=${page}`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
                     }
@@ -113,6 +140,9 @@ function antrianData() {
                 const result = await response.json();
                 if (result.success) {
                     this.antrians = result.data;
+                    if (result.pager) {
+                        this.pagination = result.pager;
+                    }
                 }
             } catch (error) {
                 console.error('Error loading antrian:', error);
@@ -129,7 +159,7 @@ function antrianData() {
                 const result = await response.json();
 
                 if (result.success) {
-                    await this.loadAntrian();
+                    await this.loadAntrian(this.pagination.current_page);
                     alert('Antrian berhasil dihapus');
                 } else {
                     alert(result.message || 'Gagal menghapus antrian');

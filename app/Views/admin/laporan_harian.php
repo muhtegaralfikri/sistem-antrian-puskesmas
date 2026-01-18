@@ -138,4 +138,9 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination -->
+            <div class="mt-4">
+                <?= $pager->links('default', 'tailwind_full') ?>
+            </div>
 <?= $this->endSection() ?>

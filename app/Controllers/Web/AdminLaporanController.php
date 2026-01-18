@@ -29,28 +29,42 @@ class AdminLaporanController extends BaseController
         $tanggal = $this->request->getGet('tanggal') ?? date('Y-m-d');
         $poliId = $this->request->getGet('poli_id') ?? '';
 
-        $builder = $this->antrianModel->select('antrian.*, poli.nama as poli_nama, poli.prefix')
-            ->join('poli', 'poli.id = antrian.poli_id')
-            ->where('DATE(antrian.created_at)', $tanggal);
+        // Base query conditions
+        $configureQuery = function($model) use ($tanggal, $poliId) {
+            $model->select('antrian.*, poli.nama as poli_nama, poli.prefix')
+                  ->join('poli', 'poli.id = antrian.poli_id')
+                  ->where('DATE(antrian.created_at)', $tanggal);
+            
+            if ($poliId) {
+                $model->where('antrian.poli_id', $poliId);
+            }
+            return $model;
+        };
 
-        if ($poliId) {
-            $builder->where('antrian.poli_id', $poliId);
-        }
+        // Get all data for stats (using a fresh instance logic or reset)
+        $this->antrianModel->resetQuery(); 
+        $statsModel = $configureQuery($this->antrianModel);
+        $allAntrian = $statsModel->findAll();
 
-        $antrian = $builder->orderBy('antrian.id', 'ASC')->findAll();
-
-        // Get statistics
+        // Get statistics from all data
         $stats = [
-            'total' => count($antrian),
-            'waiting' => count(array_filter($antrian, fn($a) => $a['status'] === 'waiting')),
-            'serving' => count(array_filter($antrian, fn($a) => in_array($a['status'], ['called', 'serving']))),
-            'completed' => count(array_filter($antrian, fn($a) => $a['status'] === 'completed')),
-            'skipped' => count(array_filter($antrian, fn($a) => $a['status'] === 'skipped')),
+            'total' => count($allAntrian),
+            'waiting' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'waiting')),
+            'serving' => count(array_filter($allAntrian, fn($a) => in_array($a['status'], ['called', 'serving']))),
+            'completed' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'completed')),
+            'skipped' => count(array_filter($allAntrian, fn($a) => $a['status'] === 'skipped')),
         ];
+
+        // Paginate results for table (Reset and re-apply)
+        // Note: findAll() resets the model, so we can just re-apply
+        $paginationModel = $configureQuery($this->antrianModel);
+        $antrian = $paginationModel->orderBy('antrian.id', 'ASC')->paginate(20);
+        $pager = $this->antrianModel->pager;
 
         $data = [
             'title' => 'Laporan Harian',
             'antrian' => $antrian,
+            'pager' => $pager,
             'stats' => $stats,
             'tanggal' => $tanggal,
             'poli_id' => $poliId,
