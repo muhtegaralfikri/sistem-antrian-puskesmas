@@ -163,7 +163,7 @@
                                 <template x-if="poli.current">
                                     <div class="transform transition-all duration-500">
                                         <div class="digital-display rounded-3xl p-8 mb-6 inline-block min-w-[200px]">
-                                            <span class="block text-7xl font-black text-gray-900 tracking-tighter" x-text="poli.current.nomor"></span>
+                                            <span class="block text-6xl md:text-7xl font-black text-gray-900 tracking-tighter whitespace-nowrap" x-text="poli.current.nomor"></span>
                                         </div>
                                         <div class="flex justify-center gap-4">
                                             <button @click="recall(poli.poli.id, poli.current.id)" class="p-3 text-orange-500 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors tooltip-trigger" title="Panggil Ulang">
