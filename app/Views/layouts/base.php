@@ -59,6 +59,11 @@
             font-family: 'Inter', system-ui, sans-serif;
         }
 
+        /* Alpine.js x-cloak - hide elements before Alpine loads */
+        [x-cloak] {
+            display: none !important;
+        }
+
         /* Print styles for ticket */
         @media print {
             .no-print {
