@@ -4,41 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Anjungan Mandiri - Puskesmas Sehat</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="<?= csrf_hash() ?>">
+    <meta name="csrf-header" content="<?= csrf_header() ?>">
+    <link rel="stylesheet" href="/css/app.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        medical: { 50:'#f0fdfa', 100:'#ccfbf1', 200:'#99f6e4', 300:'#5eead4', 400:'#2dd4bf', 500:'#14b8a6', 600:'#0d9488', 700:'#0f766e', 800:'#115e59', 900:'#134e4a' },
-                        primary: { 50:'#eff6ff', 100:'#dbeafe', 200:'#bfdbfe', 300:'#93c5fd', 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a' },
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    animation: {
-                        'blob': 'blob 10s infinite',
-                        'float': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         .hero-pattern {
             background-color: #f0fdfa;
@@ -82,9 +52,7 @@
     <header class="h-16 md:h-24 bg-white/80 backdrop-blur-md border-b border-white/50 sticky top-0 z-30 flex-none shadow-sm transition-all px-4 md:px-6">
         <div class="h-full max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3 md:gap-4">
-                <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-medical-500 to-primary-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-medical-500/20 text-white shrink-0">
-                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                </div>
+                <img src="/images/logo.png" alt="Logo Puskesmas" class="w-12 h-12 md:w-16 md:h-16 object-contain drop-shadow-md shrink-0">
                 <div>
                     <h1 class="text-lg md:text-3xl font-black text-gray-900 tracking-tight leading-none">PUSKESMAS<span class="text-medical-600">SEHAT</span></h1>
                     <p class="text-[10px] md:text-sm text-gray-500 font-bold uppercase tracking-widest mt-0.5 md:mt-1">Anjungan Mandiri</p>
@@ -192,7 +160,7 @@
 
                     <div class="bg-gray-50 rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 border-dashed mb-6 md:mb-8 relative">
                         <div class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nomor Antrian</div>
-                        <div class="text-6xl md:text-7xl font-black text-gray-900 font-mono tracking-tighter leading-none" x-text="ticketData?.nomor">--</div>
+                        <div class="text-6xl md:text-7xl font-black text-gray-900 font-mono tracking-tighter leading-none whitespace-nowrap" x-text="ticketData?.nomor">--</div>
                         <div class="text-lg md:text-xl font-bold text-medical-600 mt-2 line-clamp-1" x-text="ticketData?.poli_nama">--</div>
                     </div>
 
@@ -237,9 +205,15 @@
 
                     const formData = new FormData();
                     formData.append('poli_id', poliId);
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
                     const response = await fetch('<?= base_url('kiosk/ambil') ?>', {
                         method: 'POST',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        headers: { 
+                            'X-Requested-With': 'XMLHttpRequest',
+                            [csrfHeader]: csrfToken
+                        },
                         body: formData
                     });
                     const result = await response.json();

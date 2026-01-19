@@ -214,11 +214,15 @@ function poliManager(polis) {
             const url = this.form.id ? `/admin/poli/update/${this.form.id}` : '/admin/poli/create';
 
             try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
                 const response = await fetch(url, { 
                     method: 'POST', 
                     body: formData,
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        [csrfHeader]: csrfToken
                     }
                 });
                 const result = await response.json();
@@ -243,11 +247,15 @@ function poliManager(polis) {
 
             try {
                 const formData = new FormData();
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
                 const response = await fetch(`/admin/poli/delete/${poli.id}`, {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        [csrfHeader]: csrfToken
                     }
                 });
                 const result = await response.json();

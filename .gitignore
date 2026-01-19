@@ -31,3 +31,9 @@ debugbar/
 # Session & Temp
 cookies.txt
 *.tmp
+
+# Node.js / NPM
+node_modules/
+package-lock.json
+package.json
+

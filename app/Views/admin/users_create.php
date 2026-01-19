@@ -41,6 +41,7 @@ Tambahkan pengguna baru ke dalam sistem antrian
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="p-6 md:p-8">
             <form action="/admin/users/create" method="post">
+                <?= csrf_field() ?>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                     
                     <!-- Username -->
