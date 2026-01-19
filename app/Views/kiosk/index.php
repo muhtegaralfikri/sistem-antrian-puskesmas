@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Anjungan Mandiri - Puskesmas Sehat</title>
+    <meta name="csrf-token" content="<?= csrf_hash() ?>">
+    <meta name="csrf-header" content="<?= csrf_header() ?>">
     <link rel="stylesheet" href="/css/app.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
@@ -203,9 +205,15 @@
 
                     const formData = new FormData();
                     formData.append('poli_id', poliId);
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
                     const response = await fetch('<?= base_url('kiosk/ambil') ?>', {
                         method: 'POST',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        headers: { 
+                            'X-Requested-With': 'XMLHttpRequest',
+                            [csrfHeader]: csrfToken
+                        },
                         body: formData
                     });
                     const result = await response.json();

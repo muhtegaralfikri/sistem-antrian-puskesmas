@@ -3,22 +3,22 @@
 <?= $this->section('title') ?>Login - Sistem Antrian Puskesmas<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
-<div x-data="loginForm()" class="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden bg-slate-50 selection:bg-medical-500 selection:text-white">
+<div x-data="loginForm()" class="min-h-screen w-full flex items-center justify-center p-4 relative bg-slate-50 selection:bg-medical-500 selection:text-white overflow-y-auto">
     
     <!-- Dynamic Aurora Background -->
-    <div class="absolute inset-0 w-full h-full">
-        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
-        <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-medical-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-4000"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+    <div class="fixed inset-0 w-full h-full z-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-64 h-64 md:w-96 md:h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+        <div class="absolute top-[-10%] right-[-10%] w-64 h-64 md:w-96 md:h-96 bg-medical-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-64 h-64 md:w-96 md:h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-4000"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-64 h-64 md:w-96 md:h-96 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
         
         <!-- Grid Pattern Overlay -->
         <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMTQ4LCAxNjMsIDE4NCwgMC4xKSIvPjwvc3ZnPg==')] [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
     </div>
 
     <!-- Main Card -->
-    <div class="w-full max-w-[440px] relative z-10 transition-all duration-500 transform hover:scale-[1.005]">
-        <div class="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-white/60 p-8 md:p-12 relative overflow-hidden">
+    <div class="w-full max-w-[440px] relative z-10 transition-all duration-500 my-auto">
+        <div class="bg-white/70 backdrop-blur-2xl rounded-3xl md:rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-white/60 p-6 md:p-12 relative overflow-hidden">
             
             <!-- Glossy Shine Effect -->
             <div class="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
@@ -26,16 +26,16 @@
             <!-- Content -->
             <div class="relative z-10">
                 <!-- Logo Zone -->
-                <div class="text-center mb-10">
+                <div class="text-center mb-8 md:mb-10">
                     <div class="inline-flex items-center justify-center mb-6 transform hover:scale-105 transition-transform duration-300">
-                        <img src="/images/logo.png" alt="Logo Puskesmas" class="h-20 w-auto drop-shadow-lg">
+                        <img src="/images/logo.png" alt="Logo Puskesmas" class="h-16 md:h-20 w-auto drop-shadow-lg">
                     </div>
-                    <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Selamat Datang</h1>
+                    <h1 class="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">Selamat Datang</h1>
                     <p class="text-slate-500 text-sm mt-2 font-medium">Sistem Antrian Puskesmas Digital</p>
                 </div>
 
                 <!-- Form -->
-                <form @submit.prevent="submitLogin" class="space-y-5">
+                <form @submit.prevent="submitLogin" class="space-y-4 md:space-y-5">
                     <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
 
                     <!-- Username -->
@@ -48,7 +48,7 @@
                                 </svg>
                             </div>
                             <input x-model="form.username" type="text" required 
-                                   class="block w-full pl-11 pr-4 py-3.5 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-medical-500/20 focus:border-medical-500 focus:bg-white transition-all shadow-sm font-medium hover:border-slate-300"
+                                   class="block w-full pl-11 pr-4 py-3 md:py-3.5 bg-white/50 border border-slate-200 rounded-xl text-base md:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-medical-500/20 focus:border-medical-500 focus:bg-white transition-all shadow-sm font-medium hover:border-slate-300"
                                    placeholder="Masukkan nip/username">
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                                 </svg>
                             </div>
                             <input x-model="form.password" :type="showPassword ? 'text' : 'password'" required
-                                   class="block w-full pl-11 pr-12 py-3.5 bg-white/50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-medical-500/20 focus:border-medical-500 focus:bg-white transition-all shadow-sm font-medium hover:border-slate-300"
+                                   class="block w-full pl-11 pr-12 py-3 md:py-3.5 bg-white/50 border border-slate-200 rounded-xl text-base md:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-medical-500/20 focus:border-medical-500 focus:bg-white transition-all shadow-sm font-medium hover:border-slate-300"
                                    placeholder="••••••••">
                             <button type="button" @click="showPassword = !showPassword" 
                                     class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors">
@@ -90,7 +90,7 @@
 
                     <!-- Submit Button -->
                     <button type="submit" :disabled="loading" 
-                            class="group relative w-full flex justify-center py-3.5 px-4 mt-6 border border-transparent text-sm font-bold rounded-xl text-white bg-medical-600 hover:bg-medical-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-medical-500 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
+                            class="group relative w-full flex justify-center py-3 md:py-3.5 px-4 mt-6 border border-transparent text-sm font-bold rounded-xl text-white bg-medical-600 hover:bg-medical-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-medical-500 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5">
                         
                         <div class="absolute inset-0 rounded-xl overflow-hidden">
                              <div class="absolute inset-0 bg-gradient-to-r from-medical-600 to-medical-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -102,9 +102,7 @@
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
                             <span x-text="loading ? 'Memverifikasi...' : 'Masuk Dashboard'"></span>
-                            <svg x-show="!loading" class="w-4 h-4 text-white/70 group-hover:text-white group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
+
                         </div>
                     </button>
                 </form>

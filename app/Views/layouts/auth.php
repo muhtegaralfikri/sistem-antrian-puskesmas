@@ -30,17 +30,8 @@
         }
     </style>
 </head>
-<body class="bg-[#f8fafc] min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-    <!-- Modern Background Effects -->
-    <div class="absolute inset-0 z-0">
-        <div class="absolute top-0 -left-4 w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-0 -right-4 w-96 h-96 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute -bottom-32 left-20 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-    </div>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900 antialiased">
     
-    <!-- Content Container - Ensure it stays above background -->
-    <div class="relative z-10 w-full flex justify-center">
-
     <?= $this->renderSection('content') ?>
 
     <!-- Flash Messages -->
@@ -59,8 +50,6 @@
         <?= session()->getFlashdata('success') ?>
     </div>
     <?php endif; ?>
-
-    </div>
 
 </body>
 </html>

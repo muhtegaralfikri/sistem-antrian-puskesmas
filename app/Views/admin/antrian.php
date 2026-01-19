@@ -214,8 +214,15 @@ function antrianData() {
             if (!confirm('Yakin ingin menghapus antrian ini?')) return;
 
             try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
                 const response = await fetch(`${this.apiUrl}/admin/antrian/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        [csrfHeader]: csrfToken
+                    }
                 });
                 const result = await response.json();
 
