@@ -130,23 +130,44 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-4 flex items-center justify-between" x-show="antrians.length > 0 && pagination.total_pages > 1">
-        <div class="text-sm text-gray-500">
-            Hal <span x-text="pagination.current_page"></span> dari <span x-text="pagination.total_pages"></span>
-            (<span x-text="pagination.total_items"></span> data)
+    <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4" x-show="antrians.length > 0 && pagination.total_pages > 1">
+        <div class="text-sm text-gray-500 order-2 md:order-1">
+            Menampilkan hal <span class="font-medium" x-text="pagination.current_page"></span> dari <span class="font-medium" x-text="pagination.total_pages"></span>
+            (<span class="font-medium" x-text="pagination.total_items"></span> data)
         </div>
-        <div class="flex gap-2">
-            <button @click="loadAntrian(pagination.current_page - 1)" 
-                    :disabled="pagination.current_page <= 1"
-                    class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Previous
-            </button>
-            <button @click="loadAntrian(pagination.current_page + 1)" 
-                    :disabled="pagination.current_page >= pagination.total_pages"
-                    class="px-3 py-1.5 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Next
-            </button>
-        </div>
+        
+        <nav aria-label="Page navigation" class="order-1 md:order-2">
+            <ul class="flex items-center -space-x-px h-8 text-sm">
+                <!-- Previous -->
+                <li>
+                    <button @click="loadAntrian(pagination.current_page - 1)" 
+                            :disabled="pagination.current_page <= 1"
+                            class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="sr-only">Previous</span>
+                        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                        </svg>
+                    </button>
+                </li>
+
+                <!-- Current Page Indicator (Simple) -->
+                <li>
+                    <span class="flex items-center justify-center px-3 h-8 leading-tight text-primary-600 border border-gray-300 bg-primary-50 hover:bg-primary-100 hover:text-primary-700 z-10 font-bold" x-text="pagination.current_page"></span>
+                </li>
+
+                <!-- Next -->
+                <li>
+                    <button @click="loadAntrian(pagination.current_page + 1)" 
+                            :disabled="pagination.current_page >= pagination.total_pages"
+                            class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="sr-only">Next</span>
+                        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                    </button>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <?= $this->endSection() ?>

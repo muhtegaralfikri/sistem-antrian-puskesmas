@@ -203,7 +203,13 @@
             </div>
             
             <!-- Pagination -->
-            <div class="mt-4">
-                <?= $pager->links('default', 'tailwind_full') ?>
+            <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-sm text-gray-500 order-2 md:order-1">
+                    Menampilkan hal <span class="font-medium"><?= $pager->getCurrentPage() ?></span> dari <span class="font-medium"><?= $pager->getPageCount() ?></span>
+                    (<span class="font-medium"><?= $pager->getTotal() ?></span> data)
+                </div>
+                <div class="order-1 md:order-2">
+                    <?= $pager->links('default', 'tailwind_full') ?>
+                </div>
             </div>
 <?= $this->endSection() ?>
