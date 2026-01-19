@@ -113,40 +113,40 @@
     <!-- Content Layout -->
     <div class="flex-1 p-2 sm:p-3 md:p-4 lg:p-6 md:pt-0 gap-2 md:gap-4 lg:gap-6 flex flex-col md:flex-row relative z-10 md:overflow-hidden h-full">
 
-        <!-- Main Area: Active Call & Media -->
-        <div class="w-full md:w-full lg:w-8/12 xl:w-9/12 flex flex-col gap-2 md:gap-4 lg:gap-6 md:h-full">
+        <!-- Main Area: Active Call -->
+        <div class="w-full md:w-full lg:w-7/12 xl:w-7/12 flex flex-col gap-2 md:gap-4 lg:gap-6 md:h-full">
 
             <!-- Active Call Card (Premium) -->
-            <div class="glass-panel rounded-[1rem] md:rounded-[1.5rem] lg:rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden flex-1 md:flex-1 transition-all duration-700 min-h-[35vh] md:min-h-[40vh] lg:min-h-[50vh] xl:min-h-0">
+            <div class="glass-panel rounded-[1rem] md:rounded-[1.5rem] lg:rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden flex-1 transition-all duration-700 min-h-[35vh] md:min-h-0 h-full">
                 <div class="absolute top-0 w-full h-1 md:h-1.5 bg-gradient-to-r from-medical-400 via-primary-400 to-medical-400"></div>
 
                 <template x-if="activeCall">
-                    <div class="relative z-10 w-full h-full flex flex-col items-center justify-between py-3 sm:py-4 md:py-6 px-2 md:px-4 lg:justify-evenly">
+                    <div class="relative z-10 w-full h-full flex flex-col items-center justify-between py-6 md:py-10 px-4 md:justify-evenly">
 
                         <!-- Status Badge -->
-                        <div class="animate-pulse shrink-0 mt-1 md:mt-2 lg:mt-0">
-                            <span class="px-2 md:px-3 lg:px-5 py-0.5 md:py-1 lg:py-2 rounded-full bg-medical-50 text-medical-700 font-bold text-[8px] sm:text-[10px] md:text-sm uppercase tracking-[0.2em] border border-medical-100">
+                        <div class="animate-pulse shrink-0">
+                            <span class="px-4 py-1.5 md:px-6 md:py-2 rounded-full bg-medical-50 text-medical-700 font-bold text-xs md:text-base lg:text-lg uppercase tracking-[0.2em] border border-medical-100 shadow-sm">
                                 Panggilan Saat Ini
                             </span>
                         </div>
 
                         <!-- Main Number Display -->
-                        <div class="relative shrink-0 flex items-center justify-center flex-1 my-1 md:my-2 lg:my-0 w-full">
+                        <div class="relative shrink-0 flex items-center justify-center flex-1 w-full my-4">
                             <span class="active-number font-black font-mono text-slate-800 tracking-tighter leading-none drop-shadow-sm select-none whitespace-nowrap"
-                                  :style="'font-size: clamp(50px, 12vw, 100px)'"
+                                  :style="'font-size: clamp(80px, 18vw, 220px)'"
                                   x-text="activeCall.nomor">
                                 --
                             </span>
                         </div>
 
                         <!-- Divider Line -->
-                        <div class="w-12 h-0.5 md:w-16 md:h-1 bg-gray-200 rounded-full shrink-0 mb-2 md:mb-0"></div>
+                        <div class="w-24 h-1 md:w-32 md:h-1.5 bg-gray-200 rounded-full shrink-0 mb-6"></div>
 
                         <!-- Poli & Label -->
-                        <div class="text-center shrink-0 w-full mb-1 md:mb-0 px-2">
-                            <p class="text-gray-400 font-medium text-[10px] sm:text-xs md:text-base uppercase tracking-widest mb-1 md:mb-2">Silakan Menuju Ke</p>
-                            <div class="relative w-full flex justify-center items-center pb-1">
-                                <h2 class="poli-name text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-medical-700 tracking-tight leading-tight px-1 md:px-2 break-words text-wrap"
+                        <div class="text-center shrink-0 w-full px-4">
+                            <p class="text-gray-400 font-bold text-xs md:text-lg uppercase tracking-widest mb-2">Silakan Menuju Ke</p>
+                            <div class="relative w-full flex justify-center items-center">
+                                <h2 class="poli-name text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-medical-700 tracking-tight leading-tight break-words text-wrap drop-shadow-sm"
                                     x-text="activeCall.poli">
                                     --
                                 </h2>
@@ -157,48 +157,35 @@
                 </template>
 
                 <template x-if="!activeCall">
-                    <div class="flex flex-col items-center opacity-40 justify-center h-full gap-2 md:gap-4">
-                        <div class="w-16 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 bg-gray-100 rounded-full flex items-center justify-center">
-                            <svg class="w-8 h-8 md:w-10 md:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                    <div class="flex flex-col items-center opacity-40 justify-center h-full gap-4">
+                        <div class="w-24 h-24 md:w-32 md:h-32 bg-gray-100 rounded-full flex items-center justify-center shadow-inner">
+                            <svg class="w-12 h-12 md:w-16 md:h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
                         </div>
-                        <h2 class="text-base md:text-xl lg:text-2xl font-bold text-gray-400">Menunggu Antrian...</h2>
+                        <h2 class="text-xl md:text-3xl font-bold text-gray-400 tracking-tight">Menunggu Antrian...</h2>
                     </div>
                 </template>
-            </div>
-
-            <!-- Health Tips / Media Placeholder - Hidden on small mobile -->
-            <div class="glass-panel rounded-2xl p-3 md:p-4 lg:p-6 flex items-center gap-3 md:gap-4 lg:gap-6 relative overflow-hidden hidden sm:flex md:flex-[0.6] lg:flex-[0.5] shrink-0">
-                <div class="absolute -right-6 -bottom-6 w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 bg-medical-50 rounded-full opacity-50"></div>
-
-                <div class="w-8 h-8 md:w-12 md:h-14 lg:w-16 lg:h-16 bg-blue-50 rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 text-blue-500">
-                    <svg class="w-4 h-4 md:w-6 md:h-7 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-800 mb-0.5 md:mb-1">Info Kesehatan</h3>
-                    <p class="text-[10px] sm:text-xs md:text-sm lg:text-base text-gray-500 leading-relaxed line-clamp-2">Gunakan masker saat berada di area Puskesmas. Jaga jarak aman.</p>
-                </div>
             </div>
 
         </div>
 
         <!-- Right Column: Queue Sidebar -->
-        <div class="w-full md:w-full lg:w-4/12 xl:w-3/12 flex flex-col md:h-full relative pb-28 md:pb-0">
-            <div class="flex-1 grid grid-cols-1 gap-1.5 md:gap-2 lg:gap-3 content-start md:overflow-y-auto no-scrollbar p-1 md:p-0">
+        <div class="w-full md:w-full lg:w-5/12 xl:w-5/12 flex flex-col md:h-full relative pb-28 md:pb-0">
+            <div class="flex-1 grid grid-cols-1 gap-3 md:gap-4 lg:gap-5 content-start md:overflow-y-auto no-scrollbar p-1 md:p-0">
 
                 <!-- Mobile: Horizontal scroll for queue cards -->
                 <div class="md:hidden flex overflow-x-auto gap-2 pb-2 -mx-2 px-2">
                     <template x-for="(poli, index) in polis" :key="poli.poli.id">
-                        <div class="queue-card flex-shrink-0 w-36 bg-white/80 backdrop-blur-sm p-3 rounded-xl border border-white/60 shadow-sm transition-all duration-300"
+                        <div class="queue-card flex-shrink-0 w-40 bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-white/60 shadow-sm transition-all duration-300"
                              :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-2 ring-medical-400 shadow-md bg-white' : 'hover:bg-white/90'">
 
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="text-xs md:text-sm font-bold text-gray-800 truncate flex-1" x-text="poli.poli.nama"></h4>
-                                <div class="flex items-center gap-1 ml-2">
-                                    <span class="w-1 h-1 rounded-full flex-shrink-0" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-300'"></span>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-bold text-gray-800 truncate flex-1" x-text="poli.poli.nama"></h4>
+                                <div class="flex items-center gap-1.5 ml-2">
+                                    <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-300'"></span>
                                 </div>
                             </div>
 
-                            <div class="queue-number font-mono font-bold text-2xl sm:text-3xl md:text-4xl whitespace-nowrap"
+                            <div class="queue-number font-mono font-black text-3xl whitespace-nowrap"
                                  :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
                                  x-text="poli.current ? poli.current.nomor : '--'">
                             </div>
@@ -207,25 +194,24 @@
                 </div>
 
                 <!-- Desktop: Vertical queue cards -->
-                <div class="hidden md:grid grid-cols-1 lg:grid-cols-1 gap-2 md:gap-3 lg:gap-4">
+                <div class="hidden md:grid grid-cols-1 gap-4 lg:gap-5">
                     <template x-for="(poli, index) in pagedPolis" :key="poli.poli.id">
-                        <div class="bg-white/80 backdrop-blur-sm p-3 md:p-4 lg:p-5 rounded-xl md:rounded-2xl border border-white/60 shadow-sm transition-all duration-300"
-                             :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-2 ring-medical-400 shadow-md bg-white' : 'hover:bg-white/90'">
-
+                        <div class="bg-white/85 backdrop-blur-md p-5 lg:p-6 rounded-2xl border border-white/70 shadow-sm transition-all duration-300 group"
+                             :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-4 ring-medical-200 shadow-xl scale-[1.02] bg-white z-10' : 'hover:shadow-md'">
+                            
                             <div class="flex items-center justify-between">
-                                <div class="flex flex-col gap-0.5 md:gap-1 min-w-0 flex-1">
-                                    <h4 class="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-gray-800 truncate" x-text="poli.poli.nama"></h4>
-                                    <div class="flex items-center gap-1.5 md:gap-2">
-                                        <span class="w-1 h-1 md:w-1.5 lg:w-1.5 rounded-full" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-300'"></span>
-                                        <span class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider"
+                                <div class="flex flex-col gap-1 min-w-0 flex-1">
+                                    <h4 class="text-lg lg:text-xl font-bold text-gray-700 truncate group-hover:text-medical-700 transition-colors" x-text="poli.poli.nama"></h4>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-300'"></span>
+                                        <span class="text-xs font-bold uppercase tracking-wider"
                                               :class="poli.current ? 'text-green-600' : 'text-gray-400'"
                                               x-text="poli.current ? 'Melayani' : 'Menunggu'"></span>
                                     </div>
                                 </div>
 
-                                <div class="queue-number font-mono font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl"
+                                <div class="queue-number font-mono font-black text-4xl lg:text-5xl whitespace-nowrap"
                                      :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
-                                     class="whitespace-nowrap"
                                      x-text="poli.current ? poli.current.nomor : '--'">
                                 </div>
                             </div>
