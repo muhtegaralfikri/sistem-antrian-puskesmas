@@ -281,13 +281,13 @@
 
     <!-- Running Text Footer -->
     <footer class="h-10 md:h-12 lg:h-14 bg-slate-900 text-white flex-none flex items-center relative z-20 overflow-hidden fixed bottom-0 w-full shadow-2xl">
-        <div class="bg-medical-600 h-full flex items-center px-2 md:px-4 lg:px-8 font-bold tracking-widest text-[10px] md:text-xs lg:text-sm z-10 shadow-lg relative shrink-0">
-            <span class="hidden sm:hidden">INFO</span>
-            <span class="hidden md:inline lg:inline">INFORMASI</span>
+        <div class="relative h-full flex items-center px-4 z-20">
+             <div class="bg-medical-600 text-white px-4 md:px-6 py-1 md:py-1.5 rounded-full font-bold tracking-widest text-[10px] md:text-xs lg:text-sm shadow-lg border border-medical-400 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full animate-pulse"></span>
+                <span class="hidden sm:inline">INFORMASI</span>
+                <span class="sm:hidden">INFO</span>
+            </div>
         </div>
-
-        <!-- Triangle Divider -->
-        <div class="w-0 h-0 border-t-[32px] md:border-t-[40px] lg:border-t-[48px] border-t-medical-600 border-r-[16px] md:border-r-[20px] lg:border-r-[24px] border-r-transparent z-10 hidden md:block"></div>
 
         <div class="flex-1 overflow-hidden relative h-full flex items-center">
             <div class="animate-scroll whitespace-nowrap absolute font-medium text-[10px] md:text-sm lg:text-base text-gray-200 tracking-wide w-auto py-1">
