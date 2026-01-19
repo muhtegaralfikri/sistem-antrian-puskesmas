@@ -65,62 +65,62 @@
     </div>
 
     <!-- Top Bar -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-gray-200 h-24 flex-none z-40 relative">
-        <div class="h-full px-8 flex items-center justify-between">
-            <div class="flex items-center gap-6">
+    <header class="bg-white/90 backdrop-blur-md border-b border-gray-200 h-auto py-4 md:py-0 md:h-24 flex-none z-40 relative">
+        <div class="h-full px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
+            <div class="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-center md:justify-start">
                 <!-- Logo Layout -->
-                <div class="w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-600/20 text-white font-bold text-2xl">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-600/20 text-white font-bold text-2xl shrink-0">
+                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                 </div>
-                <div>
-                    <h1 class="text-3xl font-black text-gray-900 tracking-tight leading-none">PUSKESMAS SEHAT</h1>
-                    <p class="text-gray-500 font-medium tracking-wide">Sistem Antrian Terpadu</p>
+                <div class="text-center md:text-left">
+                    <h1 class="text-xl md:text-3xl font-black text-gray-900 tracking-tight leading-none">PUSKESMAS SEHAT</h1>
+                    <p class="text-xs md:text-base text-gray-500 font-medium tracking-wide">Sistem Antrian Terpadu</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-8">
-                <div class="text-right">
-                    <div class="text-4xl font-black font-mono text-gray-900 tracking-tight" x-text="currentTime">--:--</div>
-                    <div class="text-gray-500 font-medium" x-text="currentDate">-- -- --</div>
+            <div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end px-4 md:px-0">
+                <div class="text-right w-full md:w-auto flex flex-row md:flex-col justify-between md:justify-end items-center md:items-end">
+                    <div class="text-2xl md:text-4xl font-black font-mono text-gray-900 tracking-tight order-2 md:order-1" x-text="currentTime">--:--</div>
+                    <div class="text-xs md:text-base text-gray-500 font-medium order-1 md:order-2" x-text="currentDate">-- -- --</div>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Content Area -->
-    <div class="flex-1 min-h-0 p-4 md:p-6 gap-4 md:gap-6 flex flex-col md:flex-row relative z-10">
+    <div class="flex-1 min-h-0 p-4 md:p-6 gap-4 md:gap-6 flex flex-col md:flex-row relative z-10 overflow-y-auto md:overflow-hidden">
         
         <!-- Left: Active Call / Video -->
-        <div class="w-full md:w-7/12 flex flex-col gap-4 md:gap-6 h-full">
+        <div class="w-full md:w-7/12 flex flex-col gap-4 md:gap-6 shrink-0 md:h-full">
             
             <!-- Hero Card (Active Call) -->
-            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 flex-1 min-h-0 flex flex-col items-center justify-center relative overflow-hidden group">
+            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 min-h-[300px] md:h-auto flex-1 flex flex-col items-center justify-center relative overflow-hidden group">
                 <!-- Background Decoration -->
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-50 to-white"></div>
                 
-                <div class="relative z-10 text-center w-full px-4 md:px-12 flex flex-col items-center justify-center h-full py-6">
+                <div class="relative z-10 text-center w-full px-4 md:px-8 flex flex-col items-center justify-evenly h-full py-4">
                     <template x-if="activeCall">
-                        <div class="animate-pulse-once flex flex-col items-center justify-center h-full w-full">
+                        <div class="flex flex-col items-center justify-center h-full w-full gap-2 md:gap-4">
                             <!-- Badge -->
-                            <div class="mb-4 md:mb-8">
-                                <span class="inline-block px-6 py-2 rounded-full bg-primary-100 text-primary-700 font-bold text-lg md:text-xl uppercase tracking-widest shadow-sm border border-primary-200">
+                            <div>
+                                <span class="inline-block px-3 md:px-5 py-1 rounded-full bg-primary-100 text-primary-700 font-bold text-[10px] md:text-sm lg:text-lg uppercase tracking-widest shadow-sm border border-primary-200">
                                     Sedang Dipanggil
                                 </span>
                             </div>
                             
                             <!-- Number -->
-                            <div class="leading-none font-black font-mono text-gray-900 tracking-tighter shrink-0 mb-4"
-                                 style="font-size: clamp(80px, 18vw, 160px);"
+                            <div class="leading-none font-black font-mono text-gray-900 tracking-tighter shrink-0"
+                                 style="font-size: clamp(40px, 15vh, 130px);"
                                  x-text="activeCall.nomor">
                                 --
                             </div>
                             
                             <!-- Label -->
-                            <div class="text-2xl md:text-3xl font-bold text-gray-500 mb-2">Silakan Menuju</div>
+                            <div class="text-xs md:text-lg lg:text-xl font-bold text-gray-500">Silakan Menuju</div>
                             
                             <!-- Poli Name -->
                             <div class="w-full max-w-4xl mx-auto">
-                                <div class="text-3xl md:text-5xl font-black text-primary-700 bg-white/60 backdrop-blur-sm px-8 py-4 rounded-2xl border border-primary-100 shadow-sm break-words leading-tight"
+                                <div class="text-base md:text-2xl lg:text-3xl font-black text-primary-700 bg-white/60 backdrop-blur-sm px-4 md:px-6 py-2 rounded-xl border border-primary-100 shadow-sm break-words leading-tight"
                                      x-text="activeCall.poli">
                                     --
                                 </div>
@@ -129,16 +129,16 @@
                     </template>
                     
                     <template x-if="!activeCall">
-                        <div class="flex flex-col items-center opacity-50">
-                            <svg class="w-24 h-24 md:w-40 md:h-40 text-gray-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <h2 class="text-2xl md:text-4xl font-bold text-gray-400">Menunggu Panggilan...</h2>
+                        <div class="flex flex-col items-center justify-center opacity-50 h-full">
+                            <svg class="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <h2 class="text-xl md:text-2xl lg:text-4xl font-bold text-gray-400">Menunggu Panggilan...</h2>
                         </div>
                     </template>
                 </div>
             </div>
 
             <!-- Info / Video Placeholder (Bottom Left) -->
-            <div class="h-28 md:h-32 bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl shadow-lg border border-gray-700 flex items-center justify-center relative overflow-hidden text-white px-6 md:px-8 shrink-0">
+            <div class="h-20 md:h-28 bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl shadow-lg border border-gray-700 flex items-center justify-center relative overflow-hidden text-white px-6 md:px-8 shrink-0 hidden md:flex">
                 <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
                 <div class="flex items-center gap-4 md:gap-6 z-10 w-full">
                     <div class="w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur shrink-0 animate-pulse">
@@ -153,23 +153,23 @@
         </div>
 
         <!-- Right: List of Polis -->
-        <div class="w-full md:w-5/12 grid grid-rows-4 gap-4 h-full">
+        <div class="w-full md:w-5/12 grid grid-cols-1 gap-3 md:gap-4 md:grid-rows-4 md:h-full pb-20 md:pb-0">
             <template x-for="(poli, index) in pagedPolis" :key="poli.poli.id">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center justify-between transition-all duration-500 h-full"
-                     :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-4 ring-primary-400 scale-[1.02] shadow-xl z-10 bg-blue-50' : 'opacity-95'">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 md:p-4 flex items-center justify-between transition-all duration-500 h-20 md:h-full"
+                     :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-2 md:ring-4 ring-primary-400 scale-[1.01] md:scale-[1.02] shadow-xl z-10 bg-blue-50' : 'opacity-95'">
                     
                     <div class="flex flex-col justify-center overflow-hidden mr-3 flex-1">
-                        <h3 class="text-lg md:text-2xl font-bold text-gray-800 mb-1 truncate leading-tight" x-text="poli.poli.nama"></h3>
+                        <h3 class="text-base md:text-lg lg:text-2xl font-bold text-gray-800 mb-0.5 md:mb-1 truncate leading-tight" x-text="poli.poli.nama"></h3>
                         <div class="flex items-center gap-2">
-                             <div :class="poli.current ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-500 border-gray-200'" class="px-2.5 py-1 rounded-lg text-xs md:text-sm font-bold flex items-center gap-1.5 border">
-                                <span class="w-2 h-2 rounded-full" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-400'"></span>
+                             <div :class="poli.current ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-500 border-gray-200'" class="px-2 py-0.5 md:px-2.5 md:py-1 rounded-lg text-[10px] md:text-sm font-bold flex items-center gap-1.5 border">
+                                <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-400'"></span>
                                 <span x-text="poli.current ? 'Melayani' : 'Menunggu'"></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex flex-col items-end shrink-0">
-                        <div class="font-black font-mono tracking-tighter leading-none text-4xl md:text-5xl lg:text-6xl" 
+                        <div class="font-black font-mono tracking-tighter leading-none text-3xl md:text-5xl lg:text-6xl" 
                              :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
                              x-text="poli.current ? poli.current.nomor : '--'">
                         </div>
@@ -177,12 +177,11 @@
                 </div>
             </template>
             
-            <!-- Fill empty slots to maintain grid if needed, or let grid handle it -->
-            <!-- Page Indicator Overlay (Absolute at bottom of this col) -->
-            <div class="absolute bottom-6 right-8 flex justify-center gap-2 h-2 z-20" x-show="totalPages > 1">
+            <!-- Page Indicator Overlay (Absolute at bottom on desktop, Fixed at bottom on mobile) -->
+            <div class="fixed bottom-20 md:bottom-6 left-0 right-0 md:left-auto md:right-8 flex justify-center md:justify-end gap-2 h-2 z-30 pointer-events-none" x-show="totalPages > 1">
                 <template x-for="i in totalPages">
-                    <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300 shadow-sm" 
-                         :class="currentPage === i ? 'bg-primary-600 scale-150' : 'bg-gray-300'"></div>
+                    <div class="w-2 h-2 rounded-full transition-colors duration-300 shadow-sm" 
+                         :class="currentPage === i ? 'bg-primary-600 scale-125' : 'bg-gray-300'"></div>
                 </template>
             </div>
         </div>
