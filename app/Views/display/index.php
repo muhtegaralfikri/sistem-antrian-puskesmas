@@ -4,41 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Display Antrian - Puskesmas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/app.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        medical: { 50:'#f0fdfa', 100:'#ccfbf1', 200:'#99f6e4', 300:'#5eead4', 400:'#2dd4bf', 500:'#14b8a6', 600:'#0d9488', 700:'#0f766e', 800:'#115e59', 900:'#134e4a' },
-                        primary: { 50:'#eff6ff', 100:'#dbeafe', 200:'#bfdbfe', 300:'#93c5fd', 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a' },
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    animation: {
-                        'blob': 'blob 10s infinite',
-                        'scroll': 'scroll 25s linear infinite',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
-                        },
-                        scroll: {
-                            '0%': { transform: 'translateX(100%)' },
-                            '100%': { transform: 'translateX(-100%)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         /* Desktop: Fixed, No Scroll */
         @media (min-width: 768px) {
@@ -117,9 +85,7 @@
     <!-- Top Bar -->
     <header class="h-14 sm:h-16 md:h-20 lg:h-24 flex-none z-40 px-3 sm:px-4 md:px-6 lg:px-8 flex items-center justify-between relative bg-white/50 backdrop-blur-sm md:bg-transparent">
         <div class="flex items-center gap-2 md:gap-4">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-gray-200/50 text-medical-600">
-                <svg class="w-5 h-5 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m6 0H6"/></svg>
-            </div>
+            <img src="/images/logo.png" alt="Logo Puskesmas" class="w-12 h-12 md:w-16 md:h-16 object-contain drop-shadow-md">
             <div>
                 <h1 class="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-gray-900 leading-tight">PUSKESMAS<span class="text-medical-600">SEHAT</span></h1>
                 <p class="text-[10px] sm:text-xs md:text-sm text-gray-500 font-medium tracking-wide uppercase hidden sm:block">Melayani Sepenuh Hati</p>
