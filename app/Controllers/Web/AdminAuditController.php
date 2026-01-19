@@ -29,11 +29,14 @@ class AdminAuditController extends BaseController
             'user_id' => $this->request->getGet('user_id'),
         ];
 
-        $logs = $this->getFilteredLogs($filters);
+        // Use the model with filters
+        $this->applyFilters($filters);
+        $logs = $this->auditLogModel->orderBy('created_at', 'DESC')->paginate(10);
 
         $data = [
             'title' => 'Log Aktivitas',
             'logs' => $logs,
+            'pager' => $this->auditLogModel->pager,
             'filters' => $filters,
             'actions' => [
                 'LOGIN' => 'Login',
@@ -59,50 +62,70 @@ class AdminAuditController extends BaseController
     }
 
     /**
-     * Get logs with filters
+     * Apply filters to the model
      */
-    private function getFilteredLogs(array $filters): array
+    private function applyFilters(array $filters)
     {
-        $builder = $this->auditLogModel->builder();
-
         // Filter by action
         if (!empty($filters['action'])) {
-            $builder->where('action', $filters['action']);
+            $this->auditLogModel->where('action', $filters['action']);
         }
 
         // Filter by entity type
         if (!empty($filters['entity_type'])) {
-            $builder->where('entity_type', $filters['entity_type']);
+            $this->auditLogModel->where('entity_type', $filters['entity_type']);
         }
 
         // Filter by user
         if (!empty($filters['user_id'])) {
-            $builder->where('user_id', $filters['user_id']);
+            $this->auditLogModel->where('user_id', $filters['user_id']);
         }
 
         // Filter by date range
         if (!empty($filters['start_date'])) {
-            $builder->where('created_at >=', $filters['start_date'] . ' 00:00:00');
+            $this->auditLogModel->where('created_at >=', $filters['start_date'] . ' 00:00:00');
         }
 
         if (!empty($filters['end_date'])) {
-            $builder->where('created_at <=', $filters['end_date'] . ' 23:59:59');
+            $this->auditLogModel->where('created_at <=', $filters['end_date'] . ' 23:59:59');
         }
-
-        return $builder->orderBy('created_at', 'DESC')
-            ->limit(200)
-            ->get()
-            ->getResultArray();
     }
 
     /**
-     * View log details
+     * Get Builder with filters - REMOVED/REPLACED
      */
-
+    // private function getLogBuilder(array $filters) ... 
 
     /**
-     * Export logs to CSV
+     * Get logs with filters (Deprecated - used by index logic inline now)
      */
+    // private function getFilteredLogs(array $filters): array { ... } 
+    
+    /**
+     * Get new logs since last ID (for polling)
+     */
+    public function updates()
+    {
+        $lastId = (int) $this->request->getGet('last_id');
+        
+        // Return emtpy if invalid ID
+        if ($lastId <= 0) {
+             return $this->response->setJSON(['success' => true, 'logs' => []]);
+        }
+
+        // Apply same filters as main page if needed, but for now just get everything new
+        // Optimization: limit to 50 to prevent overflow if client was disconnected long
+        $logs = $this->auditLogModel->where('id >', $lastId)
+            ->orderBy('id', 'ASC') // Get oldest first to append correctly (or client handles sort)
+            ->limit(50)
+            ->findAll();
+
+        return $this->response->setJSON([
+            'success' => true,
+            'logs' => $logs
+        ]);
+    }
+
     public function export()
     {
         $filters = [
@@ -113,7 +136,9 @@ class AdminAuditController extends BaseController
             'user_id' => $this->request->getGet('user_id'),
         ];
 
-        $logs = $this->getFilteredLogs($filters);
+        // Use the model to get all results
+        $this->applyFilters($filters);
+        $logs = $this->auditLogModel->orderBy('created_at', 'DESC')->findAll();
 
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

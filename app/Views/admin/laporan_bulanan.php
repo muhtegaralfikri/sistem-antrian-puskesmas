@@ -36,14 +36,14 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-medium transition shadow-sm hover:shadow-md">
+                    <div class="flex flex-wrap gap-2 w-full md:w-auto mt-4 md:mt-0">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-medium transition shadow-sm hover:shadow-md flex-1 md:flex-none justify-center flex">
                             Filter
                         </button>
-                        <a href="/admin/laporan/bulanan" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2.5 rounded-xl font-medium transition">
+                        <a href="/admin/laporan/bulanan" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2.5 rounded-xl font-medium transition flex-1 md:flex-none justify-center flex">
                             Reset
                         </a>
-                        <a href="/admin/laporan/export/bulanan?bulan=<?= esc($bulan) ?>&poli_id=<?= esc($poli_id) ?>" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl font-medium transition shadow-sm hover:shadow-md flex items-center gap-2">
+                        <a href="/admin/laporan/export/bulanan?bulan=<?= esc($bulan) ?>&poli_id=<?= esc($poli_id) ?>" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl font-medium transition shadow-sm hover:shadow-md flex items-center justify-center gap-2 w-full md:w-auto">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                             </svg>
@@ -119,8 +119,55 @@
             </div>
             <?php endif; ?>
 
+            <!-- Mobile View (Cards) -->
+            <div class="grid grid-cols-1 gap-4 md:hidden mb-6">
+                <?php if (empty($antrian)): ?>
+                    <div class="bg-white rounded-xl shadow-sm border p-6 text-center text-gray-500 italic">
+                        Tidak ada data antrian untuk filter ini
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($antrian as $i => $a): ?>
+                        <div class="bg-white rounded-xl shadow-sm border p-4 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xl font-bold text-gray-800">#<?= esc($a['nomor']) ?></span>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900"><?= esc($a['nama_pasien'] ?? 'Tanpa Nama') ?></div>
+                                        <div class="text-xs text-gray-500"><?= esc($a['poli_nama']) ?></div>
+                                    </div>
+                                </div>
+                                <?php
+                                $statusContext = [
+                                    'waiting' => ['bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'label' => 'Menunggu'],
+                                    'called' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'label' => 'Dipanggil'],
+                                    'serving' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-800', 'label' => 'Dilayani'],
+                                    'completed' => ['bg' => 'bg-green-100', 'text' => 'text-green-800', 'label' => 'Selesai'],
+                                    'skipped' => ['bg' => 'bg-red-100', 'text' => 'text-red-800', 'label' => 'Dilewat'],
+                                ];
+                                $ctx = $statusContext[$a['status']] ?? ['bg' => 'bg-gray-100', 'text' => 'text-gray-800', 'label' => $a['status']];
+                                ?>
+                                <span class="px-2.5 py-1 text-xs font-bold rounded-full <?= $ctx['bg'] ?> <?= $ctx['text'] ?>">
+                                    <?= $ctx['label'] ?>
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 text-sm text-gray-600 border-t pt-2 mt-2">
+                                <div>
+                                    <span class="block text-xs text-gray-400">Tanggal</span>
+                                    <?= date('d/m/Y', strtotime($a['created_at'])) ?>
+                                </div>
+                                <div>
+                                    <span class="block text-xs text-gray-400">Waktu</span>
+                                    <?= $a['waktu_ambil'] ? date('H:i', strtotime($a['waktu_ambil'])) : '-' ?> - <?= $a['waktu_selesai'] ? date('H:i', strtotime($a['waktu_selesai'])) : '-' ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
             <!-- Table -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <table class="w-full">
                     <thead class="bg-gray-50 border-b border-gray-100">
                         <tr>
@@ -178,7 +225,13 @@
             </div>
             
             <!-- Pagination -->
-            <div class="mt-4">
-                <?= $pager->links('default', 'tailwind_full') ?>
+            <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-sm text-gray-500 order-2 md:order-1">
+                    Menampilkan hal <span class="font-medium"><?= $pager->getCurrentPage() ?></span> dari <span class="font-medium"><?= $pager->getPageCount() ?></span>
+                    (<span class="font-medium"><?= $pager->getTotal() ?></span> data)
+                </div>
+                <div class="order-1 md:order-2">
+                    <?= $pager->links('default', 'tailwind_full') ?>
+                </div>
             </div>
 <?= $this->endSection() ?>

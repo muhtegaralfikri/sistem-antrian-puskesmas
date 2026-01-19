@@ -128,6 +128,18 @@
                 </tbody>
             </table>
         </div>
+        
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-gray-500 order-2 md:order-1">
+            Menampilkan hal <span class="font-medium"><?= $pager->getCurrentPage() ?></span> dari <span class="font-medium"><?= $pager->getPageCount() ?></span>
+            (<span class="font-medium"><?= $pager->getTotal() ?></span> data)
+        </div>
+        <div class="order-1 md:order-2">
+            <?= $pager->links('default', 'tailwind_full') ?>
+        </div>
     </div>
 
     <!-- Detail Modal -->
@@ -214,6 +226,39 @@ function auditLogManager(logsData) {
         logs: logsData,
         showModal: false,
         selectedLog: null,
+        
+        init() {
+            // Start polling every 5 seconds
+            setInterval(() => this.checkUpdates(), 5000);
+        },
+
+        async checkUpdates() {
+            if (this.logs.length === 0) return;
+            
+            // Get highest ID currently displayed
+            const maxId = Math.max(...this.logs.map(l => parseInt(l.id)));
+            
+            try {
+                const response = await fetch(`/admin/audit-log/updates?last_id=${maxId}`);
+                const result = await response.json();
+                
+                if (result.success && result.logs.length > 0) {
+                    // Prepend new logs (since table is DESC, we want new ones at top)
+                    // But result.logs is ASC (oldest new -> newest new)
+                    // So we reverse them to put newest at top
+                    const newLogs = result.logs.reverse();
+                    
+                    this.logs = [...newLogs, ...this.logs];
+                    
+                    // Optional: trim list if too long
+                    if (this.logs.length > 200) {
+                        this.logs = this.logs.slice(0, 200);
+                    }
+                }
+            } catch (e) {
+                console.error("Polling error", e);
+            }
+        },
 
         formatDate(dateString) {
             if (!dateString) return '-';

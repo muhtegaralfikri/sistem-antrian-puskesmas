@@ -13,7 +13,7 @@
 
     <!-- Top Action -->
     <div class="mb-4 flex justify-end">
-        <button @click="openAddModal()" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm transition-all hover:shadow-md">
+        <button @click="openAddModal()" class="w-full md:w-auto bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 shadow-sm transition-all hover:shadow-md">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
@@ -21,8 +21,53 @@
         </button>
     </div>
     
-    <!-- Poli List -->
-        <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+    <!-- Mobile View (Cards) -->
+    <div class="grid grid-cols-1 gap-4 md:hidden mb-6">
+        <template x-for="(poli, index) in polis" :key="poli.id">
+            <div class="bg-white rounded-xl shadow-sm border p-4 space-y-3">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center" :class="'bg-' + ['blue', 'green', 'purple', 'orange', 'teal'][index % 5] + '-100'">
+                            <svg class="w-5 h-5" :class="'text-' + ['blue', 'green', 'purple', 'orange', 'teal'][index % 5] + '-600'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800" x-text="poli.nama"></h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full" x-text="'Prefix: ' + poli.prefix"></span>
+                                <span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full" x-text="'Urut: ' + poli.urutan"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 border-t">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                          :class="poli.aktif ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+                        <span class="w-1.5 h-1.5 rounded-full" :class="poli.aktif ? 'bg-green-500' : 'bg-red-500'"></span>
+                        <span x-text="poli.aktif ? 'Aktif' : 'Non-aktif'"></span>
+                    </span>
+                    
+                    <div class="flex items-center gap-2">
+                        <button @click="editPoli(poli)" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </button>
+                        <button @click="deletePoli(poli)" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Desktop View (Table) -->
+    <div class="hidden md:block bg-white rounded-xl shadow-sm border overflow-hidden">
             <table class="w-full">
                 <thead class="bg-gray-50 border-b">
                     <tr>

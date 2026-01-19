@@ -47,37 +47,37 @@
     <!-- Navbar -->
     <nav class="glass-header sticky top-0 z-50">
         <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-4">
-                    <div class="bg-primary-600 text-white p-2.5 rounded-xl shadow-lg shadow-primary-600/20">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex items-center gap-3 md:gap-4">
+                    <div class="bg-primary-600 text-white p-2 md:p-2.5 rounded-xl shadow-lg shadow-primary-600/20">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-900 tracking-tight">Monitor Petugas</h1>
-                        <p class="text-sm text-gray-500 font-medium" x-text="'Halo, ' + (user.nama_lengkap || 'Petugas')"></p>
+                        <h1 class="text-lg md:text-xl font-bold text-gray-900 tracking-tight leading-tight">Monitor Petugas</h1>
+                        <p class="text-xs md:text-sm text-gray-500 font-medium" x-text="'Halo, ' + (user.nama_lengkap || 'Petugas')"></p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 md:gap-4">
                     <!-- Status Badge -->
-                    <div class="hidden md:flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full border border-green-100">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span class="text-sm font-bold">System Online</span>
+                    <div class="flex items-center gap-1.5 md:gap-2 bg-green-50 text-green-700 px-2.5 py-1.5 md:px-4 md:py-2 rounded-full border border-green-100">
+                        <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-[10px] md:text-sm font-bold hidden sm:inline">System Online</span>
                     </div>
                     
                     <!-- Admin Link -->
                     <template x-if="user.role === 'admin'">
-                        <a href="/admin" class="hidden md:flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors">
+                        <a href="/admin" class="flex items-center gap-1.5 md:gap-2 bg-blue-50 text-blue-700 px-2.5 py-1.5 md:px-4 md:py-2 rounded-full border border-blue-100 hover:bg-blue-100 transition-colors" title="Admin Panel">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <span class="text-sm font-bold">Admin Panel</span>
+                            <span class="text-[10px] md:text-sm font-bold hidden sm:inline">Admin Panel</span>
                         </a>
                     </template>
 
-                    <div class="h-8 w-px bg-gray-200 hidden md:block"></div>
+                    <div class="h-6 w-px bg-gray-200 hidden md:block"></div>
 
-                    <a href="/auth/logout" class="text-gray-500 hover:text-red-600 font-medium text-sm transition-colors flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        Keluar
+                    <a href="/auth/logout" class="text-gray-500 hover:text-red-600 font-medium text-sm transition-colors flex items-center gap-2" title="Keluar">
+                        <svg class="w-6 h-6 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        <span class="hidden md:inline">Keluar</span>
                     </a>
                 </div>
             </div>
@@ -133,115 +133,125 @@
         <!-- Poli Grid -->
         <h2 class="text-2xl font-bold text-gray-800 mb-6 pl-2 border-l-4 border-primary-600">Daftar Loket Pelayanan</h2>
         
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-10">
+        <div class="max-w-5xl mx-auto space-y-8 pb-20 relative z-10">
             <template x-for="poli in polis" :key="poli.poli.id">
-                <div class="poli-card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden group">
-                    <!-- Header -->
-                    <div class="bg-gray-50 px-8 py-5 border-b border-gray-100 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-xl bg-white shadow-sm border border-gray-200 flex items-center justify-center text-xl font-bold text-gray-800">
-                                <span x-text="poli.poli.prefix"></span>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900" x-text="poli.poli.nama"></h3>
-                                <div class="flex items-center gap-2 mt-0.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                                    <p class="text-xs font-mono text-gray-500 uppercase tracking-wide">Buka</p>
+                <div class="bg-white/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-gray-200/50 border border-white/50 overflow-hidden relative group hover:transform hover:scale-[1.01] transition-all duration-300">
+                    
+                    <!-- Decorative Background -->
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-primary-50/50 to-transparent rounded-full blur-3xl -z-10 translate-x-1/3 -translate-y-1/3"></div>
+                    <div class="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-blue-50/50 to-transparent rounded-full blur-3xl -z-10 -translate-x-1/3 translate-y-1/3"></div>
+
+                    <div class="flex flex-col md:flex-row">
+                        <!-- Main Section (Info & Current Serving) -->
+                        <div class="flex-1 p-6 md:p-8 md:pr-12 relative">
+                            <!-- Header Info -->
+                            <div class="flex justify-between items-start mb-8">
+                                <div class="flex items-center gap-5">
+                                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-white to-gray-50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex items-center justify-center text-2xl font-black text-gray-800 relative overflow-hidden">
+                                        <div class="absolute inset-0 bg-gradient-to-br from-transparent to-black/5"></div>
+                                        <span x-text="poli.poli.prefix" class="relative z-10"></span>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight" x-text="poli.poli.nama"></h3>
+                                        <div class="flex items-center gap-2.5 mt-2">
+                                            <div class="px-3 py-1 rounded-full bg-green-100/50 border border-green-200/50 flex items-center gap-2">
+                                                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                                <span class="text-xs font-bold text-green-700 uppercase tracking-wider">Sedang Melayani</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                             <button @click="panggilBerikutnya(poli.poli.id)" :disabled="loading || poli.waiting_count === 0"
-                                    class="group/btn relative px-5 py-2.5 bg-gray-900 hover:bg-black text-white rounded-xl shadow-lg shadow-gray-900/10 transition-all active:scale-95 disabled:opacity-50 disabled:shadow-none flex items-center gap-2 overflow-hidden">
-                                <span class="relative z-10 font-bold text-sm">Panggil Next</span>
-                                <svg class="w-4 h-4 relative z-10 transition-transform group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row h-[340px]">
-                        <!-- Left: Current Serving -->
-                        <div class="w-full md:w-1/2 p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col justify-between bg-white relative overflow-hidden">
-                            <!-- Background Decoration -->
-                            <div class="absolute -top-20 -left-20 w-40 h-40 bg-primary-50 rounded-full blur-3xl opacity-50"></div>
-
-                            <div class="relative text-center">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Sedang Dilayani</p>
                                 
-                                <template x-if="poli.current">
-                                    <div class="transform transition-all duration-500">
-                                        <div class="digital-display rounded-3xl p-8 mb-6 inline-block min-w-[200px]">
-                                            <span class="block text-6xl md:text-7xl font-black text-gray-900 tracking-tighter whitespace-nowrap" x-text="poli.current.nomor"></span>
-                                        </div>
-                                        <div class="flex justify-center gap-4">
-                                            <button @click="recall(poli.poli.id, poli.current.id)" class="p-3 text-orange-500 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors tooltip-trigger" title="Panggil Ulang">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.933 12.8a1 1 0 00-.933.8V19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-6.6a1 1 0 00-.333-.74L.5 7.5a1 1 0 011 .5h17a1 1 0 011-.5L20 12M4 7V5a2 2 0 012-2h12a2 2 0 012 2v2"/></svg>
-                                                <span class="sr-only">Recall</span>
-                                            </button>
-                                            <button @click="selesai(poli.poli.id, poli.current.id)" class="p-3 text-green-600 bg-green-50 hover:bg-green-100 rounded-xl transition-colors tooltip-trigger" title="Selesai">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                                <span class="sr-only">Selesai</span>
-                                            </button>
-                                        </div>
+                                <!-- Call Next Button (Desktop) -->
+                                <button @click="panggilBerikutnya(poli.poli.id)" :disabled="loading || poli.waiting_count === 0"
+                                        class="hidden md:flex group relative px-8 py-4 bg-gray-900 hover:bg-black text-white rounded-2xl shadow-xl shadow-gray-900/20 transition-all active:scale-95 disabled:opacity-50 disabled:shadow-none items-center gap-3 overflow-hidden">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <span class="relative z-10 font-bold text-base">Panggil</span>
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center relative z-10 group-disabled:hidden">
+                                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                     </div>
-                                </template>
-
-                                <template x-if="!poli.current">
-                                    <div class="h-[200px] flex flex-col items-center justify-center text-gray-300">
-                                        <div class="w-20 h-20 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center mb-4">
-                                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
-                                        </div>
-                                        <p class="font-medium text-gray-400">Belum ada panggilan</p>
-                                    </div>
-                                </template>
+                                </button>
                             </div>
-                        </div>
 
-                        <!-- Right: Waiting List -->
-                        <div class="w-full md:w-1/2 bg-gray-50 flex flex-col">
-                            <div class="p-4 border-b border-gray-100 bg-gray-50/50 backdrop-blur-sm sticky top-0 flex justify-between items-center">
-                                <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wide">Daftar Tunggu</h4>
-                                <span class="bg-white px-2 py-0.5 rounded text-xs fonts-bold shadow-sm border border-gray-100" x-text="(poli.waiting_count || 0) + ' Antrian'"></span>
+                            <!-- Big Current Number -->
+                            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 pl-2">
+                                <div class="relative">
+                                     <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 text-center md:text-left">Nomor Panggilan</p>
+                                     <template x-if="poli.current">
+                                        <div class="text-7xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-600 tracking-tighter tabular-nums leading-none filter drop-shadow-sm" x-text="poli.current.nomor"></div>
+                                     </template>
+                                     <template x-if="!poli.current">
+                                         <div class="text-7xl md:text-8xl font-black text-gray-200 tracking-tighter tabular-nums leading-none select-none">---</div>
+                                     </template>
+                                </div>
+
+                                <!-- Controls for Current Number -->
+                                <template x-if="poli.current">
+                                    <div class="flex items-center gap-4">
+                                        <button @click="recall(poli.poli.id, poli.current.id)" class="p-4 rounded-2xl bg-orange-50 text-orange-600 hover:bg-orange-100 hover:scale-105 active:scale-95 transition-all border border-orange-100/50 shadow-sm group" title="Panggil Ulang">
+                                            <svg class="w-6 h-6 md:w-8 md:h-8 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2a8.001 8.001 0 0015.357-2m0 0H15"/></svg>
+                                        </button>
+                                        <button @click="selesai(poli.poli.id, poli.current.id)" class="p-4 rounded-2xl bg-green-50 text-green-600 hover:bg-green-100 hover:scale-105 active:scale-95 transition-all border border-green-100/50 shadow-sm" title="Selesai">
+                                            <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        </button>
+                                    </div>
+                                </template>
                             </div>
                             
-                            <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
-                                <template x-if="poli.waiting && poli.waiting.length > 0">
-                                    <div class="space-y-2.5">
-                                        <template x-for="(item, idx) in poli.waiting" :key="item.id">
-                                            <div class="flex items-center justify-between p-3.5 bg-white rounded-xl shadow-sm border border-gray-100 hover:border-primary-200 transition-colors group">
-                                                <div class="flex items-center gap-3">
-                                                    <div class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 font-bold text-xs flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors" x-text="idx + 1"></div>
-                                                    <span class="font-bold text-lg text-gray-700 font-mono" x-text="item.nomor"></span>
-                                                </div>
-                                                <div class="flex items-center gap-2">
-                                                     <button @click="skip(poli.poli.id, item.id)" class="text-xs text-gray-300 hover:text-red-500 p-1.5 hover:bg-red-50 rounded transition-all" title="Lewati">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                     </button>
-                                                </div>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </template>
+                            <!-- Mobile Call Button -->
+                            <button @click="panggilBerikutnya(poli.poli.id)" :disabled="loading || poli.waiting_count === 0"
+                                    class="mt-8 w-full md:hidden group relative px-8 py-4 bg-gray-900 text-white rounded-2xl shadow-xl shadow-gray-900/20 transition-all active:scale-95 disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-3 overflow-hidden">
+                                <span class="relative z-10 font-bold text-base">Panggil</span>
+                                <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                        </div>
 
-                                <template x-if="!poli.waiting || poli.waiting.length === 0">
-                                    <div class="h-full flex flex-col items-center justify-center text-center p-6">
-                                        <img src="https://illustrations.popsy.co/gray/success.svg" class="w-24 h-24 opacity-50 mb-4 mix-blend-multiply" alt="Empty">
-                                        <p class="text-sm font-medium text-gray-400">Tidak ada antrian menunggu</p>
-                                    </div>
-                                </template>
+                        <!-- Right: Next Queue -->
+                        <div class="w-full md:w-[320px] lg:w-[400px] bg-gray-50/50 border-t md:border-t-0 md:border-l border-gray-100 flex flex-col items-center py-6 md:py-8 backdrop-blur-sm px-6 md:px-8">
+                            
+                            <!-- Header & Badge Row -->
+                            <div class="w-full flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+                                <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-[0.2em] text-center md:text-left">Antrian Berikutnya</h4>
+                                <div class="px-3 py-1.5 rounded-xl bg-white border border-gray-100 shadow-sm flex items-center gap-2 whitespace-nowrap">
+                                     <svg class="w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    <span class="text-xs md:text-sm font-bold text-gray-600" x-text="(poli.waiting_count || 0) + ' Menunggu'"></span>
+                                </div>
                             </div>
+
+                            <template x-if="poli.waiting && poli.waiting.length > 0">
+                                <div class="w-full flex flex-col items-center">
+                                    <p class="text-[10px] md:text-xs font-bold text-primary-600 mb-2 uppercase tracking-wide">Siap Dipanggil</p>
+                                    <div class="text-5xl md:text-6xl lg:text-7xl font-black text-gray-800 tracking-tighter tabular-nums mb-6" x-text="poli.waiting[0].nomor"></div>
+                                    
+                                    <div class="flex justify-center gap-2 relative z-10 w-full">
+                                         <button @click="skip(poli.poli.id, poli.waiting[0].id)" class="w-full md:w-auto px-5 py-2.5 md:px-6 md:py-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs md:text-sm hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+                                            <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                            Lewati
+                                         </button>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template x-if="!poli.waiting || poli.waiting.length === 0">
+                                <div class="flex flex-col items-center justify-center text-center p-6 md:p-8 opacity-40">
+                                    <div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                                        <svg class="w-8 h-8 md:w-10 md:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
+                                    </div>
+                                    <p class="text-sm md:text-base font-medium text-gray-400">Tidak ada antrian</p>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
             </template>
         </div>
     </main>
-</div>
-
-<div x-show="loading" class="fixed inset-0 z-[100] bg-white flex items-center justify-center">
-    <div class="flex flex-col items-center gap-4">
-        <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
-        <div class="text-gray-500 font-medium animate-pulse">Memuat Data...</div>
+    <!-- Loading Overlay -->
+    <div x-show="loading" class="fixed inset-0 z-[100] bg-white flex items-center justify-center">
+        <div class="flex flex-col items-center gap-4">
+            <div class="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+            <div class="text-gray-500 font-medium animate-pulse">Memuat Data...</div>
+        </div>
     </div>
 </div>
 <?= $this->endSection() ?>

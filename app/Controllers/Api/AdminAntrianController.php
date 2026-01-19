@@ -6,14 +6,17 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\AntrianModel;
+use App\Models\AuditLogModel;
 
 class AdminAntrianController extends BaseController
 {
     protected AntrianModel $antrianModel;
+    protected AuditLogModel $auditLogModel;
 
     public function __construct()
     {
         $this->antrianModel = new AntrianModel();
+        $this->auditLogModel = new AuditLogModel();
     }
 
     /**
@@ -37,11 +40,19 @@ class AdminAntrianController extends BaseController
             ->where('antrian.poli_id', $poliId)
             ->where('DATE(antrian.created_at)', date('Y-m-d'))
             ->orderBy('antrian.id', 'ASC')
-            ->findAll();
+            ->paginate(10);
+
+        $pager = $this->antrianModel->pager;
 
         return $this->response->setJSON([
             'success' => true,
             'data' => $antrians,
+            'pager' => [
+                'current_page' => $pager->getCurrentPage(),
+                'total_pages' => $pager->getPageCount(),
+                'total_items' => $pager->getTotal(),
+                'per_page' => $pager->getPerPage(),
+            ]
         ]);
     }
 
@@ -118,6 +129,15 @@ class AdminAntrianController extends BaseController
         }
 
         $this->antrianModel->delete($id);
+
+        // Audit Log: Delete Antrian
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_DELETE,
+            AuditLogModel::ENTITY_ANTRIAN,
+            (int)$id,
+            "Deleted Antrian: {$antrian['nomor']} (Poli ID: {$antrian['poli_id']})",
+            $antrian
+        );
 
         return $this->response->setJSON([
             'success' => true,
