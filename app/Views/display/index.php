@@ -12,6 +12,7 @@
             theme: {
                 extend: {
                     colors: {
+                        medical: { 50:'#f0fdfa', 100:'#ccfbf1', 200:'#99f6e4', 300:'#5eead4', 400:'#2dd4bf', 500:'#14b8a6', 600:'#0d9488', 700:'#0f766e', 800:'#115e59', 900:'#134e4a' },
                         primary: { 50:'#eff6ff', 100:'#dbeafe', 200:'#bfdbfe', 300:'#93c5fd', 400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a' },
                     },
                     fontFamily: {
@@ -19,13 +20,15 @@
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     animation: {
-                        'gradient': 'gradient 8s ease infinite',
-                        'scroll': 'scroll 20s linear infinite',
+                        'blob': 'blob 10s infinite',
+                        'scroll': 'scroll 25s linear infinite',
                     },
                     keyframes: {
-                        gradient: {
-                            '0%, 100%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
                         },
                         scroll: {
                             '0%': { transform: 'translateX(100%)' },
@@ -37,164 +40,258 @@
         }
     </script>
     <style>
-        body { overflow: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        /* Desktop: Fixed, No Scroll */
+        @media (min-width: 768px) {
+            body { overflow: hidden; height: 100vh; }
+        }
+        /* Mobile: Scroll allowed */
+        @media (max-width: 767px) {
+            body { overflow-y: auto; height: auto; min-height: 100vh; }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
         .hero-pattern {
-            background-color: #f8fafc;
-            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-color: #f0fdfa;
+            background-image: radial-gradient(#ccfbf1 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        /* Hide scrollbar for queue list */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Mobile specific styles */
+        @media (max-width: 640px) {
+            .queue-card {
+                padding: 0.5rem !important;
+            }
+            .queue-number {
+                font-size: 1.5rem !important;
+            }
+            .active-number {
+                font-size: clamp(60px, 15vw, 100px) !important;
+            }
+            .poli-name {
+                font-size: 1.25rem !important;
+            }
+        }
+
+        @media (min-width: 641px) and (max-width: 1024px) {
+            /* Tablet styles */
+            .active-number {
+                font-size: clamp(80px, 12vw, 140px) !important;
+            }
         }
     </style>
 </head>
-<body x-data="displayData()" class="h-screen flex flex-col hero-pattern text-gray-800">
+<body x-data="displayData()" class="flex flex-col hero-pattern text-gray-800 relative">
+
+    <!-- Decorative Blobs -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute top-0 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-2xl md:blur-3xl opacity-30 animate-blob"></div>
+        <div class="absolute top-0 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-medical-200 rounded-full mix-blend-multiply filter blur-2xl md:blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-32 left-1/3 w-64 h-64 md:w-96 md:h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-2xl md:blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+    </div>
 
     <!-- Audio Permission Overlay -->
-    <div x-show="!audioEnabled" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
-        <div class="text-center bg-white p-10 rounded-3xl shadow-2xl max-w-lg mx-4 border-4 border-primary-100">
-            <div class="mb-8 w-24 h-24 bg-primary-50 rounded-full flex items-center justify-center mx-auto animate-bounce">
-                <svg class="w-12 h-12 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div x-show="!audioEnabled" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-opacity duration-500">
+        <div class="text-center bg-white p-6 md:p-10 rounded-3xl shadow-2xl max-w-lg mx-4 border border-white/50 relative overflow-hidden">
+             <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary-400 to-medical-400"></div>
+            <div class="mb-4 md:mb-6 w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary-100 to-medical-100 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+                <svg class="w-8 h-8 md:w-10 md:h-10 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
                 </svg>
             </div>
-            <h2 class="text-3xl font-bold text-gray-900 mb-3">Display Antrian TV</h2>
-            <p class="text-gray-500 mb-8 text-lg">Klik untuk memulai mode layar penuh & audio</p>
-            <button @click="enableAudio()" class="w-full bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-xl font-bold text-xl shadow-lg shadow-primary-600/30 transition-all transform hover:scale-105 active:scale-95">
-                Mulai Display
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-1 md:mb-2">Selamat Datang</h2>
+            <p class="text-sm md:text-base text-gray-500 mb-4 md:mb-8">Klik tombol di bawah untuk mengaktifkan suara antrian.</p>
+            <button @click="enableAudio()" class="w-full bg-slate-900 hover:bg-slate-800 text-white px-6 md:px-8 py-3 md:py-3.5 rounded-xl font-bold text-base md:text-lg shadow-lg shadow-slate-900/20 transition-all transform hover:scale-[1.02] active:scale-[0.98]">
+                Mulai Aplikasi
             </button>
         </div>
     </div>
 
     <!-- Top Bar -->
-    <header class="bg-white/90 backdrop-blur-md border-b border-gray-200 h-auto py-4 md:py-0 md:h-24 flex-none z-40 relative">
-        <div class="h-full px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0">
-            <div class="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-center md:justify-start">
-                <!-- Logo Layout -->
-                <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl flex items-center justify-center shadow-lg shadow-primary-600/20 text-white font-bold text-2xl shrink-0">
-                    <svg class="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                </div>
-                <div class="text-center md:text-left">
-                    <h1 class="text-xl md:text-3xl font-black text-gray-900 tracking-tight leading-none">PUSKESMAS SEHAT</h1>
-                    <p class="text-xs md:text-base text-gray-500 font-medium tracking-wide">Sistem Antrian Terpadu</p>
-                </div>
+    <header class="h-14 sm:h-16 md:h-20 lg:h-24 flex-none z-40 px-3 sm:px-4 md:px-6 lg:px-8 flex items-center justify-between relative bg-white/50 backdrop-blur-sm md:bg-transparent">
+        <div class="flex items-center gap-2 md:gap-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-gray-200/50 text-medical-600">
+                <svg class="w-5 h-5 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m6 0H6"/></svg>
             </div>
-            
-            <div class="flex items-center gap-8 w-full md:w-auto justify-between md:justify-end px-4 md:px-0">
-                <div class="text-right w-full md:w-auto flex flex-row md:flex-col justify-between md:justify-end items-center md:items-end">
-                    <div class="text-2xl md:text-4xl font-black font-mono text-gray-900 tracking-tight order-2 md:order-1" x-text="currentTime">--:--</div>
-                    <div class="text-xs md:text-base text-gray-500 font-medium order-1 md:order-2" x-text="currentDate">-- -- --</div>
-                </div>
+            <div>
+                <h1 class="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-gray-900 leading-tight">PUSKESMAS<span class="text-medical-600">SEHAT</span></h1>
+                <p class="text-[10px] sm:text-xs md:text-sm text-gray-500 font-medium tracking-wide uppercase hidden sm:block">Melayani Sepenuh Hati</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 md:gap-6">
+            <!-- Desktop Time -->
+            <div class="text-right hidden lg:block">
+                <div class="text-2xl md:text-3xl font-bold text-gray-900 tabular-nums tracking-tight" x-text="currentTime">--:--</div>
+                <div class="text-xs md:text-sm text-gray-500 font-medium" x-text="currentDate">-- -- --</div>
+            </div>
+            <!-- Tablet Time -->
+            <div class="text-right hidden md:block lg:hidden">
+                <div class="text-xl md:text-2xl font-bold text-gray-900 tabular-nums tracking-tight" x-text="currentTime">--:--</div>
+                <div class="text-[10px] md:text-xs text-gray-500 font-medium" x-text="currentDate">-- -- --</div>
+            </div>
+            <!-- Mobile Time -->
+            <div class="text-right md:hidden">
+                <div class="text-lg font-bold text-gray-900 tabular-nums" x-text="currentTime">--:--</div>
             </div>
         </div>
     </header>
 
-    <!-- Content Area -->
-    <div class="flex-1 min-h-0 p-4 md:p-6 gap-4 md:gap-6 flex flex-col md:flex-row relative z-10 overflow-y-auto md:overflow-hidden">
-        
-        <!-- Left: Active Call / Video -->
-        <div class="w-full md:w-7/12 flex flex-col gap-4 md:gap-6 shrink-0 md:h-full">
-            
-            <!-- Hero Card (Active Call) -->
-            <div class="bg-white rounded-3xl shadow-xl border border-gray-100 min-h-[300px] md:h-auto flex-1 flex flex-col items-center justify-center relative overflow-hidden group">
-                <!-- Background Decoration -->
-                <div class="absolute inset-0 bg-gradient-to-br from-primary-50 to-white"></div>
-                
-                <div class="relative z-10 text-center w-full px-4 md:px-8 flex flex-col items-center justify-evenly h-full py-4">
-                    <template x-if="activeCall">
-                        <div class="flex flex-col items-center justify-center h-full w-full gap-2 md:gap-4">
-                            <!-- Badge -->
-                            <div>
-                                <span class="inline-block px-3 md:px-5 py-1 rounded-full bg-primary-100 text-primary-700 font-bold text-[10px] md:text-sm lg:text-lg uppercase tracking-widest shadow-sm border border-primary-200">
-                                    Sedang Dipanggil
-                                </span>
-                            </div>
-                            
-                            <!-- Number -->
-                            <div class="leading-none font-black font-mono text-gray-900 tracking-tighter shrink-0"
-                                 style="font-size: clamp(40px, 15vh, 130px);"
-                                 x-text="activeCall.nomor">
+    <!-- Content Layout -->
+    <div class="flex-1 p-2 sm:p-3 md:p-4 lg:p-6 md:pt-0 gap-2 md:gap-4 lg:gap-6 flex flex-col md:flex-row relative z-10 md:overflow-hidden h-full">
+
+        <!-- Main Area: Active Call & Media -->
+        <div class="w-full md:w-full lg:w-8/12 xl:w-9/12 flex flex-col gap-2 md:gap-4 lg:gap-6 md:h-full">
+
+            <!-- Active Call Card (Premium) -->
+            <div class="glass-panel rounded-[1rem] md:rounded-[1.5rem] lg:rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden flex-1 md:flex-1 transition-all duration-700 min-h-[35vh] md:min-h-[40vh] lg:min-h-[50vh] xl:min-h-0">
+                <div class="absolute top-0 w-full h-1 md:h-1.5 bg-gradient-to-r from-medical-400 via-primary-400 to-medical-400"></div>
+
+                <template x-if="activeCall">
+                    <div class="relative z-10 w-full h-full flex flex-col items-center justify-between py-3 sm:py-4 md:py-6 px-2 md:px-4 lg:justify-evenly">
+
+                        <!-- Status Badge -->
+                        <div class="animate-pulse shrink-0 mt-1 md:mt-2 lg:mt-0">
+                            <span class="px-2 md:px-3 lg:px-5 py-0.5 md:py-1 lg:py-2 rounded-full bg-medical-50 text-medical-700 font-bold text-[8px] sm:text-[10px] md:text-sm uppercase tracking-[0.2em] border border-medical-100">
+                                Panggilan Saat Ini
+                            </span>
+                        </div>
+
+                        <!-- Main Number Display -->
+                        <div class="relative shrink-0 flex items-center justify-center flex-1 my-1 md:my-2 lg:my-0 w-full">
+                            <span class="active-number font-black font-mono text-slate-800 tracking-tighter leading-none drop-shadow-sm select-none"
+                                  :style="'font-size: clamp(50px, 12vw, 100px)'"
+                                  x-text="activeCall.nomor">
                                 --
-                            </div>
-                            
-                            <!-- Label -->
-                            <div class="text-xs md:text-lg lg:text-xl font-bold text-gray-500">Silakan Menuju</div>
-                            
-                            <!-- Poli Name -->
-                            <div class="w-full max-w-4xl mx-auto">
-                                <div class="text-base md:text-2xl lg:text-3xl font-black text-primary-700 bg-white/60 backdrop-blur-sm px-4 md:px-6 py-2 rounded-xl border border-primary-100 shadow-sm break-words leading-tight"
-                                     x-text="activeCall.poli">
+                            </span>
+                        </div>
+
+                        <!-- Divider Line -->
+                        <div class="w-12 h-0.5 md:w-16 md:h-1 bg-gray-200 rounded-full shrink-0 mb-2 md:mb-0"></div>
+
+                        <!-- Poli & Label -->
+                        <div class="text-center shrink-0 w-full mb-1 md:mb-0 px-2">
+                            <p class="text-gray-400 font-medium text-[10px] sm:text-xs md:text-base uppercase tracking-widest mb-1 md:mb-2">Silakan Menuju Ke</p>
+                            <div class="relative w-full flex justify-center items-center pb-1">
+                                <h2 class="poli-name text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-medical-700 tracking-tight leading-tight px-1 md:px-2 break-words text-wrap"
+                                    x-text="activeCall.poli">
                                     --
+                                </h2>
+                            </div>
+                        </div>
+
+                    </div>
+                </template>
+
+                <template x-if="!activeCall">
+                    <div class="flex flex-col items-center opacity-40 justify-center h-full gap-2 md:gap-4">
+                        <div class="w-16 h-16 sm:w-20 sm:h-24 md:w-24 md:h-32 bg-gray-100 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 md:w-10 md:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                        </div>
+                        <h2 class="text-base md:text-xl lg:text-2xl font-bold text-gray-400">Menunggu Antrian...</h2>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Health Tips / Media Placeholder - Hidden on small mobile -->
+            <div class="glass-panel rounded-2xl p-3 md:p-4 lg:p-6 flex items-center gap-3 md:gap-4 lg:gap-6 relative overflow-hidden hidden sm:flex md:flex-[0.6] lg:flex-[0.5] shrink-0">
+                <div class="absolute -right-6 -bottom-6 w-24 h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 bg-medical-50 rounded-full opacity-50"></div>
+
+                <div class="w-8 h-8 md:w-12 md:h-14 lg:w-16 lg:h-16 bg-blue-50 rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 text-blue-500">
+                    <svg class="w-4 h-4 md:w-6 md:h-7 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h3 class="text-sm md:text-base lg:text-lg font-bold text-gray-800 mb-0.5 md:mb-1">Info Kesehatan</h3>
+                    <p class="text-[10px] sm:text-xs md:text-sm lg:text-base text-gray-500 leading-relaxed line-clamp-2">Gunakan masker saat berada di area Puskesmas. Jaga jarak aman.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Queue Sidebar -->
+        <div class="w-full md:w-full lg:w-4/12 xl:w-3/12 flex flex-col md:h-full relative pb-28 md:pb-0">
+            <div class="flex-1 grid grid-cols-1 gap-1.5 md:gap-2 lg:gap-3 content-start md:overflow-y-auto no-scrollbar p-1 md:p-0">
+
+                <!-- Mobile: Horizontal scroll for queue cards -->
+                <div class="md:hidden flex overflow-x-auto gap-2 pb-2 -mx-2 px-2">
+                    <template x-for="(poli, index) in polis" :key="poli.poli.id">
+                        <div class="queue-card flex-shrink-0 w-36 bg-white/80 backdrop-blur-sm p-3 rounded-xl border border-white/60 shadow-sm transition-all duration-300"
+                             :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-2 ring-medical-400 shadow-md bg-white' : 'hover:bg-white/90'">
+
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-xs md:text-sm font-bold text-gray-800 truncate flex-1" x-text="poli.poli.nama"></h4>
+                                <div class="flex items-center gap-1 ml-2">
+                                    <span class="w-1 h-1 rounded-full flex-shrink-0" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-300'"></span>
+                                </div>
+                            </div>
+
+                            <div class="queue-number font-mono font-bold text-2xl sm:text-3xl md:text-4xl"
+                                 :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
+                                 x-text="poli.current ? poli.current.nomor : '--'">
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Desktop: Vertical queue cards -->
+                <div class="hidden md:grid grid-cols-1 lg:grid-cols-1 gap-2 md:gap-3 lg:gap-4">
+                    <template x-for="(poli, index) in pagedPolis" :key="poli.poli.id">
+                        <div class="bg-white/80 backdrop-blur-sm p-3 md:p-4 lg:p-5 rounded-xl md:rounded-2xl border border-white/60 shadow-sm transition-all duration-300"
+                             :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-2 ring-medical-400 shadow-md bg-white' : 'hover:bg-white/90'">
+
+                            <div class="flex items-center justify-between">
+                                <div class="flex flex-col gap-0.5 md:gap-1 min-w-0 flex-1">
+                                    <h4 class="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-gray-800 truncate" x-text="poli.poli.nama"></h4>
+                                    <div class="flex items-center gap-1.5 md:gap-2">
+                                        <span class="w-1 h-1 md:w-1.5 lg:w-1.5 rounded-full" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-300'"></span>
+                                        <span class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider"
+                                              :class="poli.current ? 'text-green-600' : 'text-gray-400'"
+                                              x-text="poli.current ? 'Melayani' : 'Menunggu'"></span>
+                                    </div>
+                                </div>
+
+                                <div class="queue-number font-mono font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl"
+                                     :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
+                                     x-text="poli.current ? poli.current.nomor : '--'">
                                 </div>
                             </div>
                         </div>
                     </template>
-                    
-                    <template x-if="!activeCall">
-                        <div class="flex flex-col items-center justify-center opacity-50 h-full">
-                            <svg class="w-16 h-16 md:w-24 md:h-24 lg:w-32 lg:h-32 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            <h2 class="text-xl md:text-2xl lg:text-4xl font-bold text-gray-400">Menunggu Panggilan...</h2>
-                        </div>
-                    </template>
                 </div>
+
             </div>
 
-            <!-- Info / Video Placeholder (Bottom Left) -->
-            <div class="h-20 md:h-28 bg-gradient-to-r from-gray-900 to-gray-800 rounded-3xl shadow-lg border border-gray-700 flex items-center justify-center relative overflow-hidden text-white px-6 md:px-8 shrink-0 hidden md:flex">
-                <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                <div class="flex items-center gap-4 md:gap-6 z-10 w-full">
-                    <div class="w-12 h-12 md:w-16 md:h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur shrink-0 animate-pulse">
-                        <svg class="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg md:text-xl font-bold mb-1">Budayakan Antre</h3>
-                        <p class="text-gray-300 text-sm md:text-base leading-snug">Mohon menunggu nomor antrian Anda dipanggil.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right: List of Polis -->
-        <div class="w-full md:w-5/12 grid grid-cols-1 gap-3 md:gap-4 md:grid-rows-4 md:h-full pb-20 md:pb-0">
-            <template x-for="(poli, index) in pagedPolis" :key="poli.poli.id">
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-3 md:p-4 flex items-center justify-between transition-all duration-500 h-20 md:h-full"
-                     :class="poli.current && activeCall && activeCall.nomor === poli.current.nomor ? 'ring-2 md:ring-4 ring-primary-400 scale-[1.01] md:scale-[1.02] shadow-xl z-10 bg-blue-50' : 'opacity-95'">
-                    
-                    <div class="flex flex-col justify-center overflow-hidden mr-3 flex-1">
-                        <h3 class="text-base md:text-lg lg:text-2xl font-bold text-gray-800 mb-0.5 md:mb-1 truncate leading-tight" x-text="poli.poli.nama"></h3>
-                        <div class="flex items-center gap-2">
-                             <div :class="poli.current ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-500 border-gray-200'" class="px-2 py-0.5 md:px-2.5 md:py-1 rounded-lg text-[10px] md:text-sm font-bold flex items-center gap-1.5 border">
-                                <span class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full" :class="poli.current ? 'bg-green-500 animate-pulse' : 'bg-gray-400'"></span>
-                                <span x-text="poli.current ? 'Melayani' : 'Menunggu'"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col items-end shrink-0">
-                        <div class="font-black font-mono tracking-tighter leading-none text-3xl md:text-5xl lg:text-6xl" 
-                             :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
-                             x-text="poli.current ? poli.current.nomor : '--'">
-                        </div>
-                    </div>
-                </div>
-            </template>
-            
-            <!-- Page Indicator Overlay (Absolute at bottom on desktop, Fixed at bottom on mobile) -->
-            <div class="fixed bottom-20 md:bottom-6 left-0 right-0 md:left-auto md:right-8 flex justify-center md:justify-end gap-2 h-2 z-30 pointer-events-none" x-show="totalPages > 1">
+            <!-- Page Indicators -->
+            <div class="fixed bottom-14 md:bottom-16 lg:bottom-18 left-0 right-0 flex justify-center gap-1.5 py-2 md:py-3 z-30 pointer-events-none md:absolute">
                 <template x-for="i in totalPages">
-                    <div class="w-2 h-2 rounded-full transition-colors duration-300 shadow-sm" 
-                         :class="currentPage === i ? 'bg-primary-600 scale-125' : 'bg-gray-300'"></div>
+                    <div class="h-1.5 md:h-2 w-1.5 md:w-2 rounded-full transition-all duration-500 shadow-sm"
+                         :class="currentPage === i ? 'bg-gray-800 w-3 md:w-4' : 'bg-gray-300'"></div>
                 </template>
             </div>
         </div>
+
     </div>
 
     <!-- Running Text Footer -->
-    <footer class="bg-primary-900 text-white h-16 flex-none flex items-center overflow-hidden z-20 relative shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
-        <div class="bg-primary-700 px-6 h-full flex items-center z-20 font-bold tracking-widest text-sm relative shadow-lg">
-            INFO
+    <footer class="h-10 md:h-12 lg:h-14 bg-slate-900 text-white flex-none flex items-center relative z-20 overflow-hidden fixed bottom-0 w-full shadow-2xl">
+        <div class="bg-medical-600 h-full flex items-center px-2 md:px-4 lg:px-8 font-bold tracking-widest text-[10px] md:text-xs lg:text-sm z-10 shadow-lg relative shrink-0">
+            <span class="hidden sm:hidden">INFO</span>
+            <span class="hidden md:inline lg:inline">INFORMASI</span>
         </div>
-        <div class="whitespace-nowrap flex-1 overflow-hidden relative">
-            <div class="animate-scroll absolute top-1/2 -translate-y-1/2 font-medium text-lg tracking-wide w-full" style="width: 200%">
-               Selamat Datang di Puskesmas Percontohan. Mohon menunggu panggilan sesuai nomor antrian. Jam operasional: Senin - Jumat (08:00 - 15:00), Sabtu (08:00 - 12:00). Tetap patuhi protokol kesehatan. Terima kasih. &nbsp;&nbsp;&bull;&nbsp;&nbsp; Budayakan Antre untuk kenyamanan bersama. &nbsp;&nbsp;&bull;&nbsp;&nbsp; Silakan ambil nomor antrian di Kiosk jika belum memiliki tiket.
+
+        <!-- Triangle Divider -->
+        <div class="w-0 h-0 border-t-[32px] md:border-t-[40px] lg:border-t-[48px] border-t-medical-600 border-r-[16px] md:border-r-[20px] lg:border-r-[24px] border-r-transparent z-10 hidden md:block"></div>
+
+        <div class="flex-1 overflow-hidden relative h-full flex items-center">
+            <div class="animate-scroll whitespace-nowrap absolute font-medium text-[10px] md:text-sm lg:text-base text-gray-200 tracking-wide w-auto py-1">
+                Selamat Datang di Puskesmas Sehat. Budayakan antre untuk kenyamanan bersama. &nbsp;&nbsp;✦&nbsp;&nbsp; Jam Operasional: 08:00 - 15:00 WIB. &nbsp;&nbsp;✦&nbsp;&nbsp; Jagalah kebersihan lingkungan. &nbsp;&nbsp;✦&nbsp;&nbsp; Gunakan masker jika sedang batuk atau flu.
             </div>
         </div>
     </footer>
@@ -203,24 +300,24 @@
     function displayData() {
         return {
             polis: [],
-            pagedPolis: [], // For sidebar pagination
+            pagedPolis: [],
             currentPage: 1,
             itemsPerPage: 4,
             totalPages: 1,
             pageInterval: null,
-            
+
             loading: true,
             currentTime: '',
             currentDate: '',
-            activeCall: null, // { nomor: 'A-001', poli: 'Poli Umum' }
-            
+            activeCall: null,
+
             // Audio vars
             audioEnabled: false,
             audioBaseUrl: '/voice/',
             audioQueue: [],
             indonesianVoice: null,
             isPlaying: false,
-            
+
             // Logic vars
             globalAnnouncementQueue: [],
             lastCalled: {},
@@ -231,6 +328,39 @@
                 this.updateTime();
                 setInterval(() => this.updateTime(), 1000);
                 this.startPagination();
+
+                // Responsive items per page
+                this.adjustItemsPerPage();
+                window.addEventListener('resize', () => {
+                     this.adjustItemsPerPage();
+                });
+            },
+
+            adjustItemsPerPage() {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+
+                // Mobile portrait - show all in horizontal scroll
+                if (width < 768) {
+                    this.itemsPerPage = 10; // Show all in horizontal scroll
+                }
+                // Tablet portrait / small desktop
+                else if (width < 1024 || height < 800) {
+                    this.itemsPerPage = 3;
+                }
+                // Standard desktop
+                else if (height < 900) {
+                    this.itemsPerPage = 4;
+                }
+                // Large desktop
+                else if (height < 1200) {
+                    this.itemsPerPage = 5;
+                }
+                // Extra large
+                else {
+                    this.itemsPerPage = 6;
+                }
+                this.updatePagedPolis();
             },
 
             enableAudio() {
@@ -238,21 +368,21 @@
                 this.requestFullScreen();
                 this.loadIndonesianVoice();
                 this.loadData();
-                setInterval(() => this.loadData(), 2000); // 2s polling
+                setInterval(() => this.loadData(), 2000);
             },
-            
+
             requestFullScreen() {
                 const elem = document.documentElement;
                 if (elem.requestFullscreen) elem.requestFullscreen().catch(err => console.log(err));
             },
-            
+
             startPagination() {
                 if(this.pageInterval) clearInterval(this.pageInterval);
                 this.pageInterval = setInterval(() => {
                     this.nextPage();
-                }, 8000); // Rotate every 8 seconds
+                }, 8000);
             },
-            
+
             nextPage() {
                 if (this.totalPages <= 1) return;
                 this.currentPage++;
@@ -266,7 +396,6 @@
                     return;
                 }
                 this.totalPages = Math.ceil(this.polis.length / this.itemsPerPage) || 1;
-                // Ensure page is valid
                 if (this.currentPage > this.totalPages) this.currentPage = 1;
 
                 const start = (this.currentPage - 1) * this.itemsPerPage;
@@ -276,22 +405,22 @@
 
             async loadData() {
                 if(!this.audioEnabled) return;
-                
+
                 try {
                     const res = await fetch('/display/data');
                     const result = await res.json();
                     if (result.success && result.data.polis) {
-                         this.polis = result.data.polis; // Direct assign, list is minimal
-                         this.updatePagedPolis(); // Update side view immediately
+                         this.polis = result.data.polis;
+                         this.updatePagedPolis();
                          this.checkForNewCalls(result.data.polis);
                     }
                 } catch (e) {
-                    console.error("Connection Error");
+                    // Silent fail
                 }
             },
-            
-            // --- Audio Logic (Preserved & Enhanced) ---
-            
+
+            // --- Audio Logic ---
+
             loadIndonesianVoice() {
                 const voices = window.speechSynthesis.getVoices();
                 this.indonesianVoice = voices.find(v => v.lang.includes('id')) || null;
@@ -325,9 +454,7 @@
                 this.isProcessingAnnouncement = true;
 
                 const announcement = this.globalAnnouncementQueue.shift();
-                
-                // === VISUAL UPDATE ===
-                // Set active call large display
+
                 this.activeCall = {
                     nomor: announcement.nomor,
                     poli: announcement.poli.nama
@@ -335,147 +462,72 @@
 
                 await this.playAnnouncement(announcement.nomor, announcement.poli);
                 this.isProcessingAnnouncement = false;
-                
+
                 if (this.globalAnnouncementQueue.length > 0) {
                      setTimeout(() => this.processGlobalQueue(), 500);
                 }
             },
 
-            // Helper to break number into audio files
             getNumberAudioParts(n) {
                 const parts = [];
                 n = parseInt(n);
-                
-                if (n < 10) {
-                    parts.push(n.toString());
-                } else if (n === 10) {
-                    parts.push('sepuluh');
-                } else if (n === 11) {
-                    parts.push('sebelas');
-                } else if (n < 20) {
-                    parts.push((n - 10).toString());
-                    parts.push('belas');
-                } else if (n < 100) {
-                    parts.push(Math.floor(n / 10).toString());
-                    parts.push('puluh');
-                    if (n % 10 > 0) parts.push((n % 10).toString());
-                } else if (n < 200) {
-                    parts.push('seratus');
-                    if (n % 100 > 0) parts.push(...this.getNumberAudioParts(n % 100)); // RECURSIVE SPREAD, FIXED
-                } else if (n < 1000) {
-                    parts.push(Math.floor(n / 100).toString());
-                    parts.push('ratus'); // Assuming user might add 'ratus' later for 200+, otherwise fallback
-                    if (n % 100 > 0) parts.push(...this.getNumberAudioParts(n % 100)); // RECURSIVE SPREAD
-                }
+                if (n < 10) { parts.push(n.toString()); }
+                else if (n === 10) { parts.push('sepuluh'); }
+                else if (n === 11) { parts.push('sebelas'); }
+                else if (n < 20) { parts.push((n - 10).toString()); parts.push('belas'); }
+                else if (n < 100) { parts.push(Math.floor(n / 10).toString()); parts.push('puluh'); if (n % 10 > 0) parts.push((n % 10).toString()); }
+                else if (n < 200) { parts.push('seratus'); if (n % 100 > 0) parts.push(...this.getNumberAudioParts(n % 100)); }
+                else if (n < 1000) { parts.push(Math.floor(n / 100).toString()); parts.push('ratus'); if (n % 100 > 0) parts.push(...this.getNumberAudioParts(n % 100)); }
                 return parts;
             },
 
             async playAnnouncement(nomor, poli) {
                 const parts = nomor.match(/([a-zA-Z]+)-(\d+)/);
                 if (!parts) return;
-
                 const huruf = parts[1].toUpperCase();
                 const angkaInt = parseInt(parts[2], 10);
                 const poliSlug = this.getPoliSlug(poli.nama);
 
-                // Build Base Queue
                 this.audioQueue = [
                    { type: 'bell' },
                    { type: 'word', name: 'nomor-antrian' },
                    { type: 'letter', name: huruf }
                 ];
-
-                // Inject Number Audio Files (001 dibaca sebagai "1")
                 const numberParts = this.getNumberAudioParts(angkaInt);
-                numberParts.forEach(part => {
-                    this.audioQueue.push({ type: 'number_file', name: part });
-                });
-
-                // Continue Queue - Format baru: Poli Umum di persilahkan
+                numberParts.forEach(part => { this.audioQueue.push({ type: 'number_file', name: part }); });
                 this.audioQueue.push(
                    { type: 'word', name: 'poli' },
                    { type: 'poli', name: poliSlug },
                    { type: 'word', name: 'silakan' }
                 );
-                
                 await this.playNextAudio();
             },
-            
+
             async playNextAudio() {
                 if(this.audioQueue.length === 0) return;
-                
                 const item = this.audioQueue.shift();
                 try {
                     let path = '';
-                    if (item.type === 'number_file') {
-                        // Numbers are in /voice/numbers/x.mp3
-                        path = `${this.audioBaseUrl}numbers/${item.name}.mp3`;
-                    } else {
-                        path = this.getAudioPath(item);
-                    }
-                    
+                    if (item.type === 'number_file') { path = `${this.audioBaseUrl}numbers/${item.name}.mp3`; }
+                    else { path = this.getAudioPath(item); }
+
                     if (path) {
                         await this.playAudioFile(path);
                         if (item.type === 'bell') await this.delay(500);
-                        // Small delay between number parts for natural flow
-                        if (item.type === 'number_file') await this.delay(50); 
+                        if (item.type === 'number_file') await this.delay(50);
                     }
-                } catch (e) {
-                    // console.log('Audio file missing: ' + item.name);
-                    // Fallback to TTS only if file fails? 
-                    // Or just skip. For now, let's skip/ignore missing files to avoid mixed TTS/MP3 weirdness unless critical.
-                }
-                await this.delay(50); // General spacing
+                } catch (e) {}
+                await this.delay(50);
                 await this.playNextAudio();
             },
 
             playAudioFile(path) {
                 return new Promise((resolve, reject) => {
                     const audio = new Audio(path);
-                    audio.onended = resolve;
-                    audio.onerror = reject;
-                    audio.play().catch(reject);
+                    audio.onended = resolve; audio.onerror = reject; audio.play().catch(reject);
                 });
             },
 
-            async fallbackSpeak(item) {
-                 let text = '';
-                 if (item.type === 'number-digits') {
-                     const digitWords = ['Nol', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan'];
-                     text = item.value.split('').map(d => digitWords[parseInt(d)]).join(' ');
-                 } else if (item.type === 'number-speech') {
-                     // Convert number to text manually to ensure "Sepuluh", "Sebelas" etc. are read correctly
-                     text = this.numberToText(item.value);
-                 } else if (item.type === 'poli') {
-                     text = item.name.replace(/_/g, ' ');
-                 } else {
-                     text = this.getItemText(item);
-                 }
-                 if(!text) return;
-
-                 return new Promise(resolve => {
-                     const u = new SpeechSynthesisUtterance(text);
-                     u.lang = 'id-ID';
-                     u.rate = 0.9;
-                     if(this.indonesianVoice) u.voice = this.indonesianVoice;
-                     u.onend = resolve;
-                     // Handle error/timeout
-                     u.onerror = resolve; 
-                     window.speechSynthesis.speak(u);
-                 });
-            },
-            
-            numberToText(n) {
-                const angka = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
-                n = parseInt(n);
-                if (n < 12) return angka[n];
-                if (n < 20) return this.numberToText(n - 10) + ' Belas';
-                if (n < 100) return this.numberToText(Math.floor(n / 10)) + ' Puluh ' + this.numberToText(n % 10);
-                if (n < 200) return 'Seratus ' + this.numberToText(n - 100);
-                if (n < 1000) return this.numberToText(Math.floor(n / 100)) + ' Ratus ' + this.numberToText(n % 100);
-                return n.toString(); // Fallback
-            },
-            
             getPoliSlug(n) { return n.toLowerCase().replace('poli ', '').replace(/[^a-z0-9]/g, '_'); },
             getAudioPath(i) {
                 switch(i.type) {
@@ -486,12 +538,8 @@
                     default: return '';
                 }
             },
-            getItemText(i) {
-                const map = { 'nomor-antrian': 'Nomor antrian', 'silakan': 'Silakan ke', 'ke': ' ', 'poli': 'Poli' };
-                return map[i.name] || i.name;
-            },
             delay(ms) { return new Promise(r => setTimeout(r, ms)); },
-            
+
             updateTime() {
                 const now = new Date();
                 this.currentTime = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
