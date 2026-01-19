@@ -39,7 +39,46 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Mobile View (Cards) -->
+        <div class="grid grid-cols-1 gap-4 md:hidden">
+            <template x-for="antrian in antrians" :key="antrian.id">
+                <div class="bg-white rounded-xl shadow-sm border p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl font-bold text-primary-600" x-text="antrian.nomor"></span>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900" x-text="antrian.nama_pasien || 'Tanpa Nama'"></p>
+                                <p class="text-xs text-gray-500" x-text="formatDateTime(antrian.waktu_ambil)"></p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-full"
+                              :class="{
+                                'bg-yellow-100 text-yellow-800': antrian.status === 'waiting',
+                                'bg-blue-100 text-blue-800': antrian.status === 'called' || antrian.status === 'serving',
+                                'bg-green-100 text-green-800': antrian.status === 'completed',
+                                'bg-red-100 text-red-800': antrian.status === 'skipped'
+                              }"
+                              x-text="getStatusText(antrian.status)">
+                        </span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between pt-3 border-t">
+                        <div class="text-xs text-gray-500">
+                            <span class="block">Dipanggil:</span>
+                            <span x-text="antrian.waktu_panggil ? formatDateTime(antrian.waktu_panggil) : '-'"></span>
+                        </div>
+                        <button @click="deleteAntrian(antrian.id)" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors">
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+            </template>
+            <div x-show="antrians.length === 0" class="text-center py-8 text-gray-400 bg-gray-50 rounded-xl border border-dashed text-sm">
+                Belum ada antrian untuk poli ini hari ini
+            </div>
+        </div>
+
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50">
                     <tr>
@@ -117,6 +156,7 @@
 function antrianData() {
     return {
         selectedPoliId: <?= $selected_poli_id ?? 'null' ?>,
+        apiUrl: '/api/v1',
         antrians: [],
         
         pagination: {
