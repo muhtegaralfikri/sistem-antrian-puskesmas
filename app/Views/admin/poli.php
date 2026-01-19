@@ -78,20 +78,23 @@
                 </tbody>
             </table>
         </div>
-    </div>
 
     <!-- Add/Edit Modal -->
-    <div x-show="showAddModal || showEditModal" x-transition.opacity class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" style="display: none;">
+    <div x-show="showAddModal || showEditModal" x-cloak x-transition.opacity class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div @click.self="closeModal()" class="bg-white rounded-xl shadow-xl max-w-md w-full" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
             <div class="px-6 py-4 border-b">
                 <h3 class="text-lg font-semibold text-gray-800" x-text="showEditModal ? 'Edit Poli' : 'Tambah Poli Baru'"></h3>
             </div>
             <form @submit.prevent="submitForm" class="p-6 space-y-4">
                 <input type="hidden" x-model="form.id">
+
+                <!-- Nama Poli -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Poli</label>
                     <input type="text" x-model="form.nama" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-            
+                </div>
+
+                <!-- Kode & Prefix -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Kode</label>

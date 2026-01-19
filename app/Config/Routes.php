@@ -149,15 +149,15 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
 
         // Poli management
         $routes->get('poli', 'AdminPoliController::index');
-        $routes->post('poli', 'AdminPoliController::create');
-        $routes->put('poli/(:num)', 'AdminPoliController::update/$1');
-        $routes->delete('poli/(:num)', 'AdminPoliController::delete/$1');
+        $routes->post('poli/create', 'AdminPoliController::create');
+        $routes->post('poli/update/(:num)', 'AdminPoliController::update/$1');
+        $routes->post('poli/delete/(:num)', 'AdminPoliController::delete/$1');
 
         // User management
         $routes->get('users', 'AdminUsersController::index');
-        $routes->post('users', 'AdminUsersController::create');
-        $routes->put('users/(:num)', 'AdminUsersController::update/$1');
-        $routes->delete('users/(:num)', 'AdminUsersController::delete/$1');
+        $routes->post('users/create', 'AdminUsersController::create');
+        $routes->post('users/update/(:num)', 'AdminUsersController::update/$1');
+        $routes->post('users/delete/(:num)', 'AdminUsersController::delete/$1');
 
         // Reports
         $routes->get('laporan/harian', 'AdminLaporanController::harian');
