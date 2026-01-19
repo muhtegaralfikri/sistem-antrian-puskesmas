@@ -132,7 +132,7 @@
 
                         <!-- Main Number Display -->
                         <div class="relative shrink-0 flex items-center justify-center flex-1 my-1 md:my-2 lg:my-0 w-full">
-                            <span class="active-number font-black font-mono text-slate-800 tracking-tighter leading-none drop-shadow-sm select-none"
+                            <span class="active-number font-black font-mono text-slate-800 tracking-tighter leading-none drop-shadow-sm select-none whitespace-nowrap"
                                   :style="'font-size: clamp(50px, 12vw, 100px)'"
                                   x-text="activeCall.nomor">
                                 --
@@ -198,7 +198,7 @@
                                 </div>
                             </div>
 
-                            <div class="queue-number font-mono font-bold text-2xl sm:text-3xl md:text-4xl"
+                            <div class="queue-number font-mono font-bold text-2xl sm:text-3xl md:text-4xl whitespace-nowrap"
                                  :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
                                  x-text="poli.current ? poli.current.nomor : '--'">
                             </div>
@@ -225,6 +225,7 @@
 
                                 <div class="queue-number font-mono font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl"
                                      :class="poli.current ? 'text-gray-900' : 'text-gray-300'"
+                                     class="whitespace-nowrap"
                                      x-text="poli.current ? poli.current.nomor : '--'">
                                 </div>
                             </div>

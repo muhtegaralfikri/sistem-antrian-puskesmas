@@ -160,7 +160,7 @@
 
                     <div class="bg-gray-50 rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 border-dashed mb-6 md:mb-8 relative">
                         <div class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nomor Antrian</div>
-                        <div class="text-6xl md:text-7xl font-black text-gray-900 font-mono tracking-tighter leading-none" x-text="ticketData?.nomor">--</div>
+                        <div class="text-6xl md:text-7xl font-black text-gray-900 font-mono tracking-tighter leading-none whitespace-nowrap" x-text="ticketData?.nomor">--</div>
                         <div class="text-lg md:text-xl font-bold text-medical-600 mt-2 line-clamp-1" x-text="ticketData?.poli_nama">--</div>
                     </div>
 

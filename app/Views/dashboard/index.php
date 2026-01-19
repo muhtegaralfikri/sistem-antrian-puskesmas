@@ -178,7 +178,7 @@
                                 <div class="relative">
                                      <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 text-center md:text-left">Nomor Panggilan</p>
                                      <template x-if="poli.current">
-                                        <div class="text-7xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-600 tracking-tighter tabular-nums leading-none filter drop-shadow-sm" x-text="poli.current.nomor"></div>
+                                        <div class="text-7xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-br from-gray-900 to-gray-600 tracking-tighter tabular-nums leading-none filter drop-shadow-sm whitespace-nowrap" x-text="poli.current.nomor"></div>
                                      </template>
                                      <template x-if="!poli.current">
                                          <div class="text-7xl md:text-8xl font-black text-gray-200 tracking-tighter tabular-nums leading-none select-none">---</div>
@@ -221,7 +221,7 @@
                             <template x-if="poli.waiting && poli.waiting.length > 0">
                                 <div class="w-full flex flex-col items-center">
                                     <p class="text-[10px] md:text-xs font-bold text-primary-600 mb-2 uppercase tracking-wide">Siap Dipanggil</p>
-                                    <div class="text-5xl md:text-6xl lg:text-7xl font-black text-gray-800 tracking-tighter tabular-nums mb-6" x-text="poli.waiting[0].nomor"></div>
+                                    <div class="text-5xl md:text-6xl lg:text-7xl font-black text-gray-800 tracking-tighter tabular-nums mb-6 whitespace-nowrap" x-text="poli.waiting[0].nomor"></div>
                                     
                                     <div class="flex justify-center gap-2 relative z-10 w-full">
                                          <button @click="skip(poli.poli.id, poli.waiting[0].id)" class="w-full md:w-auto px-5 py-2.5 md:px-6 md:py-3 rounded-xl bg-red-50 text-red-600 font-bold text-xs md:text-sm hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
@@ -298,7 +298,16 @@ function dashboardApp() {
         async apiCall(endpoint, body = null) {
             this.loading = true;
             try {
-                const options = { method: 'POST' };
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
+
+                const options = { 
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        [csrfHeader]: csrfToken
+                    }
+                };
                 if (body) options.body = body;
 
                 const response = await fetch(endpoint, options);
@@ -311,6 +320,7 @@ function dashboardApp() {
                     Toast.error(result.message || 'Gagal');
                 }
             } catch (e) {
+                console.error(e);
                 Toast.error('Koneksi Error');
             } finally {
                 this.loading = false;
