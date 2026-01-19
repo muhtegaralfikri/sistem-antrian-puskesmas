@@ -72,7 +72,18 @@
             </div>
         </div>
         <div class="text-right hidden sm:block">
-            <p class="text-sm font-medium text-gray-500"><?= date('l, d F Y') ?></p>
+            <?php
+            $hari = [
+                'Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa', 'Wednesday' => 'Rabu', 
+                'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'
+            ];
+            $bulan = [
+                'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret', 'April' => 'April', 
+                'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli', 'August' => 'Agustus', 
+                'September' => 'September', 'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
+            ];
+            ?>
+            <p class="text-sm font-medium text-gray-500"><?= $hari[date('l')] . ', ' . date('d') . ' ' . $bulan[date('F')] . ' ' . date('Y') ?></p>
         </div>
     </nav>
 
