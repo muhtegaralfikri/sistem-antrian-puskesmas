@@ -386,18 +386,17 @@
                    { type: 'letter', name: huruf }
                 ];
 
-                // Inject Number Audio Files
+                // Inject Number Audio Files (001 dibaca sebagai "1")
                 const numberParts = this.getNumberAudioParts(angkaInt);
                 numberParts.forEach(part => {
                     this.audioQueue.push({ type: 'number_file', name: part });
                 });
 
-                // Continue Queue
+                // Continue Queue - Format baru: Poli Umum di persilahkan
                 this.audioQueue.push(
-                   { type: 'word', name: 'silakan' },
-                   { type: 'word', name: 'ke' },
                    { type: 'word', name: 'poli' },
-                   { type: 'poli', name: poliSlug }
+                   { type: 'poli', name: poliSlug },
+                   { type: 'word', name: 'silakan' }
                 );
                 
                 await this.playNextAudio();
