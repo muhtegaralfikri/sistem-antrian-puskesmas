@@ -6,14 +6,17 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\AntrianModel;
+use App\Models\AuditLogModel;
 
 class AdminAntrianController extends BaseController
 {
     protected AntrianModel $antrianModel;
+    protected AuditLogModel $auditLogModel;
 
     public function __construct()
     {
         $this->antrianModel = new AntrianModel();
+        $this->auditLogModel = new AuditLogModel();
     }
 
     /**
@@ -126,6 +129,15 @@ class AdminAntrianController extends BaseController
         }
 
         $this->antrianModel->delete($id);
+
+        // Audit Log: Delete Antrian
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_DELETE,
+            AuditLogModel::ENTITY_ANTRIAN,
+            (int)$id,
+            "Deleted Antrian: {$antrian['nomor']} (Poli ID: {$antrian['poli_id']})",
+            $antrian
+        );
 
         return $this->response->setJSON([
             'success' => true,

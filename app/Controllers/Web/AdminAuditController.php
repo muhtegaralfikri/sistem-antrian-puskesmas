@@ -101,8 +101,29 @@ class AdminAuditController extends BaseController
 
 
     /**
-     * Export logs to CSV
+     * Get new logs since last ID (for polling)
      */
+    public function updates()
+    {
+        $lastId = (int) $this->request->getGet('last_id');
+        
+        // Return emtpy if invalid ID
+        if ($lastId <= 0) {
+             return $this->response->setJSON(['success' => true, 'logs' => []]);
+        }
+
+        // Apply same filters as main page if needed, but for now just get everything new
+        // Optimization: limit to 50 to prevent overflow if client was disconnected long
+        $logs = $this->auditLogModel->where('id >', $lastId)
+            ->orderBy('id', 'ASC') // Get oldest first to append correctly (or client handles sort)
+            ->limit(50)
+            ->findAll();
+
+        return $this->response->setJSON([
+            'success' => true,
+            'logs' => $logs
+        ]);
+    }
     public function export()
     {
         $filters = [

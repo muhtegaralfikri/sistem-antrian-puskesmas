@@ -21,7 +21,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="font-medium text-gray-800">Aktifkan Suara</p>
-                            <p class="text-sm text-gray-500">Panggilan antrian dengan suara</p>
+                            <p class="text-sm text-gray-500 max-w-[200px] md:max-w-full">Panggilan antrian dengan suara</p>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="voice_enabled" x-model="settings.voice_enabled" class="sr-only peer">
@@ -66,7 +66,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="font-medium text-gray-800">Tampilkan Input Nama</p>
-                        <p class="text-sm text-gray-500">Pasien dapat mengisi nama saat ambil tiket</p>
+                        <p class="text-sm text-gray-500 max-w-[200px] md:max-w-full">Pasien dapat mengisi nama saat ambil tiket</p>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" name="kiosk_show_name" x-model="settings.kiosk_show_name" class="sr-only peer">
@@ -89,19 +89,19 @@
                 <p class="text-sm text-gray-500 mb-4">Reset manual:</p>
                 <div class="flex flex-wrap gap-3">
                     <template x-for="poli in polis" :key="poli.id">
-                        <button type="button" @click="resetPoli(poli.id)" class="bg-orange-50 hover:bg-orange-100 text-orange-700 px-4 py-2 rounded-lg text-sm font-medium">
+                        <button type="button" @click="resetPoli(poli.id)" class="bg-orange-50 hover:bg-orange-100 text-orange-700 px-4 py-2 rounded-lg text-sm font-medium flex-grow md:flex-grow-0">
                             Reset <span x-text="poli.nama"></span>
                         </button>
                     </template>
-                    <button type="button" @click="resetAll()" class="bg-red-50 hover:bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm font-medium">
+                    <button type="button" @click="resetAll()" class="bg-red-50 hover:bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm font-medium flex-grow md:flex-grow-0">
                         Reset Semua
                     </button>
                 </div>
             </div>
 
             <!-- Save Button -->
-            <div class="flex justify-end gap-3">
-                <a href="/admin" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium">
+            <div class="flex flex-col-reverse md:flex-row justify-end gap-3">
+                <a href="/admin" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium text-center">
                     Kembali
                 </a>
                 <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium">

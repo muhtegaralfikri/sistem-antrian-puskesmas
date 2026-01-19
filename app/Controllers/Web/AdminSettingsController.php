@@ -6,14 +6,17 @@ namespace App\Controllers\Web;
 
 use App\Controllers\BaseController;
 use App\Models\SettingsModel;
+use App\Models\AuditLogModel;
 
 class AdminSettingsController extends BaseController
 {
     protected SettingsModel $settingsModel;
+    protected AuditLogModel $auditLogModel;
 
     public function __construct()
     {
         $this->settingsModel = new SettingsModel();
+        $this->auditLogModel = new AuditLogModel();
     }
 
     public function index()
@@ -80,6 +83,16 @@ class AdminSettingsController extends BaseController
         $this->settingsModel->setMultiple($settings);
         $this->settingsModel->clearCache();
 
+        // Audit Log: Update Settings
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_UPDATE,
+            AuditLogModel::ENTITY_SETTINGS,
+            null,
+            "Updated System Settings",
+            null,
+            $settings
+        );
+
         return $this->response->setJSON(['success' => true, 'message' => 'Pengaturan berhasil disimpan']);
     }
 
@@ -88,6 +101,14 @@ class AdminSettingsController extends BaseController
         $antrianModel = new \App\Models\AntrianModel();
         
         if ($antrianModel->resetPoli($poliId)) {
+            // Audit Log: Reset Poli Queue
+            $this->auditLogModel->log(
+                AuditLogModel::ACTION_RESET,
+                AuditLogModel::ENTITY_POLI,
+                (int)$poliId,
+                "Reset Queue for Poli ID: {$poliId}"
+            );
+
             return $this->response->setJSON(['success' => true, 'message' => 'Antrian berhasil direset']);
         }
 
@@ -108,6 +129,14 @@ class AdminSettingsController extends BaseController
         }
 
         if ($success) {
+            // Audit Log: Reset All Queues
+            $this->auditLogModel->log(
+                AuditLogModel::ACTION_RESET,
+                AuditLogModel::ENTITY_ANTRIAN,
+                null,
+                "Reset ALL Queues"
+            );
+
             return $this->response->setJSON(['success' => true, 'message' => 'Semua antrian berhasil direset']);
         }
 

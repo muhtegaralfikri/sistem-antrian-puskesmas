@@ -6,14 +6,17 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\PoliModel;
+use App\Models\AuditLogModel;
 
 class AdminPoliController extends BaseController
 {
     protected PoliModel $poliModel;
+    protected AuditLogModel $auditLogModel;
 
     public function __construct()
     {
         $this->poliModel = new PoliModel();
+        $this->auditLogModel = new AuditLogModel();
     }
 
     /**
@@ -69,6 +72,16 @@ class AdminPoliController extends BaseController
 
         $poli = $this->poliModel->find($id);
 
+        // Audit Log: Create Poli
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_CREATE,
+            AuditLogModel::ENTITY_POLI,
+            (int)$id,
+            "Created Poli: {$data['nama']}",
+            null,
+            $data
+        );
+
         return $this->response->setStatusCode(201)->setJSON([
             'success' => true,
             'message' => 'Poli berhasil ditambahkan',
@@ -121,6 +134,16 @@ class AdminPoliController extends BaseController
             ]);
         }
 
+        // Audit Log: Update Poli
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_UPDATE,
+            AuditLogModel::ENTITY_POLI,
+            (int)$id,
+            "Updated Poli: {$poli['nama']}",
+            $poli, // Old values
+            $data  // New values
+        );
+
         $poli = $this->poliModel->find($id);
 
         return $this->response->setJSON([
@@ -152,6 +175,15 @@ class AdminPoliController extends BaseController
                 'message' => 'Failed to delete poli',
             ]);
         }
+
+        // Audit Log: Delete Poli
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_DELETE,
+            AuditLogModel::ENTITY_POLI,
+            (int)$id,
+            "Deleted Poli: {$poli['nama']}",
+            $poli
+        );
 
         return $this->response->setJSON([
             'success' => true,

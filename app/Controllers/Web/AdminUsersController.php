@@ -8,18 +8,21 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\UserPoliModel;
 use App\Models\PoliModel;
+use App\Models\AuditLogModel;
 
 class AdminUsersController extends BaseController
 {
     protected UserModel $userModel;
     protected UserPoliModel $userPoliModel;
     protected PoliModel $poliModel;
+    protected AuditLogModel $auditLogModel;
 
     public function __construct()
     {
         $this->userModel = new UserModel();
         $this->userPoliModel = new UserPoliModel();
         $this->poliModel = new PoliModel();
+        $this->auditLogModel = new AuditLogModel();
     }
 
     public function index()
@@ -59,14 +62,16 @@ class AdminUsersController extends BaseController
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             // Insert user
-            $userId = $this->userModel->insert([
+            $userData = [
                 'username' => $this->request->getPost('username'),
                 'password' => $hashedPassword,
                 'nama_lengkap' => $this->request->getPost('nama_lengkap'),
                 'email' => $this->request->getPost('email') ?: null,
                 'role' => $this->request->getPost('role'),
                 'aktif' => 1,
-            ]);
+            ];
+
+            $userId = $this->userModel->insert($userData);
 
             // Assign poli if petugas and poli_id is provided
             if ($this->request->getPost('role') === 'petugas') {
@@ -78,6 +83,17 @@ class AdminUsersController extends BaseController
                     ]);
                 }
             }
+
+            // Audit Log: Create User
+            unset($userData['password']); // Don't log password
+            $this->auditLogModel->log(
+                AuditLogModel::ACTION_CREATE,
+                AuditLogModel::ENTITY_USER,
+                (int)$userId,
+                "Created User: {$userData['username']}",
+                null,
+                $userData
+            );
 
             return redirect()->to('/admin/users')->with('success', 'Pengguna berhasil ditambahkan');
         }
@@ -154,6 +170,21 @@ class AdminUsersController extends BaseController
                 $this->userPoliModel->where('user_id', $id)->delete();
             }
 
+            // Audit Log: Update User
+            $oldData = $user;
+            unset($oldData['password']);
+            $newData = $updateData;
+            unset($newData['password']);
+
+            $this->auditLogModel->log(
+                AuditLogModel::ACTION_UPDATE,
+                AuditLogModel::ENTITY_USER,
+                (int)$id,
+                "Updated User: {$user['username']}",
+                $oldData,
+                $newData
+            );
+
             return redirect()->to('/admin/users')->with('success', 'Pengguna berhasil diperbarui');
         }
 
@@ -185,6 +216,16 @@ class AdminUsersController extends BaseController
 
         // Delete user
         $this->userModel->delete($id);
+
+        // Audit Log: Delete User
+        unset($user['password']);
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_DELETE,
+            AuditLogModel::ENTITY_USER,
+            (int)$id,
+            "Deleted User: {$user['username']}",
+            $user
+        );
 
         return redirect()->to('/admin/users')->with('success', 'Pengguna berhasil dihapus');
     }

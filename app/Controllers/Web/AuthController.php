@@ -6,14 +6,17 @@ namespace App\Controllers\Web;
 
 use App\Controllers\BaseController;
 use App\Models\UserModel;
+use App\Models\AuditLogModel;
 
 class AuthController extends BaseController
 {
     protected UserModel $userModel;
+    protected AuditLogModel $auditLogModel;
 
     public function __construct()
     {
         $this->userModel = new UserModel();
+        $this->auditLogModel = new AuditLogModel();
     }
 
     /**
@@ -90,6 +93,14 @@ class AuthController extends BaseController
             'user_role' => $user['role'],
         ]);
 
+        // Audit Log: Login
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_LOGIN,
+            AuditLogModel::ENTITY_USER,
+            (int)$user['id'],
+            'User logged in'
+        );
+
         if ($this->request->isAJAX()) {
             $userWithPoli = $this->userModel->getUserWithPoli($user['id']);
             $redirectUrl = ($user['role'] === 'admin') ? '/admin' : '/monitor';
@@ -119,6 +130,16 @@ class AuthController extends BaseController
      */
     public function logout()
     {
+        // Audit Log: Logout
+        if (session()->get('user_id')) {
+            $this->auditLogModel->log(
+                AuditLogModel::ACTION_LOGOUT,
+                AuditLogModel::ENTITY_USER,
+                (int)session()->get('user_id'),
+                'User logged out'
+            );
+        }
+
         session()->destroy();
         return redirect()->to('/auth/login')->with('success', 'Logout berhasil');
     }

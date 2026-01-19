@@ -9,18 +9,21 @@ use App\Models\AntrianModel;
 use App\Models\PoliModel;
 use App\Models\UserModel;
 use App\Libraries\WebSocket\WebSocketHelper;
+use App\Models\AuditLogModel;
 
 class AntrianController extends BaseController
 {
     protected AntrianModel $antrianModel;
     protected PoliModel $poliModel;
     protected UserModel $userModel;
+    protected AuditLogModel $auditLogModel;
 
     public function __construct()
     {
         $this->antrianModel = new AntrianModel();
         $this->poliModel = new PoliModel();
         $this->userModel = new UserModel();
+        $this->auditLogModel = new AuditLogModel();
     }
 
     /**
@@ -175,6 +178,16 @@ class AntrianController extends BaseController
             ]);
         }
 
+        // Audit Log: Call Antrian
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_CALL,
+            AuditLogModel::ENTITY_ANTRIAN,
+            (int)$antrian['id'],
+            "Called Antrian: {$antrian['nomor']} (Poli: {$poli['nama']})",
+            null,
+            $antrian
+        );
+
         // Broadcast via WebSocket
         WebSocketHelper::antrianPanggil(
             $antrian['poli_id'],
@@ -235,6 +248,14 @@ class AntrianController extends BaseController
         // Get poli info
         $poli = $this->poliModel->find($antrian['poli_id']);
 
+        // Audit Log: Recall Antrian
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_RECALL,
+            AuditLogModel::ENTITY_ANTRIAN,
+            (int)$antrian['id'],
+            "Recalled Antrian: {$antrian['nomor']} (Poli: {$poli['nama']})"
+        );
+
         // Broadcast
         WebSocketHelper::antrianPanggil(
             $antrian['poli_id'],
@@ -287,6 +308,14 @@ class AntrianController extends BaseController
 
             // Complete
             $this->antrianModel->complete($id, $userId);
+
+            // Audit Log: Complete Antrian
+            $this->auditLogModel->log(
+                AuditLogModel::ACTION_COMPLETE,
+                AuditLogModel::ENTITY_ANTRIAN,
+                (int)$id,
+                "Completed Antrian: {$antrian['nomor']}"
+            );
 
             // Broadcast (suppress errors)
             @WebSocketHelper::antrianSelesai(
@@ -342,6 +371,14 @@ class AntrianController extends BaseController
 
         // Skip
         $this->antrianModel->skip($id);
+
+        // Audit Log: Skip Antrian
+        $this->auditLogModel->log(
+            AuditLogModel::ACTION_SKIP,
+            AuditLogModel::ENTITY_ANTRIAN,
+            (int)$id,
+            "Skipped Antrian: {$antrian['nomor']}"
+        );
 
         // Broadcast
         WebSocketHelper::antrianSkip(
