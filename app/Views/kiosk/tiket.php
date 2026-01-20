@@ -180,6 +180,12 @@
                 <span class="info-label">Jam</span>
                 <span class="info-value"><?= date('H:i', strtotime($antrian['waktu_ambil'])) ?></span>
             </div>
+            <?php if (!empty($antrian['nama_pasien'])): ?>
+            <div class="info-row" style="background: #f0f9ff; margin: 8px -20px; padding: 12px 20px;">
+                <span class="info-label">Nama Pasien</span>
+                <span class="info-value" style="color: #0369a1;"><?= esc($antrian['nama_pasien']) ?></span>
+            </div>
+            <?php endif; ?>
 
             <div class="ticket-divider"></div>
 

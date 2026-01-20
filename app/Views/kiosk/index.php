@@ -128,7 +128,7 @@
 
     <!-- Success Modal -->
     <template x-teleport="body">
-        <div x-show="showModal" class="fixed inset-0 z-[60] flex items-end md:items-center justify-center p-0 md:p-4" x-cloak>
+        <div x-show="showModal" class="fixed inset-0 flex items-end md:items-center justify-center p-0 md:p-4" style="z-index: 9999;" x-cloak>
             <div x-show="showModal" x-transition.opacity class="absolute inset-0 bg-gray-900/40 backdrop-blur-md" @click="showModal = false"></div>
             
             <div x-show="showModal" 
@@ -138,7 +138,8 @@
                  x-transition:leave="transition ease-in duration-200" 
                  x-transition:leave-start="translate-y-0 opacity-100 md:scale-100 md:translate-y-0" 
                  x-transition:leave-end="translate-y-full opacity-0 md:scale-95 md:translate-y-10" 
-                 class="bg-white rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-md relative overflow-hidden flex flex-col items-center text-center p-2 max-h-[90vh] pb-8 md:pb-2">
+                 class="bg-white rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl w-full max-w-md relative overflow-hidden flex flex-col items-center text-center p-2 max-h-[90vh] pb-8 md:pb-2"
+                 style="z-index: 10000;">
                 
                 <!-- Ticket Paper Style -->
                 <div class="bg-white w-full p-6 md:p-8 rounded-[2rem] border-0 md:border-[3px] border-medical-50 relative overflow-hidden">
@@ -158,10 +159,16 @@
                     <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-1 tracking-tight">Berhasil!</h3>
                     <p class="text-sm md:text-base text-gray-500 mb-6 md:mb-8 font-medium">Silakan ambil struk antrian Anda</p>
 
-                    <div class="bg-gray-50 rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 border-dashed mb-6 md:mb-8 relative">
+                    <div class="bg-gray-50 rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 border-dashed mb-4 relative">
                         <div class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nomor Antrian</div>
-                        <div class="text-6xl md:text-7xl font-black text-gray-900 font-mono tracking-tighter leading-none whitespace-nowrap" x-text="ticketData?.nomor">--</div>
-                        <div class="text-lg md:text-xl font-bold text-medical-600 mt-2 line-clamp-1" x-text="ticketData?.poli_nama">--</div>
+                        <div class="text-5xl md:text-6xl font-black text-gray-900 font-mono tracking-tighter leading-none whitespace-nowrap" x-text="ticketData?.nomor">--</div>
+                        <div class="text-base md:text-lg font-bold text-medical-600 mt-2 line-clamp-1" x-text="ticketData?.poli_nama">--</div>
+                    </div>
+                    
+                    <!-- Patient Name Display -->
+                    <div class="bg-primary-50 rounded-xl p-3 mb-6 border border-primary-100" x-show="ticketData?.nama_pasien">
+                        <div class="text-[10px] font-bold text-primary-400 uppercase tracking-widest mb-0.5">Nama Pasien</div>
+                        <div class="text-lg md:text-xl font-bold text-primary-700 truncate" x-text="ticketData?.nama_pasien || '-'"></div>
                     </div>
 
                     <div class="space-y-3">
@@ -178,6 +185,83 @@
         </div>
     </template>
 
+    <!-- Name Input Modal with On-Screen Keyboard -->
+    <template x-teleport="body">
+        <div x-show="showNameModal" class="fixed inset-0 flex items-end md:items-center justify-center p-0 md:p-4" style="z-index: 9998;" x-cloak>
+            <div x-show="showNameModal" x-transition.opacity class="absolute inset-0 bg-gray-900/50 backdrop-blur-md" @click="closeNameModal()"></div>
+            
+            <div x-show="showNameModal" 
+                 x-transition:enter="transition ease-out duration-300" 
+                 x-transition:enter-start="translate-y-full opacity-0" 
+                 x-transition:enter-end="translate-y-0 opacity-100" 
+                 x-transition:leave="transition ease-in duration-200" 
+                 x-transition:leave-start="translate-y-0 opacity-100" 
+                 x-transition:leave-end="translate-y-full opacity-0" 
+                 class="bg-white rounded-t-[2rem] md:rounded-[2rem] shadow-2xl w-full max-w-lg relative overflow-hidden flex flex-col max-h-[95vh] md:max-h-[90vh]">
+                
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-medical-500 to-primary-500 p-4 md:p-6 text-white text-center relative">
+                    <div class="w-10 h-1 bg-white/30 rounded-full mx-auto mb-4 md:hidden"></div>
+                    <h3 class="text-xl md:text-2xl font-bold tracking-tight">Masukkan Nama Anda</h3>
+                    <p class="text-sm text-white/80 mt-1" x-text="'Poli: ' + selectedPoliName"></p>
+                </div>
+
+                <!-- Name Input Display -->
+                <div class="p-4 md:p-6 bg-gray-50 border-b border-gray-100">
+                    <div class="bg-white rounded-xl md:rounded-2xl p-4 border-2 border-gray-200 shadow-inner min-h-[60px] flex items-center justify-center">
+                        <span class="text-2xl md:text-3xl font-bold text-gray-800 tracking-wide text-center break-all" 
+                              x-text="namaPasien || 'Ketik nama Anda...'" 
+                              :class="namaPasien ? 'text-gray-800' : 'text-gray-300'"></span>
+                    </div>
+                    <p class="text-xs text-gray-400 text-center mt-2">Maksimal 50 karakter</p>
+                </div>
+
+                <!-- On-Screen Keyboard -->
+                <div class="p-3 md:p-4 bg-gray-100 flex-1 overflow-y-auto">
+                    <!-- Row 1: Q-P -->
+                    <div class="flex justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
+                        <template x-for="key in ['Q','W','E','R','T','Y','U','I','O','P']">
+                            <button @click="addChar(key)" class="w-8 h-10 md:w-12 md:h-14 bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-200 text-gray-800 font-bold text-base md:text-xl hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all" x-text="key"></button>
+                        </template>
+                    </div>
+                    <!-- Row 2: A-L -->
+                    <div class="flex justify-center gap-1.5 md:gap-2 mb-1.5 md:mb-2">
+                        <template x-for="key in ['A','S','D','F','G','H','J','K','L']">
+                            <button @click="addChar(key)" class="w-8 h-10 md:w-12 md:h-14 bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-200 text-gray-800 font-bold text-base md:text-xl hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all" x-text="key"></button>
+                        </template>
+                    </div>
+                    <!-- Row 3: Z-M -->
+                    <div class="flex justify-center gap-1.5 md:gap-2 mb-3 md:mb-4">
+                        <template x-for="key in ['Z','X','C','V','B','N','M']">
+                            <button @click="addChar(key)" class="w-8 h-10 md:w-12 md:h-14 bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-200 text-gray-800 font-bold text-base md:text-xl hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all" x-text="key"></button>
+                        </template>
+                    </div>
+                    <!-- Row 4: Space & Backspace -->
+                    <div class="flex justify-center gap-2 md:gap-3">
+                        <button @click="addChar(' ')" class="flex-1 max-w-[200px] h-10 md:h-14 bg-white rounded-lg md:rounded-xl shadow-sm border border-gray-200 text-gray-600 font-bold text-sm md:text-base hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all">
+                            SPASI
+                        </button>
+                        <button @click="deleteChar()" class="w-16 md:w-24 h-10 md:h-14 bg-red-50 rounded-lg md:rounded-xl shadow-sm border border-red-200 text-red-600 font-bold text-sm md:text-base hover:bg-red-100 active:bg-red-200 active:scale-95 transition-all flex items-center justify-center gap-1">
+                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"/></svg>
+                            <span class="hidden md:inline">HAPUS</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="p-4 md:p-6 bg-white border-t border-gray-100 flex gap-3">
+                    <button @click="closeNameModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-base md:text-lg py-3 md:py-4 rounded-xl md:rounded-2xl transition-colors">
+                        Batal
+                    </button>
+                    <button @click="submitWithName()" :disabled="!namaPasien.trim()" class="flex-[2] bg-medical-600 hover:bg-medical-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold text-base md:text-lg py-3 md:py-4 rounded-xl md:rounded-2xl shadow-lg shadow-medical-600/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Ambil Antrian
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <script>
     function kioskApp() {
         return {
@@ -186,6 +270,12 @@
             loading: false,
             showModal: false,
             ticketData: null,
+            
+            // Name input modal states
+            showNameModal: false,
+            selectedPoliId: null,
+            selectedPoliName: '',
+            namaPasien: '',
 
             init() {
                 this.updateTime();
@@ -198,13 +288,56 @@
                 this.currentDate = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             },
 
-            async ambilNomor(poliId) {
+            // Step 1: Open name input modal when poli is selected
+            ambilNomor(poliId) {
+                // Find poli name from button text (hacky but works)
+                const buttons = document.querySelectorAll('button[\\@click^="ambilNomor"]');
+                let poliName = 'Poli';
+                buttons.forEach(btn => {
+                    if (btn.getAttribute('@click').includes(poliId)) {
+                        const h3 = btn.querySelector('h3');
+                        if (h3) poliName = h3.textContent.trim();
+                    }
+                });
+                
+                this.selectedPoliId = poliId;
+                this.selectedPoliName = poliName;
+                this.namaPasien = '';
+                this.showNameModal = true;
+            },
+
+            // Keyboard functions
+            addChar(char) {
+                if (this.namaPasien.length < 50) {
+                    this.namaPasien += char;
+                }
+            },
+
+            deleteChar() {
+                this.namaPasien = this.namaPasien.slice(0, -1);
+            },
+
+            closeNameModal() {
+                this.showNameModal = false;
+                this.selectedPoliId = null;
+                this.selectedPoliName = '';
+                this.namaPasien = '';
+            },
+
+            // Step 2: Submit with name
+            async submitWithName() {
+                if (!this.namaPasien.trim() || !this.selectedPoliId) return;
+                
+                this.showNameModal = false;
                 this.loading = true;
+                
                 try {
                     await new Promise(r => setTimeout(r, 600));
 
                     const formData = new FormData();
-                    formData.append('poli_id', poliId);
+                    formData.append('poli_id', this.selectedPoliId);
+                    formData.append('nama_pasien', this.namaPasien.trim());
+                    
                     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                     const csrfHeader = document.querySelector('meta[name="csrf-header"]').getAttribute('content');
 
@@ -229,6 +362,9 @@
                     console.error(e);
                 } finally {
                     this.loading = false;
+                    this.selectedPoliId = null;
+                    this.selectedPoliName = '';
+                    this.namaPasien = '';
                 }
             },
 

@@ -131,12 +131,18 @@
                         </div>
 
                         <!-- Main Number Display -->
-                        <div class="relative shrink-0 flex items-center justify-center flex-1 w-full my-4">
+                        <div class="relative shrink-0 flex flex-col items-center justify-center flex-1 w-full my-4">
                             <span class="active-number font-black font-mono text-slate-800 tracking-tighter leading-none drop-shadow-sm select-none whitespace-nowrap"
                                   :style="'font-size: clamp(80px, 18vw, 220px)'"
                                   x-text="activeCall.nomor">
                                 --
                             </span>
+                            <!-- Patient Name Badge -->
+                            <template x-if="activeCall.nama">
+                                <div class="mt-4 md:mt-6 px-6 py-2 md:py-3 bg-gradient-to-r from-primary-50 to-medical-50 rounded-2xl border border-primary-100 shadow-sm">
+                                    <span class="text-lg md:text-2xl lg:text-3xl font-bold text-primary-700 tracking-wide" x-text="activeCall.nama"></span>
+                                </div>
+                            </template>
                         </div>
 
                         <!-- Divider Line -->
@@ -395,7 +401,11 @@
                         if (nomorBaru !== this.lastCalled[poliId] || waktuPanggilBaru > waktuPanggilLama) {
                             this.lastCalled[poliId] = nomorBaru;
                             this.lastCallTime[poliId] = waktuPanggilBaru;
-                            this.globalAnnouncementQueue.push({ nomor: nomorBaru, poli: item.poli });
+                            this.globalAnnouncementQueue.push({ 
+                                nomor: nomorBaru, 
+                                poli: item.poli,
+                                nama: item.current.nama_pasien || null
+                            });
                         }
                     }
                 });
@@ -410,7 +420,8 @@
 
                 this.activeCall = {
                     nomor: announcement.nomor,
-                    poli: announcement.poli.nama
+                    poli: announcement.poli.nama,
+                    nama: announcement.nama
                 };
 
                 await this.playAnnouncement(announcement.nomor, announcement.poli);
