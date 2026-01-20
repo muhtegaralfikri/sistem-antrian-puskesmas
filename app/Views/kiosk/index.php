@@ -142,7 +142,7 @@
                  style="z-index: 10000;">
                 
                 <!-- Ticket Paper Style -->
-                <div class="bg-white w-full p-6 md:p-8 rounded-[2rem] border-0 md:border-[3px] border-medical-50 relative overflow-hidden">
+                <div class="bg-white w-full p-5 md:p-8 rounded-[2rem] border-0 md:border-[3px] border-medical-50 relative overflow-hidden">
                      <div class="absolute top-0 left-0 w-full h-1.5 md:h-2 bg-gradient-to-r from-medical-400 to-primary-500"></div>
 
                     <!-- Cutout Circles -->
@@ -150,33 +150,33 @@
                     <div class="absolute -right-4 top-1/2 w-8 h-8 bg-gray-900/10 backdrop-blur-md rounded-full border-l border-gray-200 hidden md:block"></div>
                     
                     <!-- Swipe indicator for mobile -->
-                    <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6 md:hidden"></div>
+                    <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-4 md:hidden"></div>
 
-                    <div class="w-16 h-16 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 shadow-inner ring-4 ring-green-50">
-                        <svg class="w-8 h-8 md:w-10 md:h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    <div class="w-14 h-14 md:w-20 md:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-6 shadow-inner ring-4 ring-green-50">
+                        <svg class="w-7 h-7 md:w-10 md:h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                     </div>
 
-                    <h3 class="text-2xl md:text-3xl font-black text-gray-900 mb-1 tracking-tight">Berhasil!</h3>
-                    <p class="text-sm md:text-base text-gray-500 mb-6 md:mb-8 font-medium">Silakan ambil struk antrian Anda</p>
+                    <h3 class="text-xl md:text-3xl font-black text-gray-900 mb-1 tracking-tight">Berhasil!</h3>
+                    <p class="text-sm md:text-base text-gray-500 mb-4 md:mb-8 font-medium">Silakan ambil struk antrian Anda</p>
 
-                    <div class="bg-gray-50 rounded-xl md:rounded-2xl p-4 md:p-6 border-2 border-gray-200 border-dashed mb-4 relative">
+                    <div class="bg-gray-50 rounded-xl md:rounded-2xl p-3 md:p-6 border-2 border-gray-200 border-dashed mb-3 md:mb-4 relative">
                         <div class="text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Nomor Antrian</div>
-                        <div class="text-5xl md:text-6xl font-black text-gray-900 font-mono tracking-tighter leading-none whitespace-nowrap" x-text="ticketData?.nomor">--</div>
-                        <div class="text-base md:text-lg font-bold text-medical-600 mt-2 line-clamp-1" x-text="ticketData?.poli_nama">--</div>
+                        <div class="text-4xl md:text-6xl font-black text-gray-900 font-mono tracking-tighter leading-none whitespace-nowrap" x-text="ticketData?.nomor">--</div>
+                        <div class="text-sm md:text-lg font-bold text-medical-600 mt-1 md:mt-2 line-clamp-1" x-text="ticketData?.poli_nama">--</div>
                     </div>
                     
                     <!-- Patient Name Display -->
-                    <div class="bg-primary-50 rounded-xl p-3 mb-6 border border-primary-100" x-show="ticketData?.nama_pasien">
+                    <div class="bg-primary-50 rounded-xl p-2.5 mb-4 border border-primary-100" x-show="ticketData?.nama_pasien">
                         <div class="text-[10px] font-bold text-primary-400 uppercase tracking-widest mb-0.5">Nama Pasien</div>
-                        <div class="text-lg md:text-xl font-bold text-primary-700 truncate" x-text="ticketData?.nama_pasien || '-'"></div>
+                        <div class="text-base md:text-xl font-bold text-primary-700 truncate" x-text="ticketData?.nama_pasien || '-'"></div>
                     </div>
 
-                    <div class="space-y-3">
-                        <button @click="printTicket()" class="w-full bg-slate-900 hover:bg-slate-800 active:scale-[0.98] transition-all text-white font-bold text-base md:text-lg py-3 md:py-4 rounded-xl md:rounded-2xl shadow-xl shadow-slate-900/20 flex items-center justify-center gap-2">
+                    <div class="space-y-2 md:space-y-3">
+                        <button @click="printTicket()" class="w-full bg-slate-900 hover:bg-slate-800 active:scale-[0.98] transition-all text-white font-bold text-sm md:text-lg py-3 md:py-4 rounded-xl md:rounded-2xl shadow-xl shadow-slate-900/20 flex items-center justify-center gap-2">
                             <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                             Cetak Struk
                         </button>
-                        <button @click="showModal = false" class="w-full bg-white border-2 border-gray-100 hover:bg-gray-50 text-gray-600 font-bold text-base md:text-lg py-3 md:py-4 rounded-xl md:rounded-2xl transition-colors">
+                        <button @click="showModal = false" class="w-full bg-white border-2 border-gray-100 hover:bg-gray-50 text-gray-600 font-bold text-sm md:text-lg py-3 md:py-4 rounded-xl md:rounded-2xl transition-colors">
                             Tutup
                         </button>
                     </div>
